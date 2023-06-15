@@ -95,6 +95,17 @@ function createDragControls(objects) {
   // 拖拽过程
   dragControls.addEventListener('drag', function (event) {
     console.log("createDragControls drag");
+
+    var name = event.object.name;
+    // 给内部模型位置赋值
+    for (var i = 0; i < objects.length; i++) {
+      if (objects[i].name != event.object.name) {
+        objects[i].position.x = event.object.position.x;
+        objects[i].position.y = event.object.position.y;
+        objects[i].position.z = event.object.position.z;
+      }
+    }
+
     dragControlsRender();
   });
 

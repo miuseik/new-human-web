@@ -2,16 +2,16 @@ import axios from "@/api/request.js";
 
 
 const newHuman = {
-    // index(data){ // 登陆
+    // index(data){ //
     //     let url = '/'
     //     return axios.post(url, data);
     // },
-    query_bluetooth(){ // 登陆
+    query_bluetooth(){ //
         let url = '/serial/query_bluetooth'
 
         return axios.get(url, '');
     },
-    confirm_serial(data){ // 登陆
+    confirm_serial(data){ //
         let url = '/serial/confirm_serial'
         return axios.post(url, data);
     },

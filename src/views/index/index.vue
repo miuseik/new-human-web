@@ -3,8 +3,8 @@
 
   <div class="blues">
     <div class="buttons">
-      <el-button :plain="true" @click="setWs">按钮</el-button>
-      <el-button :plain="true" @click="linkWs">linkWs启动ws</el-button>
+<!--      <el-button :plain="true" @click="setWs">按钮</el-button>-->
+      <el-button :plain="true" @click="linkWs">启动ws</el-button>
       <el-button :plain="true" @click="setApi">查找串口</el-button>
       <el-button :plain="true" @click="confirmSerial">确认串口</el-button>
     </div>
@@ -20,6 +20,7 @@
         <input type="radio" v-model="state.queryBluetooth" :value="item" name="serialList">{{ item }}
       </label>
     </div>
+    <div id="my_three"></div>
   </div>
   <div id="mydiv" class="circular">
   </div>
@@ -27,11 +28,15 @@
 
 <script setup>
 import {useRouter} from "vue-router";
+import env from "@/env/moudules/env.js";
 
 const router = useRouter();
 import API from "@/api";
 import newHuman from "../../api/moudules/newHuman";
 
+import mixins from "../../../src/mixin/myThree";
+
+let {initThree} = mixins();
 
 const state = reactive({
   url           : "ws://127.0.0.1:",
@@ -50,7 +55,7 @@ const setWs         = (socket) => {
   ws.send(socket);
 };
 const linkWs        = () => {
-  ws = new WebSocket(state.url+state.port);
+  ws = new WebSocket(env.WS_URL);
   ws.addEventListener("open", function (event) {
     ws.send("hello");
     state.res = "当前客户端已经连接到websocket服务器";
@@ -117,7 +122,10 @@ onMounted(() => {
     setWs(offsetX)
     console.log(stock);
   }
+  initThree();
+
 })
+
 </script>
 
 <style lang="scss">
