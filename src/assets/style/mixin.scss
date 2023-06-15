@@ -1,0 +1,23 @@
+@mixin button-com($width: 200px, $height:40px, $f_size:17px, $MG: 30px, $br: 5px) {
+  button { /* 按钮美化 */
+    width: $width; /* 宽度 */
+    height: $height; /* 高度 */
+    font-size: $f_size; /* 字体大小 */
+    margin: $MG;
+    border-radius: $br;
+    border-width: 0; /* 边框宽度 */
+    cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+    outline: none; /* 不显示轮廓线 */
+    box-shadow: 5px 10px 20px rgba(100, 100, 100, 0.3);
+    @include font_color("Button_COM");
+    @include background_color("Button_COM_BC");
+  }
+  button:hover { /* 鼠标移入按钮范围时改变颜色 */
+    @include font_color("Button_COM_hover");
+    @include background_color("Button_COM_hover_BC");
+  }
+  button:active { /* 鼠标移入按钮范围时改变颜色 */
+    @include font_color("Button_COM_click");
+    @include background_color("Button_COM_click_BC");
+  }
+}

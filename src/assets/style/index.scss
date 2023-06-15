@@ -1,0 +1,12 @@
+@import "./common.scss";
+@import "./mixin.scss";
+@import "./page.scss";
+@import "./public.scss";
+@import "./style.scss";
+@import "./var.scss";
+
+@mixin button-com(){
+  button{
+    color: #000;
+  }
+}
