@@ -18,6 +18,11 @@ let routes= [
         component: () => import(/* webpackChunkName: "about" */ '../views/test/index_1.vue')
     },
     {
+        path: '/home',
+        name: 'home',
+        component: () => import(/* webpackChunkName: "about" */ '../views/home/index.vue')
+    },
+    {
         path: '/serialPort',
         name: 'serialPort',
         component: () => import(/* webpackChunkName: "about" */ '../views/serialPort/index.vue')

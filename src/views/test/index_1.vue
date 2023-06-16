@@ -8,10 +8,11 @@ import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry";
-import { GUI } from "three/examples/jsm/libs/dat.gui.module";
+// import { GUI } from "three/examples/jsm/libs/dat.gui.module";
+import {GUI} from 'dat.gui'
 // import dat from 'dat.gui'
-// let GUI = dat.GUI
-import { TWEEN } from "three/examples/jsm/libs/tween.module.min.js";
+// let { GUI } = dat.gui
+// import { TWEEN } from "three/examples/jsm/libs/tween.module.min.js";
 var gui, scene, camera, renderer, controls, lights, mesh, bones, skeletonHelper;
 export default {
   name: "bone2",
