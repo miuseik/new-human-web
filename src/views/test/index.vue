@@ -1,5 +1,5 @@
 <template>
-  <div id="my_three"></div>
+  <div id="my_three"> </div>
 </template>
 <script setup lang='ts' name="test">
 import * as THREE from "three"; /* three.js的module */
