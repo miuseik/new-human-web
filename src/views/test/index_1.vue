@@ -77,7 +77,7 @@ export default {
       human.merge(arm_l, new THREE.Matrix4().makeTranslation(0, -1, 5.3));
       human.merge(arm_r, new THREE.Matrix4().makeTranslation(0, -1, -5.3));
 
-      human = new THREE.BufferGeometry().fromGeometry(human);
+      human = new THREE.BufferGeometry().setAttribute(human);
 
       // let material = new THREE.MeshNormalMaterial({wireframe: true});
       // scene.add(new THREE.Mesh(human, material));
