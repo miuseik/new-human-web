@@ -21,7 +21,8 @@
   </el-container>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+
 import { ref } from "vue";
 import Menu from "./components/Menu/index.vue";
 import Robot3d from "./components/Robot3d/index.vue";
@@ -62,6 +63,7 @@ const drawerSwitch = () => {
   height: 100%;
 }
 .el-main {
+  height: 100vh;
   padding: 0;
   margin: 0;
   overflow: hidden;

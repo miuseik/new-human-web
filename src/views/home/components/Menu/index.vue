@@ -84,8 +84,7 @@
   </el-scrollbar>
 </template>
 
-<script setup>
-import { ref, defineEmits } from "vue";
+<script lang="ts" setup>
 
 const mouseValue = ref(true);
 const value1 = ref(0);

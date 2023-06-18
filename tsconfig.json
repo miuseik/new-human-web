@@ -1,11 +1,50 @@
 {
-  "files": [],
-  "references": [
+  "compilerOptions": {
+    "target"                    : "ES2020",
+    "useDefineForClassFields"   : true,
+    "module"                    : "ESNext",
+    "lib"                       : [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck"              : true,
+    "noImplicitAny"             : false,
+    /* Bundler mode */
+    "moduleResolution"          : "node",
+    "types"                     : [
+      "element-plus/global"
+    ],
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule"         : true,
+    "isolatedModules"           : true,
+    "noEmit"                    : true,
+    "jsx"                       : "preserve",
+    // 配置@别名
+    "baseUrl"                   : ".",
+    "paths"                     : {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    /* Linting */
+    "strict"                    : false,
+    "noUnusedLocals"            : false,
+    "noUnusedParameters"        : false,
+    "noFallthroughCasesInSwitch": false
+  },
+  "include"        : [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "node_modules/@vue/runtime-core/dist/runtime-core.d.ts",
+    "node_modules/@vue/runtime-core/dist/runtime-core.d.ts",
+    "node_modules/@vue/runtime-core/dist/runtime-core.d.ts"
+  ],
+  "references"     : [
     {
       "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
     }
   ]
 }

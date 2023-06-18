@@ -1,11 +1,12 @@
-// 路径：src/views/home/components/Robot3d/index.vue
+<!--// 路径：src/views/home/components/Robot3d/index.vue-->
 <template>
   <canvas class="webgl" ref="webgl"></canvas>
 </template>
+<script lang="ts" setup>
 
-<script setup>
-import { defineExpose, onMounted } from "vue";
 import BaseManager from "../manager/BaseManager.js";
+// import BaseManager from "../manager/copy.js";
+// import BaseManager from "../manager/copy_action.js";
 
 let base = null;
 

@@ -9,13 +9,13 @@ import AutoImport from "unplugin-auto-import/vite"
 import Components from 'unplugin-vue-components/vite';
 
 import env from "./src/env/moudules/env.js";
-
+import json from '@rollup/plugin-json'
 import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-
+    json(),
     VueSetupExtend(),
 
     AutoImport({

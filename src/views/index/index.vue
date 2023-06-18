@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useRouter} from "vue-router";
 import env from "@/env/moudules/env.js";
 
@@ -34,16 +34,14 @@ const router = useRouter();
 import API from "@/api";
 import newHuman from "../../api/moudules/newHuman";
 
-import mixins from "../../../src/mixin/myThree";
 
-let {initThree} = mixins();
 
 const state = reactive({
   url           : "ws://127.0.0.1:",
   port           : "3002",
   socket        : "",
   messages      : [],
-  queryBluetooth: "",
+  queryBluetooth: {},
   serialList    : "",
   res           : "",
   serialStatus  : "",
@@ -71,15 +69,14 @@ const linkWs        = () => {
   };
 };
 const setApi        = () => {
-  API.newHuman.query_bluetooth("").then(res => {
+  API.newHuman.query_bluetooth().then(res => {
     state.serialList = res.data;
   });
 };
 const confirmSerial = () => {
-  console.log("state.queryBluetooth", state.queryBluetooth);
-  let path = state.queryBluetooth.path;
+  // let path = state.queryBluetooth && state.queryBluetooth.path;
   let data = {
-    path: path,
+    // path: path,
     port: state.port,
   };
   API.newHuman.confirm_serial(data).then(res => {
@@ -93,15 +90,15 @@ const confirmSerial = () => {
 //////////
 //////////
 
-const created = () => {
-  var userAgent = navigator.userAgent.toLowerCase();
-  if (userAgent.indexOf(" electron/") > -1) {
-    selectBluetooth();
-    bluetoothPairingRequest();
-  }
-};
-
-created();
+// const created = () => {
+//   var userAgent = navigator.userAgent.toLowerCase();
+//   if (userAgent.indexOf(" electron/") > -1) {
+//     selectBluetooth();
+//     bluetoothPairingRequest();
+//   }
+// };
+//
+// created();
 const toTest = () => {
   console.log("跳转测试");
   router.push({
@@ -112,17 +109,15 @@ const toTest = () => {
 onMounted(() => {
   var mydiv=document.getElementById("mydiv");
   mydiv.onmousemove=function(event){
-    var ev=window.event||event;
-    let offsetX = ev.offsetX
-    let offsetY = ev.offsetY
+    // let offsetX = event['offsetX'] | ''
+    // let offsetY = event['offsetY'] | ''
     let stock = {
-      x:offsetX,
-      y:offsetY
+      // x:offsetX || '',
+      // y:offsetY || ''
     }
-    setWs(offsetX)
+    // setWs(offsetX)
     console.log(stock);
   }
-  initThree();
 
 })
 

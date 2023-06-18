@@ -16,8 +16,8 @@
       <p>{{ state.res }}</p>
     </div>
     <div class="serial-list">
-      <label v-for="(item, index) in state.serialList">
-        <input type="radio" v-model="state.queryBluetooth" :value="item" name="serialList">{{ item.path }}
+      <label v-for="item in state.serialList">
+        <input type="radio" v-model="state.queryBluetooth" :value="item" name="serialList">{{ item['path'] }}
       </label>
     </div>
   </div>
@@ -27,7 +27,8 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+
 import {useRouter} from "vue-router";
 
 const router = useRouter();
@@ -36,23 +37,23 @@ import newHuman from "../../api/moudules/newHuman";
 
 
 const state = reactive({
-  url           : "ws://127.0.0.1:",
-  port           : "3002",
-  socket        : "",
-  messages      : [],
-  queryBluetooth: "",
-  serialList    : "",
-  res           : "",
-  serialStatus  : "",
+  url: "ws://127.0.0.1:",
+  port: "3002",
+  socket: "",
+  messages: [],
+  queryBluetooth: {},
+  serialList: "",
+  res: "",
+  serialStatus: "",
 });
 
 // 点击按钮时给websocket服务器端发送消息
-let ws;
-const setWs         = (socket) => {
+let ws: any;
+const setWs = (socket) => {
   ws.send(socket);
 };
-const linkWs        = () => {
-  ws = new WebSocket(state.url+state.port);
+const linkWs = () => {
+  ws = new WebSocket(state.url + state.port);
   ws.addEventListener("open", function (event) {
     ws.send("hello");
     state.res = "当前客户端已经连接到websocket服务器";
@@ -67,16 +68,15 @@ const linkWs        = () => {
     console.log("连接已关闭...");
   };
 };
-const setApi        = () => {
-  API.newHuman.query_bluetooth("").then(res => {
+const setApi = () => {
+  API.newHuman.query_bluetooth().then(res => {
     state.serialList = res.data;
   });
 };
 const confirmSerial = () => {
-  console.log("state.queryBluetooth", state.queryBluetooth);
-  let path = state.queryBluetooth.path;
+  // let path = state.queryBluetooth &&  state.queryBluetooth.path || '';
   let data = {
-    path: path,
+    // path: path,
     port: state.port,
   };
   API.newHuman.confirm_serial(data).then(res => {
@@ -90,15 +90,15 @@ const confirmSerial = () => {
 //////////npm
 //////////
 
-const created = () => {
-  var userAgent = navigator.userAgent.toLowerCase();
-  if (userAgent.indexOf(" electron/") > -1) {
-    selectBluetooth();
-    bluetoothPairingRequest();
-  }
-};
-
-created();
+// const created = () => {
+//   var userAgent = navigator.userAgent.toLowerCase();
+//   if (userAgent.indexOf(" electron/") > -1) {
+//     selectBluetooth();
+//     bluetoothPairingRequest();
+//   }
+// };
+//
+// created();
 const toTest = () => {
   console.log("跳转测试");
   router.push({
@@ -107,26 +107,24 @@ const toTest = () => {
 };
 
 onMounted(() => {
-  var servo_l=document.getElementById("servo_l");
-  servo_l.onmousemove=function(event){
-    var ev=window.event||event;
-    let offsetX = ev.offsetX
-    let offsetY = ev.offsetY
+  var servo_l = document.getElementById("servo_l");
+  servo_l.onmousemove = function (event) {
+    let offsetX = event['offsetX'] || ''
+    let offsetY = event['offsetY'] || ''
     let stock = {
-      x:offsetX,
-      y:offsetY
+      x: offsetX,
+      y: offsetY
     }
     setWs(`a${offsetX}`)
     setWs(`b${offsetY}`)
   }
-  var servo_r=document.getElementById("servo_r");
-  servo_r.onmousemove=function(event){
-    var ev=window.event||event;
-    let offsetX = ev.offsetX
-    let offsetY = ev.offsetY
+  var servo_r = document.getElementById("servo_r");
+  servo_r.onmousemove = function (event) {
+    let offsetX = event['offsetX'] || ''
+    let offsetY = event['offsetY'] || ''
     let stock = {
-      x:offsetX,
-      y:offsetY
+      x: offsetX,
+      y: offsetY
     }
     setWs(`c${offsetX}`)
     setWs(`d${offsetY}`)
@@ -147,9 +145,11 @@ input {
   display: flex;
   flex-direction: column;
 }
-.circular-warp{
+
+.circular-warp {
   display: flex;
-  .circular{
+
+  .circular {
     cursor: move;
     height: 600px;
     width: 600px;

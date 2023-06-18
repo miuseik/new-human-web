@@ -9,7 +9,7 @@ const newHuman = {
     query_bluetooth(){ //
         let url = '/serial/query_bluetooth'
 
-        return axios.get(url, '');
+        return axios.get(url);
     },
     confirm_serial(data){ //
         let url = '/serial/confirm_serial'

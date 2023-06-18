@@ -1,5 +1,3 @@
-import "./assets/icon/icon.scss";
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from "./router/index.js";
