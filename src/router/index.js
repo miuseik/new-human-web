@@ -12,11 +12,7 @@ let routes= [
         name: 'test',
         component: () => import(/* webpackChunkName: "about" */ '../views/test/index.vue')
     },
-    {
-        path: '/test1',
-        name: 'test1',
-        component: () => import(/* webpackChunkName: "about" */ '../views/test/index_1.vue')
-    },
+
     {
         path: '/home',
         name: 'home',

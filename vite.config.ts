@@ -9,13 +9,13 @@ import AutoImport from "unplugin-auto-import/vite"
 import Components from 'unplugin-vue-components/vite';
 
 import env from "./src/env/moudules/env.js";
-import json from '@rollup/plugin-json'
+
 import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    json(),
+
     VueSetupExtend(),
 
     AutoImport({
@@ -37,7 +37,7 @@ export default defineConfig({
   },
 
   server: {
-    // host : '0.0.0.0',
+    host : '0.0.0.0',
     proxy: {
       '/api': { // 匹配请求路径，
         target: env.API_URL,
@@ -47,14 +47,14 @@ export default defineConfig({
         // ws: true, // 是否代理websockets
         // 路径重写，**** 如果你的后端有统一前缀(如:/api)，就不开启；没有就开启
         //简单来说，就是是否改路径 加某些东西
-        rewrite: (path) => path.replace('/api', '')
+        // rewrite: (path) => path.replace('^/', '')
       }
     }
   },
   css   : {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/assets/style/index.scss";`,
+        // additionalData: `@import "@/assets/style/index.scss";`,
       }
     }
   }

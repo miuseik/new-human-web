@@ -2,118 +2,99 @@
   <div id="my_three"> </div>
 </template>
 <script setup lang='ts' name="test">
-// import * as THREE from "three"; /* three.js的module */
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-// import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
-// import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-//
-// var scene, camera, renderer, orbitControls;
-// const objects = []; /* 模型数组 */
-//
-// initScene();
-// createGeometry();
-// createDragControls(objects);
-//
-// function initScene() {
-//   /* 构建场景 */
-//   scene = new THREE.Scene();
-//
-//   /* 构建一个坐标系 */
-//   var axisHelper = new THREE.AxesHelper(1000);
-//   scene.add(axisHelper);
-//
-//   /* 构建环境光, 环境光不能用来投射阴影，因为它没有方向 */
-//   // var ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
-//   // scene.add(ambientLight);
-//
-//   /* 构建点光源，可以有明暗变化 */
-//   var pointLight = new THREE.PointLight(0xffffff);
-//   pointLight.position.set(400, 200, 300); //点光源位置
-//   scene.add(pointLight); //点光源添加到场景中
-//
-//   /* 构建相机 */
-//   var width = window.innerWidth; // 窗口宽度
-//   var height = window.innerHeight; // 窗口高度
-//   var k = width / height; // 窗口宽高比
-//   var s = 200; // 三维场景显示范围控制系数，系数越大，显示的范围越大
-//   camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
-//   camera.position.set(200, 300, 200); // 设置相机位置
-//   camera.lookAt(scene.position); // 设置相机方向(指向的场景对象)
-//
-//   /* 构建渲染器 */
-//   renderer = new THREE.WebGLRenderer();
-//   renderer.setSize(width, height); // 设置渲染区域尺寸
-//   renderer.setClearColor(0xb9d3ff, 1); // 设置背景颜色
-//   document.body.appendChild(renderer.domElement); // body元素中插入canvas对象
-//
-//   orbitControls = new OrbitControls(camera, renderer.domElement);
-//   orbitControls.update();
-// }
-//
-// function createGeometry() {
-//   /* 构建正方体几何对象添加到场景中 */
-//   var boxGeometry = new THREE.BoxGeometry(100, 100, 100); // 创建一个正方体几何对象
-//   var materialBox = new THREE.MeshLambertMaterial({
-//     color: 0x0000ff,
-//     opacity: 1,
-//     transparent: true
-//   }); // 材质对象Material
-//   var meshBox = new THREE.Mesh(boxGeometry, materialBox); // 网格模型对象Mesh
-//   meshBox.name = "box";
-//   scene.add(meshBox); // 网格模型添加到场景中，未设定x/y/z坐标，默认位于坐标轴原点
-//   objects.push(meshBox);
-//
-//   /* 圆柱体几何对象添加到场景中 */
-//   var cylinder = new THREE.CylinderGeometry(50, 50, 200, 25);
-//   var materialCylinder = new THREE.MeshLambertMaterial({
-//     color: 0xd0021b,
-//     opacity: 1,
-//     transparent: true
-//   }); // 材质对象Material
-//   var meshCylinder = new THREE.Mesh(cylinder, materialCylinder); // 网格模型对象Mesh
-//   meshCylinder.name = "cylinder"; /* 标识符 */
-//   scene.add(meshCylinder);
-//   objects.push(meshCylinder);
-// }
-//
-// function createDragControls(objects) {
-//   // 初始化拖拽控件
-//   var dragControls = new DragControls(objects, camera, renderer.domElement);
-//
-//   // 鼠标略过事件
-//   dragControls.addEventListener('hoveron', function (event) {
-//     console.log("createDragControls hoveron");
-//     // 让变换控件对象和选中的对象绑定
-//   });
-//
-//   // 开始拖拽
-//   dragControls.addEventListener('dragstart', function (event) {
-//     console.log("createDragControls dragstart");
-//     orbitControls.enabled = false;
-//   });
-//
-//   // 拖拽过程
-//   dragControls.addEventListener('drag', function (event) {
-//     console.log("createDragControls drag");
-//     dragControlsRender();
-//   });
-//
-//   // 拖拽结束
-//   dragControls.addEventListener('dragend', function (event) {
-//     console.log("createDragControls dragend");
-//     orbitControls.enabled = true;
-//   });
-// }
-//
-// function dragControlsRender() {
-//   renderer.render(scene, camera);
-// }
-//
-// function render() {
-//   orbitControls.update();
-//   /* 执行渲染 */
-//   requestAnimationFrame(render);
-//   renderer.render(scene, camera); //执行渲染操作，指定场景、相机作为参数
-// }
-// render();
+// import * as THREE from 'https://cdn.skypack.dev/three@v0.129.0';
+import * as THREE from "three";
+
+// 创建一个场景
+const scene = new THREE.Scene();
+
+// 创建一个相机 视点
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+// 设置相机的位置
+camera.position.set(100,100,0);
+camera.lookAt(new THREE.Vector3(0,0,0));
+
+
+// 创建一个渲染器
+const renderer = new THREE.WebGLRenderer();
+// 设置渲染器尺寸
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+document.body.appendChild(renderer.domElement);
+
+// 添加灯光
+const spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(2000,8000,4000);
+scene.add(spotLight);
+
+// 圆柱体
+const geometry = new THREE.CylinderGeometry(2, 2, 40, 8, 12)
+
+const material = new THREE.MeshPhongMaterial();
+
+// 蒙皮 - 皮肤
+const mesh = new THREE.SkinnedMesh(geometry, material)
+scene.add(mesh);
+
+// 首先，创建一个起点. 创建骨骼系统
+let b1 = new THREE.Bone();
+b1.position.set(0, -20, 0);
+
+let b2 = new THREE.Bone();
+b1.add(b2)
+b2.position.set(0, 10, 0);
+
+let b3 = new THREE.Bone();
+b2.add(b3)
+b3.position.set(0, 10, 0)
+
+let b4 = new THREE.Bone();
+b3.add(b4)
+b4.position.set(0, 10, 0)
+
+let b5 = new THREE.Bone();
+b4.add(b5)
+b5.position.set(0, 10, 0)
+
+// 创建骨架
+const skeleton = new THREE.Skeleton([b1, b2, b3, b4, b5])
+mesh.add(b1)
+mesh.bind(skeleton)
+
+// 添加权重   设置的就是蒙皮的权重，  顶点的蒙皮索引
+const index = [] // 索引
+const weight = [] // 权重
+
+const arr = geometry.attributes.position.array;
+for (let i = 0; i < arr.length; i += 3) {
+  const y = arr[i + 1] + 20
+
+  // const index = Math.floor(y / 10);
+  const weightValue = (y % 10) / 10
+
+  index.push(Math.floor(y / 10), Math.floor(y / 10) + 1, 0, 0)
+  weight.push(1 - weightValue, weightValue, 0, 0);
+}
+geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(index, 4));
+geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weight, 4));
+
+let step = 0.1;
+const animation = () => {
+  // 渲染
+  renderer.render(scene, camera);
+  // 添加边界
+  if (
+      mesh.skeleton.bones[0].rotation.x > 0.3 ||
+      mesh.skeleton.bones[0].rotation.x < -0.3
+  ) {
+    step = -step
+  }
+
+  for (let i = 0; i < mesh.skeleton.bones.length; i++) {
+    mesh.skeleton.bones[i].rotation.x += step * Math.PI / 180;
+  }
+
+  requestAnimationFrame(animation);
+}
+animation()
 </script>

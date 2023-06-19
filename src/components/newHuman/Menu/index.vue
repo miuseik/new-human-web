@@ -18,6 +18,28 @@
         />
       </div>
       <div class="slider-item">
+        <span class="demonstration">关节二（绕X轴旋转）</span>
+        <el-slider
+            v-model="value2"
+            show-input
+            :min="min"
+            :max="max"
+            :step="0.01"
+            @input="sliderInput($event, 'D2', 'x')"
+        />
+      </div>
+      <div class="slider-item">
+        <span class="demonstration">关节二（绕Y轴旋转）</span>
+        <el-slider
+            v-model="value2"
+            show-input
+            :min="min"
+            :max="max"
+            :step="0.01"
+            @input="sliderInput($event, 'D2', 'y')"
+        />
+      </div>
+      <div class="slider-item">
         <span class="demonstration">关节二（绕Z轴旋转）</span>
         <el-slider
             v-model="value2"
@@ -29,14 +51,14 @@
         />
       </div>
       <div class="slider-item">
-        <span class="demonstration">关节三（绕Y轴旋转）</span>
+        <span class="demonstration">关节三（绕X轴旋转）</span>
         <el-slider
             v-model="value3"
             show-input
             :min="min"
             :max="max"
             :step="0.01"
-            @input="sliderInput($event, 'D3', 'y')"
+            @input="sliderInput($event, 'D3', 'x')"
         />
       </div>
       <div class="slider-item">

@@ -1,17 +1,19 @@
 <!--// 路径：src/views/home/components/Robot3d/index.vue-->
 <template>
-  <canvas class="webgl" ref="webgl"></canvas>
+  <canvas class="webgl" ref="webgl" id="three_id"></canvas>
 </template>
 <script lang="ts" setup>
 
-import BaseManager from "../manager/BaseManager.js";
-// import BaseManager from "../manager/copy.js";
+// import BaseManager from "../manager/BaseManager.js";
+import BaseManager from "../manager/copy.js";
 // import BaseManager from "../manager/copy_action.js";
 
 let base = null;
 
 onMounted(() => {
-  base = new BaseManager(document.querySelector("canvas.webgl"));
+  let canvas = document.getElementById("three_id");
+
+  base = new BaseManager(canvas);
 });
 
 const setRobotRotation = (e, name, direction) => {

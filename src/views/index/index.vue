@@ -1,58 +1,59 @@
 <template>
-  <router-view></router-view>
 
-  <div class="blues">
-    <div class="buttons">
-<!--      <el-button :plain="true" @click="setWs">按钮</el-button>-->
-      <el-button :plain="true" @click="linkWs">启动ws</el-button>
-      <el-button :plain="true" @click="setApi">查找串口</el-button>
-      <el-button :plain="true" @click="confirmSerial">确认串口</el-button>
+  <div class="new-human">
+    <div class="worktop">
+      <div class="buttons">
+        <!--      <el-button :plain="true" @click="setWs">按钮</el-button>-->
+        <el-button :plain="true" @click="linkWs">启动ws</el-button>
+        <el-button :plain="true" @click="setApi">查找串口</el-button>
+        <el-button :plain="true" @click="confirmSerial">确认串口</el-button>
+      </div>
+      <input v-model="state.socket" type="text" name="" id="demo"/>
+      <div id="res">
+        <p></p>
+      </div>
+      <div>
+        <p>{{ state.res }}</p>
+      </div>
+      <div class="serial-list">
+        <label v-for="(item, index) in state.serialList">
+          <input type="radio" v-model="state.queryBluetooth" :value="item" name="serialList">{{ item }}
+        </label>
+      </div>
     </div>
-    <input v-model="state.socket" type="text" name="" id="demo"/>
-    <div id="res">
-      <p></p>
+    <div class="model">
+      <NewHuman></NewHuman>
     </div>
-    <div>
-      <p>{{ state.res }}</p>
-    </div>
-    <div class="serial-list">
-      <label v-for="(item, index) in state.serialList">
-        <input type="radio" v-model="state.queryBluetooth" :value="item" name="serialList">{{ item }}
-      </label>
-    </div>
-    <div id="my_three"></div>
-  </div>
-  <div id="mydiv" class="circular">
   </div>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import env from "@/env/moudules/env.js";
+import NewHuman from '@/components/newHuman/index.vue'
 
 const router = useRouter();
 import API from "@/api";
-import newHuman from "../../api/moudules/newHuman";
-
+// import newHuman from "../../api/moudules/newHuman";
 
 
 const state = reactive({
-  url           : "ws://127.0.0.1:",
-  port           : "3002",
-  socket        : "",
-  messages      : [],
+  url: "ws://127.0.0.1:",
+  port: "3002",
+  socket: "",
+  messages: [],
   queryBluetooth: {},
-  serialList    : "",
-  res           : "",
-  serialStatus  : "",
+  serialList: "",
+  res: "",
+  serialStatus: "",
 });
 
 // 点击按钮时给websocket服务器端发送消息
 let ws;
-const setWs         = (socket) => {
+const setWs = (socket) => {
   ws.send(socket);
 };
-const linkWs        = () => {
+const linkWs = () => {
   ws = new WebSocket(env.WS_URL);
   ws.addEventListener("open", function (event) {
     ws.send("hello");
@@ -68,7 +69,7 @@ const linkWs        = () => {
     console.log("连接已关闭...");
   };
 };
-const setApi        = () => {
+const setApi = () => {
   API.newHuman.query_bluetooth().then(res => {
     state.serialList = res.data;
   });
@@ -107,26 +108,39 @@ const toTest = () => {
 };
 
 onMounted(() => {
-  var mydiv=document.getElementById("mydiv");
-  mydiv.onmousemove=function(event){
-    // let offsetX = event['offsetX'] | ''
-    // let offsetY = event['offsetY'] | ''
-    let stock = {
-      // x:offsetX || '',
-      // y:offsetY || ''
-    }
-    // setWs(offsetX)
-    console.log(stock);
-  }
+  // var mydiv=document.getElementById("mydiv");
+  // mydiv.onmousemove=function(event){
+  //   // let offsetX = event['offsetX'] | ''
+  //   // let offsetY = event['offsetY'] | ''
+  //   let stock = {
+  //     // x:offsetX || '',
+  //     // y:offsetY || ''
+  //   }
+  //   // setWs(offsetX)
+  //   console.log(stock);
+  // }
 
 })
 
 </script>
 
 <style lang="scss">
-#app {
-  padding: .1rem;
+.new-human {
+  display: flex;
+  flex-direction: column;
+  .worktop {
+    height: 3rem;
+    overflow: hidden;
+  }
+
+  .model {
+    overflow: hidden;
+
+    width: 100%;
+    height:calc(100vh - 3rem);
+  }
 }
+
 
 input {
   height: 2rem;
@@ -135,11 +149,5 @@ input {
 .serial-list {
   display: flex;
   flex-direction: column;
-}
-.circular{
-  height: 180px;
-  width: 180px;
-  border-radius: 50%;
-  border: #00fcff solid 2px;
 }
 </style>

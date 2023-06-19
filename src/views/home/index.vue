@@ -1,4 +1,4 @@
-// 路径：src/views/home/index.vue
+<!--// 路径：src/views/home/index.vue-->
 <template>
   <el-container>
     <el-drawer v-model="drawer" direction="ltr" size="100%">
@@ -22,8 +22,6 @@
 </template>
 
 <script lang="ts" setup>
-
-import { ref } from "vue";
 import Menu from "./components/Menu/index.vue";
 import Robot3d from "./components/Robot3d/index.vue";
 import { Operation } from "@element-plus/icons-vue";

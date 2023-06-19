@@ -1,34 +1,20 @@
-// 文件路径：src/views/home/components/Robot3d/manager/BaseManager.js
-
-import * as dat from "dat.gui";
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {STLLoader} from 'three/addons/loaders/STLLoader';
-// const files = import.meta.glob('/human'); // 自定义规则
-// const files = import.meta.glob('/src/assets/human/*.STL'); // 自定义规则
-export default class baseManager {
-    constructor(canvas) {
-        //Gui
-        this.fullSize = 0.01
-        this.gui      = new dat.GUI();
-        this.gui.hide();
-        //Canvas
-        this.canvas   = canvas
-        //Sizes
-        this.sizes    = {}
-        //Camera
-        this.camera   = null
-        //Renderer
-        this.renderer = null
-        // Scene
-        this.scene    = new THREE.Scene();
 
-        //AnimateTick
+export default class myThree {
+    constructor(canvas) {
+        this.canvas       = canvas
+        this.sizes        = {}
+        this.camera       = null
+        this.renderer     = null
+        this.scene        = new THREE.Scene();
         this.clock        = new THREE.Clock();
         this.previousTime = 0;
 
         this.initWindowSizes()
-        this.initcamera()
+        this.initCamera()
+        this.initScene()
         this.inLights()
         this.initHelper()
         this.initControls()
@@ -37,13 +23,7 @@ export default class baseManager {
         this.initAnimateTick()
     }
 
-    /**
-     * Sizes
-     */
     initWindowSizes() {
-        /**
-         * Sizes
-         */
         const sizes = {
             width : this.canvas.parentNode.clientWidth,
             height: this.canvas.parentNode.clientHeight,
@@ -65,10 +45,7 @@ export default class baseManager {
         this.sizes = sizes;
     }
 
-    /**
-     * Camera
-     */
-    initcamera() {
+    initScene() {
         this.scene.background = new THREE.Color(0x72645b);
         this.scene.fog        = new THREE.Fog(0x72645b, 2, 10000);
         const plane           = new THREE.Mesh(
@@ -80,16 +57,21 @@ export default class baseManager {
         this.scene.add(plane);
         plane.receiveShadow = true;
 
-        // Base camera
+        // const light = new THREE.DirectionalLight(0xffffff);
+        // light.position.set(0, 0, 1);
+        // this.scene.add(light);
+    }
+
+    initCamera() {
+        // this.camera    = new THREE.PerspectiveCamera(20, domWidth / domHeight, 1, 10000);
+        // this.camera.position.z = 1800;
+
         const camera = new THREE.PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 10000);
-        camera.position.set(1500, 1500, 10);
+        camera.position.set(1500, 1500, 1500);
         this.scene.add(camera);
         this.camera = camera;
     }
 
-    /**
-     * inLights
-     */
     inLights() {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
@@ -106,20 +88,14 @@ export default class baseManager {
         this.scene.add(directionalLight);
     }
 
-    /**
-     * Helper
-     */
     initHelper() {
-        // const axes = new THREE.AxesHelper(100);
-        // this.scene.add(axes);
+        const axes = new THREE.AxesHelper(2000);
+        this.scene.add(axes);
 
         // const gridHelper = new THREE.GridHelper(50000, 100);
         // this.scene.add(gridHelper);
     }
 
-    /**
-     * Controls
-     */
     initControls() {
         const controls = new OrbitControls(this.camera, this.canvas);
         controls.target.set(0, 0.75, 0);
@@ -127,34 +103,27 @@ export default class baseManager {
         this.controls          = controls;
     }
 
-    // 设置控制功能
     setControlsEnabled(enabled) {
         this.controls.enabled = enabled
     }
 
-    /**
-     * Robot
-     * async
-     * await
-     */
+
     initRobot = async () => {
-        // console.log('files---', files)
-        // console.log(path.join(__dirname, 'src'))
-        // console.log(path.join(__dirname, dir))
         const loader           = new STLLoader();
         const sphereMesh       = new THREE.MeshPhongMaterial({color: "#67C23A", specular: 0x494949, shininess: 200})
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
-        const SphereGeometry   = new THREE.SphereGeometry(0.5)
         const SphereGeometry_d = new THREE.SphereGeometry(.5)
         const boxMesh          = new THREE.MeshPhongMaterial({color: "#E45826", specular: 0x494949, shininess: 200})
         const material         = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
+        let setJoint           = (position, size) => {
+            const SphereGeometry   = new THREE.SphereGeometry(size || 50)
 
-        let setJoint     = (position) => {
             const joint = new THREE.Mesh(SphereGeometry, glassMaterial);
+
             joint.position.set(position.x, position.y, position.z);
             return joint
         }
-        let loadingModel = (name, position, rotation, scale) => {
+        let loadingModel       = (name, position, rotation, scale) => {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25}
                 let _rotation = rotation || {x: 0, y: 0, z: 0}
@@ -169,49 +138,78 @@ export default class baseManager {
                 });
             }))
         }
-        let mesh = await loadingModel('new_hman_v2', );
-        // 首先，创建一个起点. 创建骨骼系统
-        let b1 = new THREE.Bone();
-        b1.position.set(0, -20, 0);
 
-        let b2 = new THREE.Bone();
-        b1.add(b2)
-        b2.position.set(0, 10, 0);
+        let D1 = await loadingModel(`new_hman_v2 - 骨盆_v1_架-2`,{x:0, y: 1030 , z:0});
+        let D2 = setJoint({x: -80, y: -20, z: 40});
+        // D2.rotation.z = Math.PI / 4;
+        D1.add(D2);
+        let B1 = await loadingModel(`new_hman_v2 - 股骨_V2-1`,{x: 80, y: 20, z: -40});
+        D2.add(B1);
+        let D3 = setJoint({x: -50, y: -530, z: 10});
+        B1.add(D3);
+        let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`,{x: 50, y: 530, z: -10});
+        D3.add(B2);
+        const D4 = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 32, 16),
+            new THREE.MeshStandardMaterial({
+                color    : "#1B1A17",
+                metalness: 0,
+                roughness: 0.5,
+            })
+        );
+        D4.position.set(0, 1.5, 0);
+        // D4.rotation.z = -Math.PI / 4;
+        B2.add(D4);
 
-        let b3 = new THREE.Bone();
-        b2.add(b3)
-        b3.position.set(0, 10, 0)
+        const B3 = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, 3, 0.5),
+            new THREE.MeshStandardMaterial({
+                color    : "#E45826",
+                metalness: 0,
+                roughness: 0.5,
+            })
+        );
+        // B3.position.set(0, 1.5, 0);
+        B3.position.set(1.5 * Math.cos(Math.PI / 4), 1.5 * Math.sin(Math.PI / 4), 0);
+        B3.rotation.z = -Math.PI / 4;
+        D4.add(B3);
 
-        let b4 = new THREE.Bone();
-        b3.add(b4)
-        b4.position.set(0, 10, 0)
+        const D5 = new THREE.Mesh(
+            new THREE.SphereGeometry(0.5, 32, 16),
+            new THREE.MeshStandardMaterial({
+                color    : "#1B1A17",
+                metalness: 0,
+                roughness: 0.5,
+            })
+        );
+        D5.position.set(0, 1.5, 0);
+        // D5.rotation.z = -Math.PI / 2;
+        B3.add(D5);
 
-        let b5 = new THREE.Bone();
-        b4.add(b5)
-        b5.position.set(0, 10, 0)
+        const B4 = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, 1, 0.5),
+            new THREE.MeshStandardMaterial({
+                color    : "#E45826",
+                metalness: 0,
+                roughness: 0.5,
+            })
+        );
+        B4.position.set(0.5, 0, 0);
+        B4.rotation.z = -Math.PI / 2;
+        D5.add(B4);
 
-        // 创建骨架
-        // const skeleton = new THREE.Skeleton([b1, b2, b3, b4, b5])
-        // mesh.add(b1)
-        // mesh.bind(skeleton)
 
-        this.scene.add(mesh);
-
-        this.D1 = b1
-        this.D2 = b2
-        this.D3 = b3
-        this.D4 = b4
-        this.D5 = b5
+        this.scene.add(D1);
+        this.D1 = D1
+        this.D2 = D2
+        this.D3 = D3
+        // this.D4 = D4
+        // this.D5 = D5
     }
-
-    // 设置机器人旋转
     setRobotRotation(rotation, name, direction) {
         this[name].rotation[direction] = rotation
     }
 
-    /**
-     * Renderer
-     */
     initRenderer() {
         this.renderer                   = new THREE.WebGLRenderer({
             canvas: this.canvas,
@@ -220,12 +218,9 @@ export default class baseManager {
         this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
         this.renderer.setSize(this.sizes.width, this.sizes.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        // this.renderer.setClearColor(#);
+        this.renderer.setClearColor("#fff");
     }
 
-    /**
-     * AnimateTick
-     */
     initAnimateTick() {
         const elapsedTime = this.clock.getElapsedTime();
         const deltaTime   = elapsedTime - this.previousTime;
