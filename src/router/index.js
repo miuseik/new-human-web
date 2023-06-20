@@ -11,11 +11,6 @@ let routes= [
         path: '/test',
         name: 'test',
         component: () => import(/* webpackChunkName: "about" */ '../views/test/index.vue')
-    },
-    {
-        path: '/serialPort',
-        name: 'serialPort',
-        component: () => import(/* webpackChunkName: "about" */ '../views/serialPort/index.vue')
     }
     //{
     //配置404页面
