@@ -116,7 +116,7 @@ export default class myThree {
         const boxMesh          = new THREE.MeshPhongMaterial({color: "#E45826", specular: 0x494949, shininess: 200})
         const material         = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
         let setJoint           = (position, size) => {
-            const SphereGeometry   = new THREE.SphereGeometry(size || 50)
+            const SphereGeometry = new THREE.SphereGeometry(size || 20)
 
             const joint = new THREE.Mesh(SphereGeometry, glassMaterial);
 
@@ -139,15 +139,16 @@ export default class myThree {
             }))
         }
 
-        let D1 = await loadingModel(`new_hman_v2 - 骨盆_v1_架-2`,{x:0, y: 1030 , z:0});
+        let D1 = await loadingModel(`new_hman_v2 - 骨盆_v1_架-2`, {x: 0, y: 1030, z: 0});
         let D2 = setJoint({x: -80, y: -20, z: 40});
         // D2.rotation.z = Math.PI / 4;
         D1.add(D2);
-        let B1 = await loadingModel(`new_hman_v2 - 股骨_V2-1`,{x: 80, y: 20, z: -40});
+        let B1 = await loadingModel(`new_hman_v2 - 股骨_V2-1`, {x: 80, y: 20, z: -40});
         D2.add(B1);
+        // let D3 = await loadingModel(`new_hman_v2 - 关节轴-1`, {x: 0, y: 0, z: 0});
         let D3 = setJoint({x: -50, y: -530, z: 10});
         B1.add(D3);
-        let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`,{x: 50, y: 530, z: -10});
+        let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`, {x: 50, y: 530, z: -10});
         D3.add(B2);
         const D4 = new THREE.Mesh(
             new THREE.SphereGeometry(0.5, 32, 16),
@@ -198,7 +199,9 @@ export default class myThree {
         B4.rotation.z = -Math.PI / 2;
         D5.add(B4);
 
+        let test = await loadingModel(`new_hman_v2 - 关节轴-1`);
 
+        this.scene.add(test);
         this.scene.add(D1);
         this.D1 = D1
         this.D2 = D2
@@ -206,6 +209,7 @@ export default class myThree {
         // this.D4 = D4
         // this.D5 = D5
     }
+
     setRobotRotation(rotation, name, direction) {
         this[name].rotation[direction] = rotation
     }

@@ -28,12 +28,10 @@
 </template>
 
 <script lang="ts" setup>
-
 import {useRouter} from "vue-router";
 
 const router = useRouter();
 import API from "@/api";
-import newHuman from "../../api/moudules/newHuman";
 
 
 const state = reactive({

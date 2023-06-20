@@ -108,6 +108,8 @@
 
 <script lang="ts" setup>
 
+import API from "@/api";
+
 const mouseValue = ref(true);
 const value1 = ref(0);
 const value2 = ref(0);
@@ -120,9 +122,10 @@ const value5_3 = ref(0);
 
 const min = ref(Number(-Math.PI.toFixed(2)));
 const max = ref(Number(Math.PI.toFixed(2)));
-
 const emit = defineEmits(["sliderInput", "switchChange"]);
-
+API.bores.list().then((res) => {
+  console.log('res', res)
+})
 const sliderInput = (e, name, direction) => {
   emit("sliderInput", e, name, direction);
 };

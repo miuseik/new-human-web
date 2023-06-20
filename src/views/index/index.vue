@@ -3,7 +3,7 @@
   <div class="new-human">
     <div class="worktop">
       <div class="buttons">
-        <!--      <el-button :plain="true" @click="setWs">按钮</el-button>-->
+              <el-button :plain="true" @click="setWs">按钮</el-button>
         <el-button :plain="true" @click="linkWs">启动ws</el-button>
         <el-button :plain="true" @click="setApi">查找串口</el-button>
         <el-button :plain="true" @click="confirmSerial">确认串口</el-button>
@@ -54,7 +54,8 @@ const setWs = (socket) => {
   ws.send(socket);
 };
 const linkWs = () => {
-  ws = new WebSocket(env.WS_URL);
+  // ws = new WebSocket(env.WS_URL);
+  ws = new WebSocket(state.url + state.port);
   ws.addEventListener("open", function (event) {
     ws.send("hello");
     state.res = "当前客户端已经连接到websocket服务器";
