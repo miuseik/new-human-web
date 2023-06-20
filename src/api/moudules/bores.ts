@@ -7,10 +7,8 @@ const login = {
         return axios.get(url, param);
     },
     push(data = {}) { //          * 修改
-        let url = '/bores/set'
-        let param = {
-            InvitationCode: data['InvitationCode'] || '', //|邀请码||false|string||
-        }
+        let url = '/bones/new'
+        let param = data || {}
         return axios.post(url, param);
     },
     delete(data = {}) { //          * 修改
