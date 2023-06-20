@@ -18,11 +18,6 @@ let routes= [
         name: 'home',
         component: () => import(/* webpackChunkName: "about" */ '../views/home/index.vue')
     },
-    {
-        path: '/serialPort',
-        name: 'serialPort',
-        component: () => import(/* webpackChunkName: "about" */ '../views/serialPort/index.vue')
-    }
     //{
     //配置404页面
     //path: '/:catchAll(.*)',
