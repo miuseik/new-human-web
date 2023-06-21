@@ -9,11 +9,7 @@
       <div>
         <button class="btn btn-brand" @click="newBores()">新增一条</button>
         <button class="btn btn-brand" @click="state.showAll = !state.showAll">
-          {{
-            state.showAll ?
-                '控制模式' :
-                '全部模型'
-          }}
+          {{state.showAll ? '控制模式' : '全部模型' }}
         </button>
       </div>
       <div class="list-warp">
@@ -36,18 +32,28 @@
                     y:<input type="text" v-model="state.boresList[index][key]['y']" :disabled="key === 'id'">
                     z:<input type="text" v-model="state.boresList[index][key]['z']" :disabled="key === 'id'">
                   </div>
-                  <div v-else-if="key === 'model_type' || key === 'master_slave'" class="item-set-bar">
+                  <div v-else-if="key === 'model_type' " class="item-set-bar item-set-select">
                     <span class="title">{{ key }}</span>
                     <div class="select-warp">
-                      <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
-                      <div class="select-box" v-if="key === 'model_type'">
+                      <div>
+                        {{ state.modelType[state.boresList[index][key]] }}
+                      </div>
+                      <div class="select-box">
                         <template v-for="(select, select_index) in state.modelType">
-                          {{select}}{{select_index}}
+                          <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                         </template>
                       </div>
-                      <div class="select-box" v-else>
+                    </div>
+                  </div>
+                  <div v-else-if="key === 'master_slave' " class="item-set-bar item-set-select">
+                    <span class="title">{{ key }}</span>
+                    <div class="select-warp">
+                      <div>
+                        {{ state.masterSlave[state.boresList[index][key]] }}
+                      </div>
+                      <div class="select-box">
                         <template v-for="(select, select_index) in state.masterSlave">
-                          {{select}}{{select_index}}
+                          <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                         </template>
                       </div>
                     </div>
@@ -106,102 +112,6 @@
           </div>
         </template>
       </div>
-      <div class="slider-item">
-        <span class="demonstration">关节一（绕Y轴旋转）</span>
-        <el-slider
-            v-model="value1"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D1', 'y')"
-        />
-      </div>
-      <div class="slider-item">
-        <span class="demonstration">关节二（绕X轴旋转）</span>
-        <el-slider
-            v-model="value2"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D2', 'x')"
-        />
-      </div>
-      <div class="slider-item">
-        <span class="demonstration">关节二（绕Y轴旋转）</span>
-        <el-slider
-            v-model="value2"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D2', 'y')"
-        />
-      </div>
-      <div class="slider-item">
-        <span class="demonstration">关节二（绕Z轴旋转）</span>
-        <el-slider
-            v-model="value2"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D2', 'z')"
-        />
-      </div>
-      <div class="slider-item">
-        <span class="demonstration">关节三（绕X轴旋转）</span>
-        <el-slider
-            v-model="value3"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D3', 'x')"
-        />
-      </div>
-      <div class="slider-item">
-        <span class="demonstration">关节四（绕Z轴旋转）</span>
-        <el-slider
-            v-model="value4"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D4', 'z')"
-        />
-      </div>
-      <div class="slider-item">
-        <p class="demonstration">关节五</p>
-        <span class="demonstration">绕x轴旋转</span>
-        <el-slider
-            v-model="value5_1"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D5', 'x')"
-        />
-        <span class="demonstration">绕y轴旋转</span>
-        <el-slider
-            v-model="value5_2"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D5', 'y')"
-        />
-        <span class="demonstration">绕Z轴旋转</span>
-        <el-slider
-            v-model="value5_3"
-            show-input
-            :min="min"
-            :max="max"
-            :step="0.01"
-            @input="sliderInput($event, 'D5', 'z')"
-        />
-      </div>
     </div>
   </el-scrollbar>
 </template>
@@ -227,21 +137,21 @@ const state = reactive({
     option      : {
       x: {
         open : false,
-        max  : 10,
-        min  : 0,
-        value: 5
+        max  : Math.PI/2,
+        min  : -Math.PI/2,
+        value: 0
       },
       y: {
         open : false,
-        max  : 10,
-        min  : 0,
-        value: 5
+        max  : Math.PI/2,
+        min  : -Math.PI/2,
+        value: 0
       },
       z: {
         open : false,
-        max  : 10,
-        min  : 0,
-        value: 5
+        max  : Math.PI/2,
+        min  : -Math.PI/2,
+        value: 0
       }
     },
     size        : {
@@ -307,6 +217,12 @@ const sliderInput = (e, name, direction) => {
   emit("sliderInput", e, name, direction);
 };
 
+const selectModelType = (item, index) => {
+  item = index
+};
+const selectMasterSlave = (item, index) => {
+  item = index
+};
 const switchChange = (e) => {
   emit("switchChange", e);
 };
@@ -359,6 +275,7 @@ const newBores = (item) => {
         .item-set-bar {
           display: flex;
           flex-direction: row;
+          margin: .2rem 0;
           .title {
             width: 3rem;
             flex-shrink: 0;
@@ -367,23 +284,55 @@ const newBores = (item) => {
 
         .item-set-option {
           flex-direction: column;
-          .option-warp{
+
+          .option-warp {
             display: flex;
             flex-direction: row;
+
             .option-item {
               text-align: center;
               border: var(--Warning) solid 1px;
+
               .option-switch {
               }
+
               .option-input {
                 p {
                   display: flex;
-                  span{
+
+                  span {
                     display: inline-block;
                     width: 33%;
                     flex-shrink: 0;
                   }
                 }
+              }
+            }
+          }
+        }
+
+        .item-set-select {
+          .select-warp {
+            position: relative;
+            background-color: #fff;
+            width: 100%;
+            z-index: auto;
+            color: var(--Brand);
+            cursor: pointer;
+
+            .select-box {
+              display: none;
+              z-index: 1;
+              border: #2DC3FE solid 1px;
+              position: absolute;
+              background-color: #fff;
+              cursor: pointer;
+              width: 10rem;
+            }
+
+            &:hover {
+              .select-box {
+                display: block;
               }
             }
           }
