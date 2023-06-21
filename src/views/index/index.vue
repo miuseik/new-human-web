@@ -82,7 +82,6 @@ const confirmSerial = () => {
     port: state.port,
   };
   API.newHuman.confirm_serial(data).then(res => {
-    console.log(res);
     state.serialStatus = res.data;
   });
 };
@@ -102,7 +101,6 @@ const confirmSerial = () => {
 //
 // created();
 const toTest = () => {
-  console.log("跳转测试");
   router.push({
     path: "/test",
   });
@@ -118,7 +116,6 @@ onMounted(() => {
   //     // y:offsetY || ''
   //   }
   //   // setWs(offsetX)
-  //   console.log(stock);
   // }
 
 })

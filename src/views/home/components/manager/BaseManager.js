@@ -138,10 +138,6 @@ export default class baseManager {
      * await
      */
     initRobot = async () => {
-        // console.log('files---', files)
-        // console.log(path.join(__dirname, 'src'))
-        // console.log(path.join(__dirname, dir))
-        const loader           = new STLLoader();
         const sphereMesh       = new THREE.MeshPhongMaterial({color: "#67C23A", specular: 0x494949, shininess: 200})
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
         const SphereGeometry   = new THREE.SphereGeometry(0.5)

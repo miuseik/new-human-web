@@ -31,7 +31,6 @@ const errorHandle = (status, message) => {
 
             // router.replace ({path: '/login'});
 
-            console.log(router.currentRoute.value.name);
             if (router.currentRoute.value.name != 'login') {
                 setTimeout(() => {
                     tip('Login Expired');
@@ -40,11 +39,9 @@ const errorHandle = (status, message) => {
                     router.replace({path: '/login'});
                 }, 1000);
             }
-            // console.log(router.path);
 
             break;
         case 403: // 403 token过期
-            console.log(router.currentRoute.value.name);
 
             if (router.currentRoute.value.name != 'login') {
                 setTimeout(() => {

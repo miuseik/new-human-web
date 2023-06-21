@@ -40,26 +40,41 @@
                     <span class="title">{{ key }}</span>
                     <div class="select-warp">
                       <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
-                      <div>
-
+                      <div class="select-box" v-if="key === 'model_type'">
+                        <template v-for="(select, select_index) in state.modelType">
+                          {{select}}{{select_index}}
+                        </template>
+                      </div>
+                      <div class="select-box" v-else>
+                        <template v-for="(select, select_index) in state.masterSlave">
+                          {{select}}{{select_index}}
+                        </template>
                       </div>
                     </div>
                   </div>
-                  <div v-else-if="key === 'option'" class="`item-set-bar item-set-option` ">
+                  <div v-else-if="key === 'option'" class="item-set-bar item-set-option">
                     <span class="title">{{ key }}</span>
-                    <template v-for="(opt, index) in grid">
-                      <div>
-                        <p>
-                          {{ index }}:
-                          <el-switch v-model="opt.open"/>
-                        </p>
-                        <p>
-                          min:<input type="text" v-model="opt.min">
-                          max:<input type="text" v-model="opt.max">
-                          value:<input type="text" v-model="opt.value">
-                        </p>
-                      </div>
-                    </template>
+                    <div class="option-warp">
+                      <template v-for="(opt, index) in grid">
+                        <div class="option-item">
+                          <div class="option-switch">
+                            <span>{{ index }}:</span>
+                            <el-switch v-model="opt.open"/>
+                          </div>
+                          <div class="option-input">
+                            <p>
+                              <span>min:</span><input type="text" v-model="opt.min">
+                            </p>
+                            <p>
+                              <span>max:</span><input type="text" v-model="opt.max">
+                            </p>
+                            <p>
+                              <span>value:</span><input type="text" v-model="opt.value">
+                            </p>
+                          </div>
+                        </div>
+                      </template>
+                    </div>
                   </div>
                   <div v-else class="item-set-bar">
                     <span class="title">{{ key }}</span>
@@ -203,9 +218,10 @@ const state = reactive({
     'name'
   ],
   itemTpl      : {
-    id   : 0,
-    field: 50,
-    name : '',
+    id          : 0,
+    field       : "D",
+    name        : '',
+    model_name  : '.stl',
     model_type  : '0',
     master_slave: '0',
     option      : {
@@ -277,7 +293,6 @@ const setBody = (data) => {
       }
     }
   })
-  console.log('datadatadatadata', data)
   return data
 }
 const getList = () => {
@@ -289,7 +304,6 @@ const getList = () => {
 }
 getList()
 const sliderInput = (e, name, direction) => {
-  console.log('e', e)
   emit("sliderInput", e, name, direction);
 };
 
@@ -315,7 +329,6 @@ const saveChange = (item) => {
   }
 };
 const filterId = (id) => {
-  console.log(state.currentChange)
   if (id > 0) {
     state.currentChange = state.currentChange.filter(item => item !== id);
   } else {
@@ -335,7 +348,7 @@ const newBores = (item) => {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .list-warp {
   overflow: auto;
   height: 80vh;
@@ -344,10 +357,8 @@ const newBores = (item) => {
     .item-data {
       .item-set {
         .item-set-bar {
-          //border: #0d4458 solid 5px;
           display: flex;
           flex-direction: row;
-
           .title {
             width: 3rem;
             flex-shrink: 0;
@@ -356,6 +367,27 @@ const newBores = (item) => {
 
         .item-set-option {
           flex-direction: column;
+          .option-warp{
+            display: flex;
+            flex-direction: row;
+            .option-item {
+              text-align: center;
+              border: var(--Warning) solid 1px;
+              .option-switch {
+              }
+              .option-input {
+                p {
+                  display: flex;
+                  span{
+                    display: inline-block;
+                    width: 33%;
+                    flex-shrink: 0;
+                  }
+                }
+              }
+            }
+          }
+
         }
       }
 
