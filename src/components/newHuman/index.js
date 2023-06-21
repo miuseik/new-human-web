@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {STLLoader} from 'three/addons/loaders/STLLoader';
-
+import boresStore from '@/store/bores/index.ts';
+const bores = boresStore()
 export default class myThree {
     constructor(canvas) {
         this.canvas       = canvas
@@ -109,6 +110,7 @@ export default class myThree {
 
 
     initRobot = async () => {
+        console.log('xxxxxxxxxxxxx', bores.boresList)
         const loader           = new STLLoader();
         const sphereMesh       = new THREE.MeshPhongMaterial({color: "#67C23A", specular: 0x494949, shininess: 200})
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
@@ -138,76 +140,28 @@ export default class myThree {
                 });
             }))
         }
+        let initAllModel =()=>{
 
+        }
+        let boresList = await bores.getBoresList()
+        boresList.map((item)=>{
+            console.log(   'item', item)
+        })
         let D1 = await loadingModel(`new_hman_v2 - 骨盆_v1_架-2`, {x: 0, y: 1030, z: 0});
-        let D2 = setJoint({x: -80, y: -20, z: 40});
-        // D2.rotation.z = Math.PI / 4;
-        D1.add(D2);
-        let B1 = await loadingModel(`new_hman_v2 - 股骨_V2-1`, {x: 80, y: 20, z: -40});
-        D2.add(B1);
-        // let D3 = await loadingModel(`new_hman_v2 - 关节轴-1`, {x: 0, y: 0, z: 0});
-        let D3 = setJoint({x: -50, y: -530, z: 10});
-        B1.add(D3);
-        let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`, {x: 50, y: 530, z: -10});
-        D3.add(B2);
-        const D4 = new THREE.Mesh(
-            new THREE.SphereGeometry(0.5, 32, 16),
-            new THREE.MeshStandardMaterial({
-                color    : "#1B1A17",
-                metalness: 0,
-                roughness: 0.5,
-            })
-        );
-        D4.position.set(0, 1.5, 0);
-        // D4.rotation.z = -Math.PI / 4;
-        B2.add(D4);
+        // let D2 = setJoint({x: -80, y: -20, z: 40});
+        // // D2.rotation.z = Math.PI / 4;
+        // D1.add(D2);
+        // let B1 = await loadingModel(`new_hman_v2 - 股骨_V2-1`, {x: 80, y: 20, z: -40});
+        // D2.add(B1);
+        // // let D3 = await loadingModel(`new_hman_v2 - 关节轴-1`, {x: 0, y: 0, z: 0});
+        // let D3 = setJoint({x: -50, y: -530, z: 10});
+        // B1.add(D3);
+        // let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`, {x: 50, y: 530, z: -10});
+        // D3.add(B2);
 
-        const B3 = new THREE.Mesh(
-            new THREE.BoxGeometry(0.5, 3, 0.5),
-            new THREE.MeshStandardMaterial({
-                color    : "#E45826",
-                metalness: 0,
-                roughness: 0.5,
-            })
-        );
-        // B3.position.set(0, 1.5, 0);
-        B3.position.set(1.5 * Math.cos(Math.PI / 4), 1.5 * Math.sin(Math.PI / 4), 0);
-        B3.rotation.z = -Math.PI / 4;
-        D4.add(B3);
 
-        const D5 = new THREE.Mesh(
-            new THREE.SphereGeometry(0.5, 32, 16),
-            new THREE.MeshStandardMaterial({
-                color    : "#1B1A17",
-                metalness: 0,
-                roughness: 0.5,
-            })
-        );
-        D5.position.set(0, 1.5, 0);
-        // D5.rotation.z = -Math.PI / 2;
-        B3.add(D5);
-
-        const B4 = new THREE.Mesh(
-            new THREE.BoxGeometry(0.5, 1, 0.5),
-            new THREE.MeshStandardMaterial({
-                color    : "#E45826",
-                metalness: 0,
-                roughness: 0.5,
-            })
-        );
-        B4.position.set(0.5, 0, 0);
-        B4.rotation.z = -Math.PI / 2;
-        D5.add(B4);
-
-        let test = await loadingModel(`new_hman_v2 - 关节轴-1`);
-
-        this.scene.add(test);
         this.scene.add(D1);
         this.D1 = D1
-        this.D2 = D2
-        this.D3 = D3
-        // this.D4 = D4
-        // this.D5 = D5
     }
 
     setRobotRotation(rotation, name, direction) {

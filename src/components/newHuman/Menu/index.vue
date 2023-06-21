@@ -9,7 +9,11 @@
       <div>
         <button class="btn btn-brand" @click="newBores()">新增一条</button>
         <button class="btn btn-brand" @click="state.showAll = !state.showAll">
-          {{state.showAll ? '控制模式' : '全部模型' }}
+          {{
+            state.showAll ?
+                '控制模式' :
+                '全部模型'
+          }}
         </button>
       </div>
       <div class="list-warp">
@@ -118,7 +122,8 @@
 
 <script lang="ts" setup>
 import API from "@/api";
-
+import boresStore from '@/store/bores/index.ts';
+const bores = boresStore()
 const state = reactive({
   boresList    : [],
   currentChange: [],
@@ -137,20 +142,20 @@ const state = reactive({
     option      : {
       x: {
         open : false,
-        max  : Math.PI/2,
-        min  : -Math.PI/2,
+        max  : Math.PI / 2,
+        min  : -Math.PI / 2,
         value: 0
       },
       y: {
         open : false,
-        max  : Math.PI/2,
-        min  : -Math.PI/2,
+        max  : Math.PI / 2,
+        min  : -Math.PI / 2,
         value: 0
       },
       z: {
         open : false,
-        max  : Math.PI/2,
-        min  : -Math.PI/2,
+        max  : Math.PI / 2,
+        min  : -Math.PI / 2,
         value: 0
       }
     },
@@ -206,9 +211,8 @@ const setBody = (data) => {
   return data
 }
 const getList = () => {
-  API.bores.list().then((res) => {
-    let newData = setBody(res.data)
-    // let newData = res.data
+  bores.getBoresList().then((data) => {
+    let newData = setBody(data)
     state.boresList = newData
   })
 }
@@ -276,6 +280,7 @@ const newBores = (item) => {
           display: flex;
           flex-direction: row;
           margin: .2rem 0;
+
           .title {
             width: 3rem;
             flex-shrink: 0;
