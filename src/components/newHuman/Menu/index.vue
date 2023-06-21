@@ -85,23 +85,6 @@
                         @input="sliderInput($event, `${item.field}`, index)"/>
                   </p>
                 </template>
-
-                <!--                </template>-->
-
-                <!--                <el-slider-->
-                <!--                    v-model="state.boresList[index].value"-->
-                <!--                    show-input-->
-                <!--                    :min="item.min"-->
-                <!--                    :max="item.max"-->
-                <!--                    :step="0.01"-->
-                <!--                    @input="sliderInput($event, `${item.field}`, 'y')"/>-->
-                <!--                <el-slider-->
-                <!--                    v-model="state.boresList[index].value"-->
-                <!--                    show-input-->
-                <!--                    :min="item.min"-->
-                <!--                    :max="item.max"-->
-                <!--                    :step="0.01"-->
-                <!--                    @input="sliderInput($event, `${item.field}`, 'y')"/>-->
               </div>
             </div>
 
@@ -223,29 +206,26 @@ const state = reactive({
     id   : 0,
     field: 50,
     name : '',
-    // value: 50,
-    min         : 0,
-    max         : 100,
     model_type  : '0',
     master_slave: '0',
     option      : {
       x: {
         open : false,
-        max  : 100,
+        max  : 10,
         min  : 0,
-        value: 50
+        value: 5
       },
       y: {
         open : false,
-        max  : 100,
+        max  : 10,
         min  : 0,
-        value: 50
+        value: 5
       },
       z: {
         open : false,
-        max  : 100,
+        max  : 10,
         min  : 0,
-        value: 50
+        value: 5
       }
     },
     size        : {

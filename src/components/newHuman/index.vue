@@ -11,6 +11,7 @@
 import myThree from "./index.js";
 import Menu from "./Menu/index.vue";
 let base = null;
+import {bores} from '@/stores/bores/index'
 onMounted(() => {
   let dom = document.getElementById("three_id");
   base = new myThree(dom);
