@@ -8,25 +8,57 @@
       </div>
       <div>
         <button class="btn btn-brand" @click="newBores()">新增一条</button>
-        <button class="btn btn-brand" @click="state.showAll = !state.showAll">{{state.showAll? '控制模式': '全部模型'}}</button>
+        <button class="btn btn-brand" @click="state.showAll = !state.showAll">
+          {{
+            state.showAll ?
+                '控制模式' :
+                '全部模型'
+          }}
+        </button>
       </div>
       <div class="list-warp">
         <template v-for="(item, index) in state.boresList ">
           <div class="bores-item">
             <div class="item-data">
-              <template v-for="(grid, key) in item ">
-                <input v-if="state.currentChange.includes(item.id)" type="text"  v-model="state.boresList[index][key]">
-                <div v-else>{{grid}}</div>
-              </template>
+              <div class="operate" v-if="state.currentChange.includes(item.id)">
+                <button class="btn btn-success" @click="saveChange(item)">保存</button>
+                <button class="btn btn-info" @click="filterId(item.id)">取消</button>
+                <button class="btn btn-danger" @click="deleteItem(item.id)">删除</button>
+              </div>
+              <div class="operate" v-else>
+                <button class="btn btn-warning" @click="setItem(item)">修改</button>
+              </div>
+              <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
+                <template v-for="(grid, key) in item ">
+                  <div v-if="key === 'size' || key === 'position' || key === 'rotate'" class="item-set-bar">
+                    <span class="title">{{ key }}</span>
+                    <!--                    x:<input type="text" v-model="JSON.parse(state.boresList)[index][key]['x']" :disabled="key === 'id'">-->
+                    x:<input type="text" v-model="state.boresList[index][key]['x']" :disabled="key === 'id'">
+                    y:<input type="text" v-model="state.boresList[index][key]['y']" :disabled="key === 'id'">
+                    z:<input type="text" v-model="state.boresList[index][key]['z']" :disabled="key === 'id'">
+                  </div>
+                  <div v-else class="item-set-bar">
+                    <span class="title">{{ key }}</span>
+                    <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
+                  </div>
+                </template>
+              </div>
+              <div class="item-info" v-else>
+                <soan>
+                  {{ item.name }}
+                  {{ state.boresList[index].value }}
+                </soan>
+                <el-slider
+                    v-model="state.boresList[index].value"
+                    show-input
+                    :min="item.min"
+                    :max="item.max"
+                    :step="0.01"
+                    @input="sliderInput($event, `${item.field}`, 'y')"
+                />
+              </div>
             </div>
-            <div class="operate" v-if="state.currentChange.includes(item.id)">
-              <button class="btn btn-success" @click="saveChange(item)">保存</button>
-              <button class="btn btn-info" @click="filterId(item.id)">取消</button>
-              <button class="btn btn-danger" @click="deleteItem(item.id)">删除</button>
-            </div>
-            <div  class="operate" v-else>
-              <button class="btn btn-warning" @click="setItem(item)">修改</button>
-            </div>
+
           </div>
         </template>
       </div>
@@ -137,16 +169,33 @@ const state = reactive({
   boresList: [],
   currentChange: [],
   showAll: false,
-  newId:0,
+  newId: 0,
+  showGrid: [
+    'name'
+  ],
   itemTpl: {
     id: 0,
-    field: '',
+    field: 50,
     name: '',
-    size: '',
-    position: '',
-    rotate: '',
-    type: '',
-    parent: '',
+    value: 50,
+    min: 0,
+    max: 100,
+    model_type: '0',
+    master_slave:'0',
+    size: {x: 0, y: 0, z: 0},
+    position: {x: 0, y: 0, z: 0},
+    rotate: {x: 0, y: 0, z: 0},
+    parent: 0,
+  },
+  modelType:{
+    0:'骨骼',
+    1:'关节轴',
+    2:'外壳',
+    3:'零件',
+  },
+  masterSlave:{
+    0:'主动',
+    1:'从动',
   }
 })
 const mouseValue = ref(true);
@@ -162,9 +211,24 @@ const value5_3 = ref(0);
 const min = ref(Number(-Math.PI.toFixed(2)));
 const max = ref(Number(Math.PI.toFixed(2)));
 const emit = defineEmits(["sliderInput", "switchChange"]);
-API.bores.list().then((res) => {
-  state.boresList = res.data
-})
+const setBody = (data) => {
+  data.map(group => {
+    for (let item in group) {
+      if (item === 'size' || item === 'position' || item === 'rotate') {
+        group[item] = JSON.parse(group[item])
+      }
+    }
+  })
+  return data
+}
+const getList = () => {
+  API.bores.list().then((res) => {
+    let newData = setBody(res.data)
+    // let newData = res.data
+    state.boresList = newData
+  })
+}
+getList()
 const sliderInput = (e, name, direction) => {
   emit("sliderInput", e, name, direction);
 };
@@ -173,41 +237,65 @@ const switchChange = (e) => {
   emit("switchChange", e);
 };
 const setItem = (item) => {
-  state.currentChange = item.id
+  state.currentChange.push(item.id)
 };
 const saveChange = (item) => {
-  filterId(item.id)
-  API.bores.push(item)
+  // filterId(item.id)
+  API.bores.push(item).then(res => {
+    state.itemTpl.parent = res.data.id
+    getList()
+  })
 };
 const filterId = (id) => {
-  state.boresList = state.boresList.filter(item => item.id !== id);
+  console.log(state.currentChange)
+  if (id > 0) {
+    state.currentChange = state.currentChange.filter(item => item !== id);
+  } else {
+    state.boresList = state.boresList.filter(item => item.id !== id);
+  }
 };
 const deleteItem = (id) => {
-  filterId(id)
+  API.bores.delete({'id': id}).then(() => {
+    getList()
+  })
 };
 const newBores = (item) => {
-  console.log(state.newId)
-  let data = {
-    id: state.newId--,
-    field: '',
-    name: '',
-    size: '',
-    position: '',
-    rotate: '',
-    type: '',
-    parent: '',
-  }
-  state.boresList.push(data)
-  console.log(data)
-  state.currentChange.push(data.id)
+  state.itemTpl.id--
+  let tpl = JSON.parse(JSON.stringify(state.itemTpl));
+  state.boresList.push(tpl)
+  state.currentChange.push(state.itemTpl.id)
 };
 </script>
 
 <style lang="scss" scope>
-.list-warp{
+.list-warp {
   overflow: auto;
   height: 80vh;
+
+  .bores-item {
+    .item-data {
+      .item-set {
+        .item-set-bar {
+          //border: #0d4458 solid 5px;
+          display: flex;
+          flex-direction: row;
+
+          .title {
+            width: 3rem;
+            flex-shrink: 0;
+          }
+        }
+      }
+
+      .item-info {
+
+      }
+    }
+  }
+
+
 }
+
 .slider-block {
   padding: 20px 10px;
 }
