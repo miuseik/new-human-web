@@ -32,10 +32,34 @@
                 <template v-for="(grid, key) in item ">
                   <div v-if="key === 'size' || key === 'position' || key === 'rotate'" class="item-set-bar">
                     <span class="title">{{ key }}</span>
-                    <!--                    x:<input type="text" v-model="JSON.parse(state.boresList)[index][key]['x']" :disabled="key === 'id'">-->
                     x:<input type="text" v-model="state.boresList[index][key]['x']" :disabled="key === 'id'">
                     y:<input type="text" v-model="state.boresList[index][key]['y']" :disabled="key === 'id'">
                     z:<input type="text" v-model="state.boresList[index][key]['z']" :disabled="key === 'id'">
+                  </div>
+                  <div v-else-if="key === 'model_type' || key === 'master_slave'" class="item-set-bar">
+                    <span class="title">{{ key }}</span>
+                    <div class="select-warp">
+                      <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
+                      <div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else-if="key === 'option'" class="`item-set-bar item-set-option` ">
+                    <span class="title">{{ key }}</span>
+                    <template v-for="(opt, index) in grid">
+                      <div>
+                        <p>
+                          {{ index }}:
+                          <el-switch v-model="opt.open"/>
+                        </p>
+                        <p>
+                          min:<input type="text" v-model="opt.min">
+                          max:<input type="text" v-model="opt.max">
+                          value:<input type="text" v-model="opt.value">
+                        </p>
+                      </div>
+                    </template>
                   </div>
                   <div v-else class="item-set-bar">
                     <span class="title">{{ key }}</span>
@@ -48,14 +72,36 @@
                   {{ item.name }}
                   {{ state.boresList[index].value }}
                 </soan>
-                <el-slider
-                    v-model="state.boresList[index].value"
-                    show-input
-                    :min="item.min"
-                    :max="item.max"
-                    :step="0.01"
-                    @input="sliderInput($event, `${item.field}`, 'y')"
-                />
+                <!--                ({{ item.min }}- {{ item.max }})-->
+                <template v-for="(option, index) in item.option">
+                  <p v-if="option.open">
+                    {{ index }}
+                    <el-slider
+                        v-model="option.value"
+                        show-input
+                        :min="option.min"
+                        :max="option.max"
+                        :step="0.01"
+                        @input="sliderInput($event, `${item.field}`, index)"/>
+                  </p>
+                </template>
+
+                <!--                </template>-->
+
+                <!--                <el-slider-->
+                <!--                    v-model="state.boresList[index].value"-->
+                <!--                    show-input-->
+                <!--                    :min="item.min"-->
+                <!--                    :max="item.max"-->
+                <!--                    :step="0.01"-->
+                <!--                    @input="sliderInput($event, `${item.field}`, 'y')"/>-->
+                <!--                <el-slider-->
+                <!--                    v-model="state.boresList[index].value"-->
+                <!--                    show-input-->
+                <!--                    :min="item.min"-->
+                <!--                    :max="item.max"-->
+                <!--                    :step="0.01"-->
+                <!--                    @input="sliderInput($event, `${item.field}`, 'y')"/>-->
               </div>
             </div>
 
@@ -166,36 +212,68 @@
 import API from "@/api";
 
 const state = reactive({
-  boresList: [],
+  boresList    : [],
   currentChange: [],
-  showAll: false,
-  newId: 0,
-  showGrid: [
+  showAll      : false,
+  newId        : 0,
+  showGrid     : [
     'name'
   ],
-  itemTpl: {
-    id: 0,
+  itemTpl      : {
+    id   : 0,
     field: 50,
-    name: '',
-    value: 50,
-    min: 0,
-    max: 100,
-    model_type: '0',
-    master_slave:'0',
-    size: {x: 0, y: 0, z: 0},
-    position: {x: 0, y: 0, z: 0},
-    rotate: {x: 0, y: 0, z: 0},
-    parent: 0,
+    name : '',
+    // value: 50,
+    min         : 0,
+    max         : 100,
+    model_type  : '0',
+    master_slave: '0',
+    option      : {
+      x: {
+        open : false,
+        max  : 100,
+        min  : 0,
+        value: 50
+      },
+      y: {
+        open : false,
+        max  : 100,
+        min  : 0,
+        value: 50
+      },
+      z: {
+        open : false,
+        max  : 100,
+        min  : 0,
+        value: 50
+      }
+    },
+    size        : {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    position    : {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    rotate      : {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    parent      : 0,
   },
-  modelType:{
-    0:'骨骼',
-    1:'关节轴',
-    2:'外壳',
-    3:'零件',
+  modelType    : {
+    0: '骨骼',
+    1: '关节轴',
+    2: '外壳',
+    3: '零件',
   },
-  masterSlave:{
-    0:'主动',
-    1:'从动',
+  masterSlave  : {
+    0: '主动',
+    1: '从动',
   }
 })
 const mouseValue = ref(true);
@@ -214,11 +292,12 @@ const emit = defineEmits(["sliderInput", "switchChange"]);
 const setBody = (data) => {
   data.map(group => {
     for (let item in group) {
-      if (item === 'size' || item === 'position' || item === 'rotate') {
+      if (item === 'size' || item === 'position' || item === 'rotate' || item === 'option') {
         group[item] = JSON.parse(group[item])
       }
     }
   })
+  console.log('datadatadatadata', data)
   return data
 }
 const getList = () => {
@@ -230,6 +309,7 @@ const getList = () => {
 }
 getList()
 const sliderInput = (e, name, direction) => {
+  console.log('e', e)
   emit("sliderInput", e, name, direction);
 };
 
@@ -240,11 +320,19 @@ const setItem = (item) => {
   state.currentChange.push(item.id)
 };
 const saveChange = (item) => {
-  // filterId(item.id)
-  API.bores.push(item).then(res => {
-    state.itemTpl.parent = res.data.id
-    getList()
-  })
+  let id = item.id
+  if (id > 0) {
+    API.bores.revise(item).then(res => {
+      getList()
+      filterId(id)
+    })
+  } else {
+    API.bores.push(item).then(res => {
+      state.itemTpl.parent = res.data.id
+      getList()
+      filterId(id)
+    })
+  }
 };
 const filterId = (id) => {
   console.log(state.currentChange)
@@ -284,6 +372,10 @@ const newBores = (item) => {
             width: 3rem;
             flex-shrink: 0;
           }
+        }
+
+        .item-set-option {
+          flex-direction: column;
         }
       }
 

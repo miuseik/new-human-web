@@ -13,17 +13,17 @@ const login = {
     },
     delete(data = {}) {
         let url = '/bones/delete'
-        // let url = '/bores/delete'
         let param = data || {}
         return axios.post(url, param);
     },
-    put(data = {}) {
-        let url = '/bores/put'
+    revise(data = {}) {
+        let url = '/bones/revise'
+        // let url = '/bores/newnw'
         let param = data || {}
         return axios.post(url, param);
     },
     get(data = {}) {
-        let url = '/bores'
+        let url = '/bones'
         let param = data || {}
         return axios.post(url, param);
     },
