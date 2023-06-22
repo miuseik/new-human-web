@@ -2,7 +2,7 @@
 <template>
   <div class="three-box">
     <div class="menu">
-      <Menu @sliderInput="sliderInput" @switchChange="switchChange"/>
+      <Menu @sliderInput="sliderInput" @switchChange="switchChange" @updateBoresList="updateBoresList"/>
     </div>
     <canvas class="webgl" ref="webgl" id="three_id"></canvas>
   </div>
@@ -11,7 +11,8 @@
 import myThree from "./index.js";
 import Menu from "./Menu/index.vue";
 let base = null;
-import {bores} from '@/store/bores/index'
+import boresStore from '@/store/bores/index.ts';
+const boresX = boresStore()
 onMounted(() => {
   let dom = document.getElementById("three_id");
   base = new myThree(dom);
@@ -21,6 +22,9 @@ const sliderInput = (e, name, direction) => {
 };
 const switchChange = (enabled) => {
   base.setControlsEnabled(enabled);
+};
+const updateBoresList = () => {
+    base.initRobot();
 };
 // defineExpose({ setRobotRotation, setControlsEnabled });
 </script>

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {STLLoader} from 'three/addons/loaders/STLLoader';
 import boresStore from '@/store/bores/index.ts';
+
 const bores = boresStore()
 export default class myThree {
     constructor(canvas) {
@@ -9,6 +10,8 @@ export default class myThree {
         this.sizes        = {}
         this.camera       = null
         this.renderer     = null
+        this.rootModel    = null
+        this.modelArr     = []
         this.scene        = new THREE.Scene();
         this.clock        = new THREE.Clock();
         this.previousTime = 0;
@@ -110,7 +113,7 @@ export default class myThree {
 
 
     initRobot = async () => {
-        console.log('xxxxxxxxxxxxx', bores.boresList)
+        if (this.rootModel) this.scene.remove();
         const loader           = new STLLoader();
         const sphereMesh       = new THREE.MeshPhongMaterial({color: "#67C23A", specular: 0x494949, shininess: 200})
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
@@ -130,7 +133,7 @@ export default class myThree {
                 let _position = position || {x: -.25, y: 0, z: -.25}
                 let _rotation = rotation || {x: 0, y: 0, z: 0}
                 // let _scale    = scale || {x: .01, y: .01, z: .01}
-                loader.load(`/src/assets/human/${name}.STL`, (geometry) => {
+                loader.load(`/src/assets/human/${name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
                     Mesh.rotation.set(_rotation.x, _rotation.y, _rotation.z);
@@ -140,14 +143,31 @@ export default class myThree {
                 });
             }))
         }
-        let initAllModel =()=>{
 
+        let modelArr     = []
+        // let 关节Arr     = []
+        let boresList    = bores.boresList || []
+        let modelNum     = boresList.length
+        let setScene     = async (item) => {
+            modelArr.forEach((item) => {
+                console.log('item--------', item)
+            })
         }
-        let boresList = await bores.getBoresList()
-        boresList.map((item)=>{
-            console.log(   'item', item)
+        let initAllModel = async (item) => {
+            let model = await loadingModel(item.model_name, {x: 0, y: 1030, z: 0});
+            let data = {
+                model: model,
+                info:item
+            }
+            modelArr.push(data)
+            modelNum--
+            if (modelNum === 0) {
+                setScene()
+            }
+        }
+        boresList.map((item) => {
+            initAllModel(item)
         })
-        let D1 = await loadingModel(`new_hman_v2 - 骨盆_v1_架-2`, {x: 0, y: 1030, z: 0});
         // let D2 = setJoint({x: -80, y: -20, z: 40});
         // // D2.rotation.z = Math.PI / 4;
         // D1.add(D2);
@@ -159,9 +179,11 @@ export default class myThree {
         // let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`, {x: 50, y: 530, z: -10});
         // D3.add(B2);
 
-
-        this.scene.add(D1);
-        this.D1 = D1
+        // this.rootModel = modelArr[0] || ''
+        // if (this.rootModel) {
+        //     this.scene.add(this.rootModel);
+        //     this.D1 = this.rootModel
+        // }
     }
 
     setRobotRotation(rotation, name, direction) {

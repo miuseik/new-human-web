@@ -123,9 +123,10 @@
 <script lang="ts" setup>
 import API from "@/api";
 import boresStore from '@/store/bores/index.ts';
-const bores = boresStore()
+
+const boresX = boresStore()
 const state = reactive({
-  boresList    : [],
+  boresList    : boresX.boresList || [],
   currentChange: [],
   showAll      : false,
   newId        : 0,
@@ -200,20 +201,11 @@ const value5_3 = ref(0);
 const min = ref(Number(-Math.PI.toFixed(2)));
 const max = ref(Number(Math.PI.toFixed(2)));
 const emit = defineEmits(["sliderInput", "switchChange"]);
-const setBody = (data) => {
-  data.map(group => {
-    for (let item in group) {
-      if (item === 'size' || item === 'position' || item === 'rotate' || item === 'option') {
-        group[item] = JSON.parse(group[item])
-      }
-    }
-  })
-  return data
-}
+
 const getList = () => {
-  bores.getBoresList().then((data) => {
-    let newData = setBody(data)
-    state.boresList = newData
+  boresX.getBoresList().then((data) => {
+    emit("updateBoresList");
+    state.boresList = data
   })
 }
 getList()
