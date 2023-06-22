@@ -93,10 +93,9 @@
                 </template>
               </div>
               <div class="item-info" v-else>
-                <soan>
-                  {{ item.name }}
-                  {{ state.boresList[index].value }}
-                </soan>
+                <div class="item-info-option">
+                 <span class="name"> {{ item.name }}</span>  <span>id:{{ item.id }}</span>  <span>field:{{ item.field }}</span>  <span>Pid:{{ item.parent }}</span>
+                 </div>
                 <!--                ({{ item.min }}- {{ item.max }})-->
                 <template v-for="(option, index) in item.option">
                   <p v-if="option.open">
@@ -112,7 +111,6 @@
                 </template>
               </div>
             </div>
-
           </div>
         </template>
       </div>
@@ -143,20 +141,20 @@ const state = reactive({
     option      : {
       x: {
         open : false,
-        max  : Math.PI / 2,
-        min  : -Math.PI / 2,
+        max  : (Math.PI / 2).toFixed(4)*1,
+        min  : (-Math.PI / 2).toFixed(4)*1,
         value: 0
       },
       y: {
         open : false,
-        max  : Math.PI / 2,
-        min  : -Math.PI / 2,
+        max  : (Math.PI / 2).toFixed(4)*1,
+        min  : (-Math.PI / 2).toFixed(4)*1,
         value: 0
       },
       z: {
         open : false,
-        max  : Math.PI / 2,
-        min  : -Math.PI / 2,
+        max  : (Math.PI / 2).toFixed(4)*1,
+        min  : (-Math.PI / 2).toFixed(4)*1,
         value: 0
       }
     },
@@ -198,9 +196,15 @@ const value5_1 = ref(0);
 const value5_2 = ref(0);
 const value5_3 = ref(0);
 
-const min = ref(Number(-Math.PI.toFixed(2)));
-const max = ref(Number(Math.PI.toFixed(2)));
+// const min = ref(Number(-Math.PI.toFixed(2)));
+// const max = ref(Number(Math.PI.toFixed(2)));
 const emit = defineEmits(["sliderInput", "switchChange"]);
+const setInputNum = computed(() => {
+  return function (value) {
+    return 666
+  };
+});
+
 
 const getList = () => {
   boresX.getBoresList().then((data) => {
@@ -210,6 +214,7 @@ const getList = () => {
 }
 getList()
 const sliderInput = (e, name, direction) => {
+  console.log(e, name, direction)
   emit("sliderInput", e, name, direction);
 };
 
@@ -338,7 +343,21 @@ const newBores = (item) => {
       }
 
       .item-info {
+        .item-info-option{
+          display: flex;
+          flex-wrap: nowrap;
+          justify-content: space-between;
+          background-color: var(--Brand);
+          font-size: .8rem;
+          padding: .2rem 0;
+          span{
+            display: inline-block;
+          }
 
+          .name{
+            width: 30%;
+          }
+        }
       }
     }
   }

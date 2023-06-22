@@ -2,15 +2,15 @@
 *{background-repeat:no-repeat;background-position:center;background-size:100%}
 *{margin:0;padding:0;-webkit-font-smoothing:antialiased;text-decoration:none}
 *,:after,:before{box-sizing:border-box}
-@for $var from 1 through 999 {
-    @if $var%20 == 0 {
-        @media only screen and (min-width : #{$var}px) {
-            html {
-                font-size : $var * 0.06px !important
-            }
-        }
-    }
-}
+//@for $var from 1 through 999 {
+//    @if $var%20 == 0 {
+//        @media only screen and (min-width : #{$var}px) {
+//            html {
+//                font-size : $var * 0.06px !important
+//            }
+//        }
+//    }
+//}
 @for $var from 1000 through 1920 {
     @if $var%200 == 0 {
         @media only screen and (min-width : #{$var}px) {

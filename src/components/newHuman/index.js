@@ -10,8 +10,8 @@ export default class myThree {
         this.sizes        = {}
         this.camera       = null
         this.renderer     = null
+        this.joinTArr     = {}
         this.rootModel    = null
-        this.modelArr     = []
         this.scene        = new THREE.Scene();
         this.clock        = new THREE.Clock();
         this.previousTime = 0;
@@ -79,7 +79,6 @@ export default class myThree {
     inLights() {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
-
         const directionalLight      = new THREE.DirectionalLight(0xffffff, 1.5);
         directionalLight.castShadow = true;
         directionalLight.shadow.mapSize.set(1024, 1024);
@@ -113,7 +112,10 @@ export default class myThree {
 
 
     initRobot = async () => {
-        if (this.rootModel) this.scene.remove();
+        this.joinTArr = {}
+        if (this.rootModel) {
+            this.scene.remove(this.rootModel);
+        }
         const loader           = new STLLoader();
         const sphereMesh       = new THREE.MeshPhongMaterial({color: "#67C23A", specular: 0x494949, shininess: 200})
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
@@ -122,9 +124,7 @@ export default class myThree {
         const material         = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
         let setJoint           = (position, size) => {
             const SphereGeometry = new THREE.SphereGeometry(size || 20)
-
-            const joint = new THREE.Mesh(SphereGeometry, glassMaterial);
-
+            const joint          = new THREE.Mesh(SphereGeometry, glassMaterial);
             joint.position.set(position.x, position.y, position.z);
             return joint
         }
@@ -132,7 +132,6 @@ export default class myThree {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25}
                 let _rotation = rotation || {x: 0, y: 0, z: 0}
-                // let _scale    = scale || {x: .01, y: .01, z: .01}
                 loader.load(`/src/assets/human/${name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
@@ -143,51 +142,55 @@ export default class myThree {
                 });
             }))
         }
-
-        let modelArr     = []
-        // let 关节Arr     = []
+        // let modelArr     = []
+        let modelArr     = {}
         let boresList    = bores.boresList || []
         let modelNum     = boresList.length
-        let setScene     = async (item) => {
-            modelArr.forEach((item) => {
-                console.log('item--------', item)
-            })
+        let setScenes    = async () => {
+            for (let key in modelArr) {
+                let item = modelArr[key]
+                let model = item.model
+                let info = item.info
+                if (info.parent === 0) {
+                    this.rootModel = model
+                    this.scene.add(this.rootModel);
+                }else {
+                    modelArr[info.parent].model.add(model);
+                }
+                if (info.master_slave === 0) {
+                    this.joinTArr[info.field] = model
+                }
+            }
         }
         let initAllModel = async (item) => {
-            let model = await loadingModel(item.model_name, {x: 0, y: 1030, z: 0});
-            let data = {
-                model: model,
-                info:item
+            let model
+            if (item.model_type === 1) {
+                model = setJoint(item.position);
+            } else {
+                try {
+                    model = await loadingModel(item.model_name, item.position);
+                } catch (e) {
+                }
             }
-            modelArr.push(data)
+            let data          = {
+                model: model,
+                info : item
+            }
+            // modelArr.push(data)
+            modelArr[item.id] = data
             modelNum--
             if (modelNum === 0) {
-                setScene()
+                setScenes()
             }
         }
         boresList.map((item) => {
             initAllModel(item)
         })
-        // let D2 = setJoint({x: -80, y: -20, z: 40});
-        // // D2.rotation.z = Math.PI / 4;
-        // D1.add(D2);
-        // let B1 = await loadingModel(`new_hman_v2 - 股骨_V2-1`, {x: 80, y: 20, z: -40});
-        // D2.add(B1);
-        // // let D3 = await loadingModel(`new_hman_v2 - 关节轴-1`, {x: 0, y: 0, z: 0});
-        // let D3 = setJoint({x: -50, y: -530, z: 10});
-        // B1.add(D3);
-        // let B2 = await loadingModel(`new_hman_v2 - 胫骨-1`, {x: 50, y: 530, z: -10});
-        // D3.add(B2);
-
-        // this.rootModel = modelArr[0] || ''
-        // if (this.rootModel) {
-        //     this.scene.add(this.rootModel);
-        //     this.D1 = this.rootModel
-        // }
     }
 
     setRobotRotation(rotation, name, direction) {
-        this[name].rotation[direction] = rotation
+        console.log('this.joinTArr[name]========', this.joinTArr[name])
+        this.joinTArr[name].rotation[direction] = rotation
     }
 
     initRenderer() {
