@@ -67,6 +67,7 @@ const confirmSerial = () => {
 };
 
 const sliderInput = (e, name, direction) => {
+  console.log('valvalval', e)
   let val = e * 100
   let str_val = val.toFixed(0)
   let data = {

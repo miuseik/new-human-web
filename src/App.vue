@@ -10,10 +10,7 @@ const linkWs = () => {
     ws.send("hello");
   });
   ws.addEventListener("message", function (event) {
-    // setTimeout(()=>{
       bus.emit('resWebSocket', event.data)
-      // bus.emit("resWebSocket");
-    // },500)
   });
   ws.onclose = function () {
     ElMessage({
@@ -26,10 +23,7 @@ const linkWs = () => {
 linkWs()
 
 const setWs = (socket) => {
-  // let data = {
-  //   type:'',
-  //   socket:socket,
-  // }
+
   ws.send(socket);
 };
 onMounted(() => {

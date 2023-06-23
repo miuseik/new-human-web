@@ -94,19 +94,35 @@
               </div>
               <div class="item-info" v-else>
                 <div class="item-info-option">
-                 <span class="name"> {{ item.name }}</span>  <span>id:{{ item.id }}</span>  <span>field:{{ item.field }}</span>  <span>Pid:{{ item.parent }}</span>
-                 </div>
+                  <span class="name"> {{ item.name }}</span> <span>id:{{ item.id }}</span> <span>field:{{
+                    item.field
+                  }}</span> <span>Pid:{{ item.parent }}</span>
+                </div>
                 <!--                ({{ item.min }}- {{ item.max }})-->
                 <template v-for="(option, index) in item.option">
                   <p v-if="option.open">
                     {{ index }}
-                    <el-slider
-                        v-model="option.value"
-                        show-input
+                    <!--                    <input-->
+                    <!--                        type="range" id="volume" name="volume"-->
+                    <!--                        v-model="option.value"-->
+                    <!--                        :min="option.min"-->
+                    <!--                        :max="option.max"-->
+                    <!--                        @input="sliderInput($event, `${item.field}`, index)"-->
+                    <!--                    >-->
+                    <inputRange
                         :min="option.min"
                         :max="option.max"
-                        :step="0.01"
-                        @input="sliderInput($event, `${item.field}`, index)"/>
+                        :value="option.value"
+                        @sliderInput="sliderInput($event, `${item.field}`, index)"
+
+                    ></inputRange>
+                    <!--                    <el-slider-->
+                    <!--                        v-model="option.value"-->
+                    <!--                        show-input-->
+                    <!--                        :min="option.min"-->
+                    <!--                        :max="option.max"-->
+                    <!--                        :step="0.01"-->
+                    <!--                        @input="sliderInput($event, `${item.field}`, index)"/>-->
                   </p>
                 </template>
               </div>
@@ -122,6 +138,7 @@
 import API from "@/api";
 import boresStore from '@/store/bores/index.ts';
 import debounce from "@/utils/putlic/index.js";
+import inputRange from '@/components/public/inputRange.vue'
 
 const boresX = boresStore()
 const state = reactive({
@@ -142,20 +159,20 @@ const state = reactive({
     option      : {
       x: {
         open : false,
-        max  : (Math.PI / 2).toFixed(4)*1,
-        min  : (-Math.PI / 2).toFixed(4)*1,
+        max  : (Math.PI / 2).toFixed(4) * 1,
+        min  : (-Math.PI / 2).toFixed(4) * 1,
         value: 0
       },
       y: {
         open : false,
-        max  : (Math.PI / 2).toFixed(4)*1,
-        min  : (-Math.PI / 2).toFixed(4)*1,
+        max  : (Math.PI / 2).toFixed(4) * 1,
+        min  : (-Math.PI / 2).toFixed(4) * 1,
         value: 0
       },
       z: {
         open : false,
-        max  : (Math.PI / 2).toFixed(4)*1,
-        min  : (-Math.PI / 2).toFixed(4)*1,
+        max  : (Math.PI / 2).toFixed(4) * 1,
+        min  : (-Math.PI / 2).toFixed(4) * 1,
         value: 0
       }
     },
@@ -198,8 +215,10 @@ const getList = () => {
 }
 getList()
 const sliderInput = debounce((e, name, direction) => {
+  console.log('-')
+  console.log(e, name, direction)
   emit("sliderInput", e, name, direction);
-},5);
+}, 5);
 const switchChange = (e) => {
   emit("switchChange", e);
 };
@@ -319,18 +338,19 @@ const newBores = (item) => {
       }
 
       .item-info {
-        .item-info-option{
+        .item-info-option {
           display: flex;
           flex-wrap: nowrap;
           justify-content: space-between;
           background-color: var(--Brand);
           font-size: .8rem;
           padding: .2rem 0;
-          span{
+
+          span {
             display: inline-block;
           }
 
-          .name{
+          .name {
             width: 30%;
           }
         }
