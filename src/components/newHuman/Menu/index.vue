@@ -121,6 +121,7 @@
 <script lang="ts" setup>
 import API from "@/api";
 import boresStore from '@/store/bores/index.ts';
+import debounce from "@/utils/putlic/index.js";
 
 const boresX = boresStore()
 const state = reactive({
@@ -187,24 +188,7 @@ const state = reactive({
   }
 })
 const mouseValue = ref(true);
-const value1 = ref(0);
-const value2 = ref(0);
-const value3 = ref(0);
-const value4 = ref(0);
-
-const value5_1 = ref(0);
-const value5_2 = ref(0);
-const value5_3 = ref(0);
-
-// const min = ref(Number(-Math.PI.toFixed(2)));
-// const max = ref(Number(Math.PI.toFixed(2)));
 const emit = defineEmits(["sliderInput", "switchChange"]);
-const setInputNum = computed(() => {
-  return function (value) {
-    return 666
-  };
-});
-
 
 const getList = () => {
   boresX.getBoresList().then((data) => {
@@ -213,17 +197,9 @@ const getList = () => {
   })
 }
 getList()
-const sliderInput = (e, name, direction) => {
-  console.log(e, name, direction)
+const sliderInput = debounce((e, name, direction) => {
   emit("sliderInput", e, name, direction);
-};
-
-const selectModelType = (item, index) => {
-  item = index
-};
-const selectMasterSlave = (item, index) => {
-  item = index
-};
+},5);
 const switchChange = (e) => {
   emit("switchChange", e);
 };

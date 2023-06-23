@@ -8,6 +8,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+const emit = defineEmits(["sliderInput", "switchChange"]);
 import myThree from "./index.js";
 import Menu from "./Menu/index.vue";
 let base = null;
@@ -18,6 +19,7 @@ onMounted(() => {
   base = new myThree(dom);
 });
 const sliderInput = (e, name, direction) => {
+  emit("sliderInput", e, name, direction);
   base.setRobotRotation(e, name, direction);
 };
 const switchChange = (enabled) => {

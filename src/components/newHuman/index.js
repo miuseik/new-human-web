@@ -189,7 +189,6 @@ export default class myThree {
     }
 
     setRobotRotation(rotation, name, direction) {
-        console.log('this.joinTArr[name]========', this.joinTArr[name])
         this.joinTArr[name].rotation[direction] = rotation
     }
 

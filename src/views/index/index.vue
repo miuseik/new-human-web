@@ -1,84 +1,64 @@
 <template>
-
   <div class="new-human">
+    <div class="ws-res">
+      {{ state.res }}
+    </div>
     <div class="worktop">
       <div class="buttons">
-              <el-button :plain="true" @click="setWs">按钮</el-button>
-        <el-button :plain="true" @click="linkWs">启动ws</el-button>
-        <el-button :plain="true" @click="setApi">查找串口</el-button>
-        <el-button :plain="true" @click="confirmSerial">确认串口</el-button>
-      </div>
-      <input v-model="state.socket" type="text" name="" id="demo"/>
-      <div id="res">
-        <p></p>
-      </div>
-      <div>
-        <p>{{ state.res }}</p>
+        <el-button :plain="true" @click="setWs(111)">发射</el-button>
+        <el-button :plain="true" @click="getSerialList">查找串口</el-button>
+        <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认串口</el-button>
       </div>
       <div class="serial-list">
-        <label v-for="(item, index) in state.serialList">
-          <input type="radio" v-model="state.queryBluetooth" :value="item" name="serialList">{{ item }}
-        </label>
+        <template v-for="(item, index) in state.serialList">
+          <label class="serial-item">
+            <input class="input-radio" type="radio" v-model="state.queryBluetooth" :value="item"
+                   name="serialList">{{ item }}
+          </label>
+        </template>
       </div>
+      <!--      </div>-->
     </div>
     <div class="model">
-      <NewHuman></NewHuman>
+      <NewHuman @sliderInput="sliderInput"></NewHuman>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import env from "@/env/moudules/env.js";
 import NewHuman from '@/components/newHuman/index.vue'
 
 const router = useRouter();
 import API from "@/api";
-// import newHuman from "../../api/moudules/newHuman";
-
+// const bus = inject('bus')
+const $bus = inject('$bus')
 
 const state = reactive({
-  url: "ws://127.0.0.1:",
-  port: "3002",
-  socket: "",
-  messages: [],
+  url           : "ws://127.0.0.1:",
+  port          : "3002",
+  socket        : "",
+  messages      : [],
   queryBluetooth: {},
-  serialList: "",
-  res: "",
-  serialStatus: "",
+  serialList    : "",
+  res           : "",
+  serialStatus  : "",
 });
 
 // 点击按钮时给websocket服务器端发送消息
-let ws;
 const setWs = (socket) => {
-  ws.send(socket);
+  $bus.emit("postWebSocket", socket);
 };
-const linkWs = () => {
-  // ws = new WebSocket(env.WS_URL);
-  ws = new WebSocket(state.url + state.port);
-  ws.addEventListener("open", function (event) {
-    ws.send("hello");
-    state.res = "当前客户端已经连接到websocket服务器";
-  });
-  // 接收消息后客户端处理方法
-  ws.addEventListener("message", function (event) {
-    state.socket = "------------" + event.data;
-  });
-// 关闭websocket
-  ws.onclose = function () {
-    // 关闭 websocket
-    console.log("连接已关闭...");
-  };
-};
-const setApi = () => {
+
+
+const getSerialList = () => {
   API.newHuman.query_bluetooth().then(res => {
     state.serialList = res.data;
   });
 };
+getSerialList()
 const confirmSerial = () => {
-  // let path = state.queryBluetooth && state.queryBluetooth.path;
   let data = {
-    // path: path,
     port: state.port,
   };
   API.newHuman.confirm_serial(data).then(res => {
@@ -86,66 +66,74 @@ const confirmSerial = () => {
   });
 };
 
-
-//////////
-//////////
-//////////
-
-// const created = () => {
-//   var userAgent = navigator.userAgent.toLowerCase();
-//   if (userAgent.indexOf(" electron/") > -1) {
-//     selectBluetooth();
-//     bluetoothPairingRequest();
-//   }
-// };
-//
-// created();
-const toTest = () => {
-  router.push({
-    path: "/test",
-  });
+const sliderInput = (e, name, direction) => {
+  let val = e * 100
+  let str_val = val.toFixed(0)
+  let data = {
+    name: name,
+    direction: direction,
+    val: str_val
+  }
+  setWs(JSON.stringify(data))
 };
 
 onMounted(() => {
-  // var mydiv=document.getElementById("mydiv");
-  // mydiv.onmousemove=function(event){
-  //   // let offsetX = event['offsetX'] | ''
-  //   // let offsetY = event['offsetY'] | ''
-  //   let stock = {
-  //     // x:offsetX || '',
-  //     // y:offsetY || ''
-  //   }
-  //   // setWs(offsetX)
-  // }
-
+  $bus.on("resWebSocket", (parameter) => {
+    state.res = parameter
+  })
 })
-
 </script>
 
 <style lang="scss">
 .new-human {
   display: flex;
   flex-direction: column;
+
+  .ws-res {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+
+  }
+
   .worktop {
-    height: 3rem;
-    overflow: hidden;
+    position: fixed;
+    width: 15rem;
+    //height: 100vh;
+    border: #2DC3FE solid 1px;
+    z-index: 1;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+
+    .serial-list {
+      .serial-item {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        .input-radio {
+          width: 2rem;
+          flex-shrink: 0;
+        }
+      }
+    }
   }
 
   .model {
     overflow: hidden;
-
-    width: 100%;
-    height:calc(100vh - 3rem);
+    height: 100vh;
+    //height: calc(100vh - 3rem);
   }
 }
 
 
-input {
-  height: 2rem;
-}
-
-.serial-list {
-  display: flex;
-  flex-direction: column;
-}
 </style>

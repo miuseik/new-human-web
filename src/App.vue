@@ -1,6 +1,42 @@
 <script setup lang="ts">
+import { ElMessage } from 'element-plus';
 
+import env from "@/env/moudules/env.js";
+const bus = inject('$bus')
+let ws;
+const linkWs = () => {
+  ws = new WebSocket(env.WS_URL);
+  ws.addEventListener("open", function (event) {
+    ws.send("hello");
+  });
+  ws.addEventListener("message", function (event) {
+    // setTimeout(()=>{
+      bus.emit('resWebSocket', event.data)
+      // bus.emit("resWebSocket");
+    // },500)
+  });
+  ws.onclose = function () {
+    ElMessage({
+      showClose: true,
+      message: '连接已关闭 ...',
+      type: 'warning',
+    });
+  };
+};
+linkWs()
 
+const setWs = (socket) => {
+  // let data = {
+  //   type:'',
+  //   socket:socket,
+  // }
+  ws.send(socket);
+};
+onMounted(() => {
+  bus.on("postWebSocket", (parameter) => {
+    setWs(parameter);
+  })
+})
 </script>
 
 <template>
