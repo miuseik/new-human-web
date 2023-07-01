@@ -1,4 +1,4 @@
-// 路径：src/views/home/components/Menu/index.vue
+<!--// 路径：src/views/home/components/Menu/index.vue-->
 <template>
   <el-scrollbar height="100%">
     <div class="slider-block">

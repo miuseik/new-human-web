@@ -5,7 +5,6 @@
     </div>
     <div class="worktop">
       <div class="buttons">
-        <el-button :plain="true" @click="setWs(111)">发射</el-button>
         <el-button :plain="true" @click="getSerialList">查找串口</el-button>
         <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认串口</el-button>
       </div>
@@ -58,9 +57,8 @@ const getSerialList = () => {
 };
 getSerialList()
 const confirmSerial = () => {
-  let data = {
-    port: state.port,
-  };
+  let data = state.queryBluetooth
+  state.serialList = []
   API.newHuman.confirm_serial(data).then(res => {
     state.serialStatus = res.data;
   });
@@ -71,9 +69,9 @@ const sliderInput = (e, name, direction) => {
   let val = e * 100
   let str_val = val.toFixed(0)
   let data = {
-    name: name,
+    name     : name,
     direction: direction,
-    val: str_val
+    val      : str_val
   }
   setWs(JSON.stringify(data))
 };
@@ -94,6 +92,7 @@ onMounted(() => {
     position: fixed;
     top: 1rem;
     left: 50%;
+    background-color: rgba(0,0,0,.3);
     transform: translateX(-50%);
     z-index: 1;
 
@@ -101,16 +100,16 @@ onMounted(() => {
 
   .worktop {
     position: fixed;
-    width: 15rem;
+    max-width: 15rem;
     //height: 100vh;
-    border: #2DC3FE solid 1px;
     z-index: 1;
     right: 0;
     display: flex;
     flex-direction: column;
-
+    background-color: rgba(0,0,0,.3);
     .buttons {
       display: flex;
+      justify-content: right;
       flex-direction: row;
       flex-wrap: nowrap;
     }

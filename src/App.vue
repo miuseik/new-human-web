@@ -10,6 +10,7 @@ const linkWs = () => {
     ws.send("hello");
   });
   ws.addEventListener("message", function (event) {
+
       bus.emit('resWebSocket', event.data)
   });
   ws.onclose = function () {

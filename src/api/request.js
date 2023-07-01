@@ -14,23 +14,23 @@ const request   = axios.create({
 const tip       = debounce((msg) => {
     ElMessage({
         showClose: true,
-        message  : msg,
+        message  : msg || '未知错误',
         type     : 'warning',
     });
 }, 200);
 const resHandle = (data, other) => {
-    if (data.code * 1 !== 200) {
-        errorHandle(data.code, data.Message);
+    let code = data.code || data.status || ''
+    let msg = data.msg || data.Message || ''
+    if (code.toString() !== '200') {
+        errorHandle(data, code, msg);
     }
 };
 
-const errorHandle = (status, message) => {
+const errorHandle = (data, status, message) => {
     // 状态码判断
     switch (status) {
         case 401: // 401: 未登录状态，跳转登录页
-
             // router.replace ({path: '/login'});
-
             if (router.currentRoute.value.name != 'login') {
                 setTimeout(() => {
                     tip('Login Expired');
@@ -63,6 +63,7 @@ const errorHandle = (status, message) => {
             tip('The requested resource does not exist');
             break;
         default:
+            console.log('data', data)
             tip(message);
     }
 };
@@ -86,7 +87,7 @@ request.interceptors.response.use(res => {
     }, error => {
         const response = error.response || "";
         if (response) {
-            errorHandle(response.status);
+            errorHandle(response, response.status);
             return Promise.reject(response);
         }
     },

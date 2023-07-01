@@ -60,16 +60,9 @@ export default class myThree {
         plane.position.y      = -.5;
         this.scene.add(plane);
         plane.receiveShadow = true;
-
-        // const light = new THREE.DirectionalLight(0xffffff);
-        // light.position.set(0, 0, 1);
-        // this.scene.add(light);
     }
 
     initCamera() {
-        // this.camera    = new THREE.PerspectiveCamera(20, domWidth / domHeight, 1, 10000);
-        // this.camera.position.z = 1800;
-
         const camera = new THREE.PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 10000);
         camera.position.set(1500, 1500, 1500);
         this.scene.add(camera);
@@ -94,7 +87,6 @@ export default class myThree {
     initHelper() {
         const axes = new THREE.AxesHelper(2000);
         this.scene.add(axes);
-
         // const gridHelper = new THREE.GridHelper(50000, 100);
         // this.scene.add(gridHelper);
     }
@@ -105,7 +97,6 @@ export default class myThree {
         controls.enableDamping = true;
         this.controls          = controls;
     }
-
     setControlsEnabled(enabled) {
         this.controls.enabled = enabled
     }
@@ -159,8 +150,10 @@ export default class myThree {
                 }
                 if (info.master_slave === 0) {
                     this.joinTArr[info.field] = model
+                    this.joinTArr[info.field] = item
                 }
             }
+            console.log('this.joinTArr', this.joinTArr)
         }
         let initAllModel = async (item) => {
             let model
@@ -176,7 +169,6 @@ export default class myThree {
                 model: model,
                 info : item
             }
-            // modelArr.push(data)
             modelArr[item.id] = data
             modelNum--
             if (modelNum === 0) {
@@ -189,7 +181,7 @@ export default class myThree {
     }
 
     setRobotRotation(rotation, name, direction) {
-        this.joinTArr[name].rotation[direction] = rotation
+        this.joinTArr[name]['model'].rotation[direction] = rotation
     }
 
     initRenderer() {

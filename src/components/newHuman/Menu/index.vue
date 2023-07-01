@@ -71,6 +71,14 @@
                             <span>{{ index }}:</span>
                             <el-switch v-model="opt.open"/>
                           </div>
+                          <div class="option-switch">
+                            <span>舵机反转:</span>
+                            <el-switch v-model="opt.server_reverse"/>
+                          </div>
+                          <div class="option-switch">
+                            <span>模型反转:</span>
+                            <el-switch v-model="opt.model_reverse"/>
+                          </div>
                           <div class="option-input">
                             <p>
                               <span>min:</span><input type="text" v-model="opt.min">
@@ -98,17 +106,9 @@
                     item.field
                   }}</span> <span>Pid:{{ item.parent }}</span>
                 </div>
-                <!--                ({{ item.min }}- {{ item.max }})-->
                 <template v-for="(option, index) in item.option">
                   <p v-if="option.open">
                     {{ index }}
-                    <!--                    <input-->
-                    <!--                        type="range" id="volume" name="volume"-->
-                    <!--                        v-model="option.value"-->
-                    <!--                        :min="option.min"-->
-                    <!--                        :max="option.max"-->
-                    <!--                        @input="sliderInput($event, `${item.field}`, index)"-->
-                    <!--                    >-->
                     <inputRange
                         :min="option.min"
                         :max="option.max"
@@ -116,13 +116,6 @@
                         @sliderInput="sliderInput($event, `${item.field}`, index)"
 
                     ></inputRange>
-                    <!--                    <el-slider-->
-                    <!--                        v-model="option.value"-->
-                    <!--                        show-input-->
-                    <!--                        :min="option.min"-->
-                    <!--                        :max="option.max"-->
-                    <!--                        :step="0.01"-->
-                    <!--                        @input="sliderInput($event, `${item.field}`, index)"/>-->
                   </p>
                 </template>
               </div>
@@ -158,22 +151,28 @@ const state = reactive({
     master_slave: '0',
     option      : {
       x: {
-        open : false,
-        max  : (Math.PI / 2).toFixed(4) * 1,
-        min  : (-Math.PI / 2).toFixed(4) * 1,
-        value: 0
+        open          : false,
+        server_reverse: false,
+        model_reverse : false,
+        max           : (Math.PI / 2).toFixed(4) * 1,
+        min           : (-Math.PI / 2).toFixed(4) * 1,
+        value         : 0
       },
       y: {
-        open : false,
-        max  : (Math.PI / 2).toFixed(4) * 1,
-        min  : (-Math.PI / 2).toFixed(4) * 1,
-        value: 0
+        open          : false,
+        server_reverse: false,
+        model_reverse : false,
+        max           : (Math.PI / 2).toFixed(4) * 1,
+        min           : (-Math.PI / 2).toFixed(4) * 1,
+        value         : 0
       },
       z: {
-        open : false,
-        max  : (Math.PI / 2).toFixed(4) * 1,
-        min  : (-Math.PI / 2).toFixed(4) * 1,
-        value: 0
+        open          : false,
+        server_reverse: false,
+        model_reverse : false,
+        max           : (Math.PI / 2).toFixed(4) * 1,
+        min           : (-Math.PI / 2).toFixed(4) * 1,
+        value         : 0
       }
     },
     size        : {
