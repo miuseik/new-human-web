@@ -2,11 +2,11 @@
   <div class="input-range">
     <input
         type="range" id="volume" name="volume"
-        v-model="state.innerValue"
+        :value="state.innerValue"
         :min="min"
         :max="max"
         :step="0.01"
-        @input="sliderInput()"
+        @input="sliderInput"
     >
     <button class="btn btn-danger" @click="unadd">
       -
@@ -18,45 +18,52 @@
 </template>
 
 <script lang="ts" setup>
-const emit = defineEmits(["sliderInput"]);
+const emit = defineEmits(["sliderInput", "update:modelValue"]);
 
 const props = defineProps({
-  value: {
-    type   : Number,
+  modelValue: {
+    type   : [String, Number],
     default: 0,
   },
-  min  : {
-    type   : Number,
+  value     : {
+    type   : [String, Number],
     default: 0,
   },
-  max  : {
+  min       : {
+    type   : [String, Number],
+    default: 0,
+  },
+  max       : {
     type   : [String, Number],
     default: "",
   },
-  step : {
+  total       : {
+    type   : [String, Number],
+    default: "",
+  },
+  step      : {
     type   : [String, Number],
     default: 0.01,
   },
 });
 const state = reactive({
-  innerValue: props.value
+  innerValue: props.modelValue
 });
 const add = () => {
   let num = Number(state.innerValue)
   num += Number(props.step)
-  state.innerValue = num
+  state.innerValue = num.toFixed(2);
   sliderInput()
 }
 const unadd = () => {
   let num = Number(state.innerValue)
   num -= Number(props.step)
-  state.innerValue = num
+  state.innerValue = num.toFixed(2);
   sliderInput()
 }
-const sliderInput = () => {
-  emit("sliderInput", state.innerValue); //双向绑定,更新父组件当前页的值
-  // console.log('innerValue', state.innerValue)
-
+const sliderInput = (e = {}) => {
+  state.innerValue = e && e['target'] && e['target'].value || state.innerValue
+  emit("update:modelValue", state.innerValue );
 }
 </script>
 

@@ -1,137 +1,141 @@
 <!--// 路径：src/views/home/components/Menu/index.vue-->
 <template>
-  <el-scrollbar height="100%">
-    <div class="slider-block">
-      <div class="slider-item">
-        <span class="demonstration">鼠标视角控制器</span>
-        <el-switch v-model="mouseValue" @change="switchChange"/>
-      </div>
-      <div>
-        <button class="btn btn-brand" @click="newBores()">新增一条</button>
-        <button class="btn btn-brand" @click="state.showAll = !state.showAll">
-          {{
-            state.showAll ?
-                '控制模式' :
-                '全部模型'
-          }}
-        </button>
-      </div>
-      <div class="list-warp">
-        <template v-for="(item, index) in state.boresList ">
-          <div class="bores-item">
-            <div class="item-data">
-              <div class="operate" v-if="state.currentChange.includes(item.id)">
-                <button class="btn btn-success" @click="saveChange(item)">保存</button>
-                <button class="btn btn-info" @click="filterId(item.id)">取消</button>
-                <button class="btn btn-danger" @click="deleteItem(item.id)">删除</button>
-              </div>
-              <div class="operate" v-else>
-                <button class="btn btn-warning" @click="setItem(item)">修改</button>
-              </div>
-              <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
-                <template v-for="(grid, key) in item ">
-                  <div v-if="key === 'size' || key === 'position' || key === 'rotate'" class="item-set-bar">
-                    <span class="title">{{ key }}</span>
-                    x:<input type="text" v-model="state.boresList[index][key]['x']" :disabled="key === 'id'">
-                    y:<input type="text" v-model="state.boresList[index][key]['y']" :disabled="key === 'id'">
-                    z:<input type="text" v-model="state.boresList[index][key]['z']" :disabled="key === 'id'">
-                  </div>
-                  <div v-else-if="key === 'model_type' " class="item-set-bar item-set-select">
-                    <span class="title">{{ key }}</span>
-                    <div class="select-warp">
-                      <div>
-                        {{ state.modelType[state.boresList[index][key]] }}
-                      </div>
-                      <div class="select-box">
-                        <template v-for="(select, select_index) in state.modelType">
-                          <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
-                        </template>
-                      </div>
+  <div class="human-menu">
+    <div class="slider-item">
+      <span class="demonstration">鼠标视角控制器</span>
+      <el-switch v-model="mouseValue" @change="switchChange"/>
+    </div>
+    <div>
+      <button class="btn btn-brand" @click="newBores()">新增一条</button>
+      <button class="btn btn-brand" @click="state.showAll = !state.showAll">
+        {{
+          state.showAll ?
+              '控制模式' :
+              '全部模型'
+        }}
+      </button>
+    </div>
+    <div class="list-warp">
+      <template v-for="(item, index) in state.boresList ">
+        <div class="bores-item">
+          <div class="item-data">
+            <div class="operate" v-if="state.currentChange.includes(item.id)">
+              <button class="btn btn-success" @click="saveChange(item)">保存</button>
+              <button class="btn btn-info" @click="filterId(item.id)">取消</button>
+              <button class="btn btn-danger" @click="deleteItem(item.id)">删除</button>
+            </div>
+            <div class="operate" v-else>
+              <button class="btn btn-warning" @click="setItem(item)">修改</button>
+            </div>
+            <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
+              <template v-for="(grid, key) in item ">
+                <div v-if="key === 'size' || key === 'position' || key === 'rotate'" class="item-set-bar">
+                  <span class="title">{{ key }}</span>
+                  x:<input type="text" v-model="state.boresList[index][key]['x']" :disabled="key === 'id'">
+                  y:<input type="text" v-model="state.boresList[index][key]['y']" :disabled="key === 'id'">
+                  z:<input type="text" v-model="state.boresList[index][key]['z']" :disabled="key === 'id'">
+                </div>
+                <div v-else-if="key === 'model_type' " class="item-set-bar item-set-select">
+                  <span class="title">{{ key }}</span>
+                  <div class="select-warp">
+                    <div>
+                      {{ state.modelType[state.boresList[index][key]] }}
                     </div>
-                  </div>
-                  <div v-else-if="key === 'master_slave' " class="item-set-bar item-set-select">
-                    <span class="title">{{ key }}</span>
-                    <div class="select-warp">
-                      <div>
-                        {{ state.masterSlave[state.boresList[index][key]] }}
-                      </div>
-                      <div class="select-box">
-                        <template v-for="(select, select_index) in state.masterSlave">
-                          <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
-                        </template>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-else-if="key === 'option'" class="item-set-bar item-set-option">
-                    <span class="title">{{ key }}</span>
-                    <div class="option-warp">
-                      <template v-for="(opt, index) in grid">
-                        <div class="option-item">
-                          <div class="option-switch">
-                            <span>{{ index }}:</span>
-                            <el-switch v-model="opt.open"/>
-                          </div>
-                          <div class="option-switch">
-                            <span>舵机反转:</span>
-                            <el-switch v-model="opt.server_reverse"/>
-                          </div>
-                          <div class="option-switch">
-                            <span>模型反转:</span>
-                            <el-switch v-model="opt.model_reverse"/>
-                          </div>
-                          <div class="option-input">
-                            <p>
-                              <span>min:</span><input type="text" v-model="opt.min">
-                            </p>
-                            <p>
-                              <span>max:</span><input type="text" v-model="opt.max">
-                            </p>
-                            <p>
-                              <span>value:</span><input type="text" v-model="opt.value">
-                            </p>
-                          </div>
-                        </div>
+                    <div class="select-box">
+                      <template v-for="(select, select_index) in state.modelType">
+                        <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                       </template>
                     </div>
                   </div>
-                  <div v-else class="item-set-bar">
-                    <span class="title">{{ key }}</span>
-                    <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
-                  </div>
-                </template>
-              </div>
-              <div class="item-info" v-else>
-                <div class="item-info-option">
-                  <span class="name"> {{ item.name }}</span> <span>id:{{ item.id }}</span> <span>field:{{
-                    item.field
-                  }}</span> <span>Pid:{{ item.parent }}</span>
                 </div>
-                <template v-for="(option, index) in item.option">
-                  <p v-if="option.open">
-                    {{ index }}
-                    <inputRange
-                        :min="option.min"
-                        :max="option.max"
-                        :value="option.value"
-                        @sliderInput="sliderInput($event, `${item.field}`, index)"
-
-                    ></inputRange>
-                  </p>
-                </template>
+                <div v-else-if="key === 'master_slave' " class="item-set-bar item-set-select">
+                  <span class="title">{{ key }}</span>
+                  <div class="select-warp">
+                    <div>
+                      {{ state.masterSlave[state.boresList[index][key]] }}
+                    </div>
+                    <div class="select-box">
+                      <template v-for="(select, select_index) in state.masterSlave">
+                        <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+                <div v-else-if="key === 'option'" class="item-set-bar item-set-option">
+                  <span class="title">{{ key }}</span>
+                  <div class="option-warp">
+                    <template v-for="(opt, index) in grid">
+                      <div class="option-item">
+                        <div class="option-switch">
+                          <span>{{ index }}:</span>
+                          <el-switch v-model="opt.open"/>
+                        </div>
+                        <div class="option-switch">
+                          <span>舵机反转:</span>
+                          <el-switch v-model="opt.server_reverse"/>
+                        </div>
+                        <div class="option-switch">
+                          <span>模型反转:</span>
+                          <el-switch v-model="opt.model_reverse"/>
+                        </div>
+                        <div class="option-input">
+                          <p>
+                            <span>min:</span><input type="text" v-model="opt.min">
+                          </p>
+                          <p>
+                            <span>max:</span><input type="text" v-model="opt.max">
+                          </p>
+                          <p>
+                            <span>value:</span><input type="text" v-model="opt.value">
+                          </p>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div v-else class="item-set-bar">
+                  <span class="title">{{ key }}</span>
+                  <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
+                </div>
+              </template>
+            </div>
+            <div class="item-info" v-else>
+              <div class="item-info-option">
+                <span class="name"> {{ item.name }}</span>
+                <span>id:{{ item.id }}</span>
+                <span>field:{{ item.field }}</span>
+                <span>Pid:{{ item.parent }}</span>
               </div>
+              <template v-for="(option, index) in item.option">
+                <p v-if="option.open">
+                  {{ index }} {{option.value}}
+<!--                  <inputRange-->
+<!--                      :min="option.min"-->
+<!--                      :max="option.max"-->
+<!--                      :value="option.value"-->
+<!--                      @sliderInput="sliderInput($event, `${item.field}`, index)"-->
+<!--                  ></inputRange>-->
+                  <inputRange
+                      :min="option.min"
+                      :max="option.max"
+                      v-model="option.value"
+                      @input="sliderInput(option.value, `${item.field}`, index)"
+                  ></inputRange>
+                </p>
+              </template>
             </div>
           </div>
-        </template>
-      </div>
+        </div>
+      </template>
     </div>
-  </el-scrollbar>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import API from "@/api";
-import boresStore from '@/store/bores/index.ts';
 import debounce from "@/utils/putlic/index.js";
 import inputRange from '@/components/public/inputRange.vue'
+import boresStore from '@/store/bores/index.ts';
 
 const boresX = boresStore()
 const state = reactive({
@@ -203,8 +207,9 @@ const state = reactive({
     1: '从动',
   }
 })
+
 const mouseValue = ref(true);
-const emit = defineEmits(["sliderInput", "switchChange"]);
+const emit = defineEmits(["sliderInput", "switchChange", "updateBoresList"]);
 
 const getList = () => {
   boresX.getBoresList().then((data) => {
@@ -213,11 +218,12 @@ const getList = () => {
   })
 }
 getList()
-const sliderInput = debounce((e, name, direction) => {
-  console.log('-')
-  console.log(e, name, direction)
+// const sliderInput = debounce((e, name, direction) => {
+//   emit("sliderInput", e, name, direction);
+// }, 1);
+const sliderInput = (e, name, direction) => {
   emit("sliderInput", e, name, direction);
-}, 5);
+}
 const switchChange = (e) => {
   emit("switchChange", e);
 };
@@ -260,116 +266,119 @@ const newBores = (item) => {
 </script>
 
 <style lang="scss" scoped>
-.list-warp {
-  overflow: auto;
-  height: 80vh;
+.human-menu {
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  .slider-item {
+    //margin: 20px 0;
+  }
 
-  .bores-item {
-    .item-data {
-      .item-set {
-        .item-set-bar {
-          display: flex;
-          flex-direction: row;
-          margin: .2rem 0;
+  .demonstration {
+    margin: 0 10px 10px 0;
+  }
+  .list-warp {
+    overflow: auto;
+    //height: 100%;
+    height: calc(80vh - 100px);
 
-          .title {
-            width: 3rem;
-            flex-shrink: 0;
-          }
-        }
-
-        .item-set-option {
-          flex-direction: column;
-
-          .option-warp {
+    .bores-item {
+      .item-data {
+        .item-set {
+          .item-set-bar {
             display: flex;
             flex-direction: row;
+            margin: .2rem 0;
 
-            .option-item {
-              text-align: center;
-              border: var(--Warning) solid 1px;
+            .title {
+              width: 3rem;
+              flex-shrink: 0;
+            }
+          }
 
-              .option-switch {
-              }
+          .item-set-option {
+            flex-direction: column;
 
-              .option-input {
-                p {
-                  display: flex;
+            .option-warp {
+              display: flex;
+              flex-direction: row;
 
-                  span {
-                    display: inline-block;
-                    width: 33%;
-                    flex-shrink: 0;
+              .option-item {
+                text-align: center;
+                border: var(--Warning) solid 1px;
+
+                .option-switch {
+                }
+
+                .option-input {
+                  p {
+                    display: flex;
+
+                    span {
+                      display: inline-block;
+                      width: 33%;
+                      flex-shrink: 0;
+                    }
                   }
                 }
               }
             }
           }
-        }
 
-        .item-set-select {
-          .select-warp {
-            position: relative;
-            background-color: #fff;
-            width: 100%;
-            z-index: auto;
-            color: var(--Brand);
-            cursor: pointer;
-
-            .select-box {
-              display: none;
-              z-index: 1;
-              border: #2DC3FE solid 1px;
-              position: absolute;
+          .item-set-select {
+            .select-warp {
+              position: relative;
               background-color: #fff;
+              width: 100%;
+              z-index: auto;
+              color: var(--Brand);
               cursor: pointer;
-              width: 10rem;
-            }
 
-            &:hover {
               .select-box {
-                display: block;
+                display: none;
+                z-index: 1;
+                border: #2DC3FE solid 1px;
+                position: absolute;
+                background-color: #fff;
+                cursor: pointer;
+                width: 10rem;
+              }
+
+              &:hover {
+                .select-box {
+                  display: block;
+                }
               }
             }
-          }
 
+          }
         }
-      }
 
-      .item-info {
-        .item-info-option {
-          display: flex;
-          flex-wrap: nowrap;
-          justify-content: space-between;
-          background-color: var(--Brand);
-          font-size: .8rem;
-          padding: .2rem 0;
+        .item-info {
+          .item-info-option {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            background-color: var(--Brand);
+            font-size: .8rem;
+            padding: .2rem 0;
 
-          span {
-            display: inline-block;
-          }
+            span {
+              display: inline-block;
+            }
 
-          .name {
-            width: 30%;
+            .name {
+              width: 30%;
+            }
           }
         }
       }
     }
+
+
   }
-
-
 }
 
-.slider-block {
-  padding: 20px 10px;
-}
 
-.slider-item {
-  margin: 20px 0;
-}
-
-.demonstration {
-  margin: 0 10px 10px 0;
-}
 </style>
 

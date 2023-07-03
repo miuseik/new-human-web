@@ -1,0 +1,85 @@
+<template>
+  <div class="action">
+    <div class="option">
+      <div class="btn btn-success">添加动作</div>
+    </div>
+    <div class="action-list">
+    </div>
+  </div>
+  <div class="set-action">
+    <div class="option">
+      <div class="btn btn-success">保存</div>
+      <div class="btn btn-danger">取消</div>
+    </div>
+    <div class="set-action-box">
+      <slider @sliderInput="sliderInput" :current-action="state.currentAction"></slider>
+    </div>
+  </div>
+</template>
+<script lang="ts" setup>
+import slider from '@/components/public/slider/index.vue'
+
+import debounce from "@/utils/putlic/index.js";
+
+const emit = defineEmits(["sliderInput", "switchChange", "updateBoresList"]);
+const props = defineProps({
+  currentAction     : {
+    type   : [String, Number],
+    default: 0,
+  },
+});
+const state = reactive({
+  currentAction: []
+
+});
+const times = () => {
+
+}
+//
+// const sliderInput = debounce((e, name, direction) => {
+//   console.log(e, name, direction)
+//   emit("sliderInput", e, name, direction);
+// }, 1);
+const sliderInput = (e, name, direction) => {
+  console.log(e, name, direction)
+  emit("sliderInput", e, name, direction);
+};
+</script>
+
+<style lang="scss" scoped>
+.action {
+  background-color: rgba(0, 0, 0, .2);
+  position: absolute;
+  width: 15rem;
+  height: 80vh;
+  right: 0;
+  padding: 40px 2px 2px 2px;
+  //top: 50px;
+  flex-shrink: 0;
+  overflow: hidden;
+  color: #fff;
+  font-size: .7rem;
+}
+
+.set-action {
+  background-color: rgba(0, 0, 0, .2);
+  border-top: #2DC3FE solid 1px;
+  position: absolute;
+  width: 100%;
+  height: 20vh;
+  padding: 10px;
+  bottom: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+  color: #fff;
+  font-size: .7rem;
+
+  .option {
+
+  }
+
+  .set-action-box {
+    width: 100%;
+  }
+}
+</style>

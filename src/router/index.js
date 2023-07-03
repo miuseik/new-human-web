@@ -12,7 +12,26 @@ let routes= [
         name: 'test',
         component: () => import(/* webpackChunkName: "about" */ '../views/test/index.vue')
     },
-
+    {
+        path: '/demo',
+        name: 'demo',
+        component: () => import(/* webpackChunkName: "about" */ '../views/test/demo.vue')
+    },
+    {
+        path: '/three',
+        name: 'three',
+        component: () => import(/* webpackChunkName: "about" */ '../views/test/three.vue')
+    },
+    {
+        path: '/bone',
+        name: 'bone',
+        component: () => import(/* webpackChunkName: "about" */ '../views/test/bone.vue')
+    },
+    {
+        path: '/guo',
+        name: 'guo',
+        component: () => import(/* webpackChunkName: "about" */ '../views/test/guo.vue')
+    },
     {
         path: '/home',
         name: 'home',

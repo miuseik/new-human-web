@@ -5,8 +5,8 @@
     </div>
     <div class="worktop">
       <div class="buttons">
-        <el-button :plain="true" @click="getSerialList">查找串口</el-button>
-        <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认串口</el-button>
+        <el-button :plain="true" @click="getSerialList">查找蓝牙</el-button>
+        <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认蓝牙</el-button>
       </div>
       <div class="serial-list">
         <template v-for="(item, index) in state.serialList">
@@ -64,14 +64,14 @@ const confirmSerial = () => {
   });
 };
 
-const sliderInput = (e, name, direction) => {
-  console.log('valvalval', e)
+const sliderInput = (e, name, direction, option) => {
   let val = e * 100
   let str_val = val.toFixed(0)
   let data = {
     name     : name,
     direction: direction,
-    val      : str_val
+    val      : str_val,
+    option   : option
   }
   setWs(JSON.stringify(data))
 };
@@ -89,10 +89,12 @@ onMounted(() => {
   flex-direction: column;
 
   .ws-res {
+    width: 300px;
+    overflow: hidden;
     position: fixed;
     top: 1rem;
     left: 50%;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0, 0, 0, .3);
     transform: translateX(-50%);
     z-index: 1;
 
@@ -101,12 +103,12 @@ onMounted(() => {
   .worktop {
     position: fixed;
     max-width: 15rem;
-    //height: 100vh;
+    height: 32px;
     z-index: 1;
     right: 0;
     display: flex;
     flex-direction: column;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0, 0, 0, .3);
     .buttons {
       display: flex;
       justify-content: right;
@@ -115,15 +117,24 @@ onMounted(() => {
     }
 
     .serial-list {
+      position: absolute;
+      top: 30px;
+      background-color: rgba(0, 0, 0, .3);
+      display: none;
       .serial-item {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
 
         .input-radio {
-          width: 2rem;
+          width: 20px;
           flex-shrink: 0;
         }
+      }
+    }
+    &:hover{
+      .serial-list {
+        display: block;
       }
     }
   }

@@ -2,7 +2,6 @@ import * as THREE from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {STLLoader} from 'three/addons/loaders/STLLoader';
 import boresStore from '@/store/bores/index.ts';
-
 const bores = boresStore()
 export default class myThree {
     constructor(canvas) {
@@ -149,11 +148,11 @@ export default class myThree {
                     modelArr[info.parent].model.add(model);
                 }
                 if (info.master_slave === 0) {
-                    this.joinTArr[info.field] = model
+                    // this.joinTArr[info.field] = model
                     this.joinTArr[info.field] = item
                 }
             }
-            console.log('this.joinTArr', this.joinTArr)
+            bores.joinTArr  = this.joinTArr
         }
         let initAllModel = async (item) => {
             let model

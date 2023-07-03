@@ -1,100 +1,93 @@
 <template>
-  <div id="my_three"> </div>
+  <div class="test" ref="canvas" id="my_three"></div>
 </template>
-<script setup lang='ts' name="test">
-// import * as THREE from 'https://cdn.skypack.dev/three@v0.129.0';
+<script setup lang='ts'>
 import * as THREE from "three";
-
-// 创建一个场景
-const scene = new THREE.Scene();
-
-// 创建一个相机 视点
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-// 设置相机的位置
-camera.position.set(100,100,0);
-camera.lookAt(new THREE.Vector3(0,0,0));
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 
-// 创建一个渲染器
-const renderer = new THREE.WebGLRenderer();
-// 设置渲染器尺寸
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-document.body.appendChild(renderer.domElement);
-
-// 添加灯光
-const spotLight = new THREE.SpotLight(0xffffff);
-spotLight.position.set(2000,8000,4000);
-scene.add(spotLight);
-
-// 圆柱体
-const geometry = new THREE.CylinderGeometry(2, 2, 40, 8, 12)
-
-const material = new THREE.MeshPhongMaterial();
-
-// 蒙皮 - 皮肤
-const mesh = new THREE.SkinnedMesh(geometry, material)
-scene.add(mesh);
-
-// 首先，创建一个起点. 创建骨骼系统
-let b1 = new THREE.Bone();
-b1.position.set(0, -20, 0);
-
-let b2 = new THREE.Bone();
-b1.add(b2)
-b2.position.set(0, 10, 0);
-
-let b3 = new THREE.Bone();
-b2.add(b3)
-b3.position.set(0, 10, 0)
-
-let b4 = new THREE.Bone();
-b3.add(b4)
-b4.position.set(0, 10, 0)
-
-let b5 = new THREE.Bone();
-b4.add(b5)
-b5.position.set(0, 10, 0)
-
-// 创建骨架
-const skeleton = new THREE.Skeleton([b1, b2, b3, b4, b5])
-mesh.add(b1)
-mesh.bind(skeleton)
-
-// 添加权重   设置的就是蒙皮的权重，  顶点的蒙皮索引
-const index = [] // 索引
-const weight = [] // 权重
-
-const arr = geometry.attributes.position.array;
-for (let i = 0; i < arr.length; i += 3) {
-  const y = arr[i + 1] + 20
-
-  // const index = Math.floor(y / 10);
-  const weightValue = (y % 10) / 10
-
-  index.push(Math.floor(y / 10), Math.floor(y / 10) + 1, 0, 0)
-  weight.push(1 - weightValue, weightValue, 0, 0);
+const getQuater = (x, y, z) => {
+  return new THREE.Quaternion().setFromEuler(new THREE.Euler(x, y, z));
 }
-geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(index, 4));
-geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weight, 4));
 
-let step = 0.1;
-const animation = () => {
-  // 渲染
-  renderer.render(scene, camera);
-  // 添加边界
-  if (
-      mesh.skeleton.bones[0].rotation.x > 0.3 ||
-      mesh.skeleton.bones[0].rotation.x < -0.3
-  ) {
-    step = -step
+let q1 = getQuater(0, 0, -Math.PI / 4)
+let q2 = getQuater(0, 0, Math.PI / 3)
+let q3 = getQuater(0, 0, -Math.PI / 2)
+let q4 = getQuater(0, 0, 0)
+let q5 = getQuater(0, 0, Math.PI / 4)
+let q6 = getQuater(0, 0, Math.PI / 3)
+let q7 = getQuater(0, Math.PI / 4, Math.PI / 12)
+let q8 = getQuater(0, 0, -Math.PI / 6)
+let q9 = getQuater(0, -Math.PI / 4, Math.PI / 12)
+let q10 = getQuater(0, Math.PI / 12, 0)
+let q11 = getQuater(0, -Math.PI / 12, 0)
+console.log('q1', q1)
+console.log('q2', q2)
+console.log('q3', q3)
+console.log('q4', q4)
+console.log('q5', q5)
+console.log('q6', q6)
+console.log('q7', q7)
+console.log('q8', q8)
+console.log('q9', q9)
+console.log('q10', q10)
+console.log('q11', q11)
+
+let container;
+// const  canvasRef = ref<HTMLCanvasElement|null>(null)
+const Scene = new THREE.Scene()
+
+const Camera = new THREE.PerspectiveCamera(50, 2, 0.1, 10000)
+Camera.position.z = 500;
+const light = new THREE.DirectionalLight(0xffffff);
+light.position.set(0, 0, 1);
+Scene.add(light);
+
+// const controls = new OrbitControls();
+// controls.target.set(0, 0.75, 0);
+// controls.enableDamping = true;
+
+const renderer = new THREE.WebGLRenderer()
+
+renderer.setClearColor('#ffffff')
+renderer.setSize(1000, 500)
+onMounted(() => {
+  container = document.getElementById("my_three");
+  container.appendChild(renderer.domElement);
+
+  const controls = new OrbitControls(Camera, container);
+  controls.target.set(0, 0.75, 0);
+  controls.enableDamping = true;
+});
+let actions = []
+let mixer = null
+const loader = new FBXLoader()
+// loader.load('/Strut Walking.fbx', mesh => {
+// loader.load('/AnimatedCharacter_lod00.fbx', mesh => {
+loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+  Scene.add(mesh)
+  mixer = new THREE.AnimationMixer(mesh)
+  for (let i = 0; i < mesh.animations.length; i++) {
+    actions.push(mixer.clipAction(mesh.animations[i]))
+    // console.log(mesh.animations[i])
+    console.log(mesh.animations[i])
   }
-
-  for (let i = 0; i < mesh.skeleton.bones.length; i++) {
-    mesh.skeleton.bones[i].rotation.x += step * Math.PI / 180;
+  actions[0].play()
+})
+let clock = new THREE.Clock
+const render = () => {
+  if (mixer) {
+    mixer.update(clock.getDelta())
   }
-
-  requestAnimationFrame(animation);
+  renderer.render(Scene, Camera)
 }
-animation()
+renderer.setAnimationLoop(render)
+
 </script>
+<style lang="scss" scoped>
+.test {
+  width: 100vw;
+  height: 100vh;
+}
+</style>
