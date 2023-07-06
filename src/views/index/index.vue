@@ -97,7 +97,7 @@ onMounted(() => {
     background-color: rgba(0, 0, 0, .3);
     transform: translateX(-50%);
     z-index: 1;
-
+    font-size: 16px;
   }
 
   .worktop {

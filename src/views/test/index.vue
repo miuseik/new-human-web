@@ -3,36 +3,31 @@
 </template>
 <script setup lang='ts'>
 import * as THREE from "three";
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
+import {STLLoader} from 'three/addons/loaders/STLLoader.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 
+const fbx_loader = new FBXLoader()
+const stl_loader = new STLLoader()
+const gltf_loader = new GLTFLoader()
+const draco_Loader = new DRACOLoader();
 
-const getQuater = (x, y, z) => {
-  return new THREE.Quaternion().setFromEuler(new THREE.Euler(x, y, z));
+const material = new THREE.MeshPhongMaterial({
+  color    : 0xff9c7c,
+  specular : 0x494949,
+  shininess: 200
+});
+const loadingModel = () => {
+  return new Promise(((resolve, reject) => {
+    stl_loader.load(`/src/assets/human/HumanSkeleton2022.STL`, (geometry) => {
+      let Mesh = new THREE.Mesh(geometry, material);
+      console.log(Mesh)
+      resolve(Mesh)
+    });
+  }))
 }
-
-let q1 = getQuater(0, 0, -Math.PI / 4)
-let q2 = getQuater(0, 0, Math.PI / 3)
-let q3 = getQuater(0, 0, -Math.PI / 2)
-let q4 = getQuater(0, 0, 0)
-let q5 = getQuater(0, 0, Math.PI / 4)
-let q6 = getQuater(0, 0, Math.PI / 3)
-let q7 = getQuater(0, Math.PI / 4, Math.PI / 12)
-let q8 = getQuater(0, 0, -Math.PI / 6)
-let q9 = getQuater(0, -Math.PI / 4, Math.PI / 12)
-let q10 = getQuater(0, Math.PI / 12, 0)
-let q11 = getQuater(0, -Math.PI / 12, 0)
-console.log('q1', q1)
-console.log('q2', q2)
-console.log('q3', q3)
-console.log('q4', q4)
-console.log('q5', q5)
-console.log('q6', q6)
-console.log('q7', q7)
-console.log('q8', q8)
-console.log('q9', q9)
-console.log('q10', q10)
-console.log('q11', q11)
 
 let container;
 // const  canvasRef = ref<HTMLCanvasElement|null>(null)
@@ -62,10 +57,32 @@ onMounted(() => {
 });
 let actions = []
 let mixer = null
-const loader = new FBXLoader()
+const OOI = {};
+
 // loader.load('/Strut Walking.fbx', mesh => {
 // loader.load('/AnimatedCharacter_lod00.fbx', mesh => {
-loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+
+draco_Loader.setDecoderPath('three/examples/jsm/libs/draco/');
+gltf_loader.setDRACOLoader(draco_Loader);
+gltf_loader.load( 'src/assets/gltf/HumanSkeleton2022.glb', function ( gltf ) {
+  gltf.scene.traverse(n => {
+    if (n.name === 'head') OOI['head'] = n;
+    if (n.name === 'lowerarm_l') OOI['lowerarm_l'] = n;
+    if (n.name === 'Upperarm_l') OOI['Upperarm_l'] = n;
+    if (n.name === 'hand_l') OOI['hand_l'] = n;
+    if (n.name === 'target_hand_l') OOI['target_hand_l'] = n;
+    if (n.name === 'boule') OOI['sphere'] = n;
+    if (n.name === 'Kira_Shirt_left') OOI['kira'] = n;
+  });
+  Scene.add( gltf.scene );
+} );
+// initModel()
+//
+// stl_loader.load(`/src/assets/human/HumanSkeleton2022.STL`, (geometry) => {
+//   let Mesh = new THREE.Mesh(geometry, material);
+//   Scene.add(Mesh)
+// });
+fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
   Scene.add(mesh)
   mixer = new THREE.AnimationMixer(mesh)
   for (let i = 0; i < mesh.animations.length; i++) {

@@ -54,7 +54,8 @@ export default {
 
       this.initBones();
     },
-    initBones() {
+
+    createGeometry(){
       let head = new THREE.SphereGeometry(3, 60, 40);
       let eye_l = new THREE.BoxGeometry(2, 1, 1);
       let eye_r = new THREE.BoxGeometry(2, 1, 1);
@@ -125,6 +126,9 @@ export default {
       human.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
       human.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
 
+      return human
+    },
+    createBones(){
       let bones = [];
       bone1 = new THREE.Bone(); //胸
       bone1.position.y = 5;
@@ -194,6 +198,13 @@ export default {
       bones.push(bone13);
       bones.push(bone14);
       bones.push(bone15);
+    },
+    createMesh(){
+
+    },
+    initBones() {
+      const human = this.createGeometry(); ///这是生成几何体的方法，主要是根据顶点生成对应的skinIndex和skinWeight属性
+      const bones = this.createBones(); ///这是生成几何体的方法，主要是根据顶点生成对应的skinIndex和skinWeight属性
 
       let material = new THREE.MeshPhongMaterial({
         skinning: true,

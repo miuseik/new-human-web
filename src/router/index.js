@@ -33,6 +33,11 @@ let routes= [
         component: () => import(/* webpackChunkName: "about" */ '../views/test/guo.vue')
     },
     {
+        path: '/three_tpl',
+        name: 'threeTpl',
+        component: () => import(/* webpackChunkName: "about" */ '../views/test/threeTpl.vue')
+    },
+    {
         path: '/home',
         name: 'home',
         component: () => import(/* webpackChunkName: "about" */ '../views/home/index.vue')

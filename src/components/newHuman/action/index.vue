@@ -41,7 +41,6 @@ const times = () => {
 //   emit("sliderInput", e, name, direction);
 // }, 1);
 const sliderInput = (e, name, direction) => {
-  console.log(e, name, direction)
   emit("sliderInput", e, name, direction);
 };
 </script>

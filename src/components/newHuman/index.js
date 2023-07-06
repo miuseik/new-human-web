@@ -158,6 +158,8 @@ export default class myThree {
             let model
             if (item.model_type === 1) {
                 model = setJoint(item.position);
+                // const axes = new THREE.AxesHelper(2000);
+                // model.add(axes);
             } else {
                 try {
                     model = await loadingModel(item.model_name, item.position);
@@ -180,7 +182,20 @@ export default class myThree {
     }
 
     setRobotRotation(rotation, name, direction) {
+        // console.log('rotation', rotation, 'name', name, 'direction', direction)
         this.joinTArr[name]['model'].rotation[direction] = rotation
+        //
+        // switch (direction) {
+        //     case 'x':
+        //         this.joinTArr[name]['model'].rotateX(rotation)
+        //         break
+        //     case 'y':
+        //         this.joinTArr[name]['model'].rotateY(rotation)
+        //         break
+        //     case 'z':
+        //         this.joinTArr[name]['model'].rotateZ(rotation)
+        //         break
+        // }
     }
 
     initRenderer() {
