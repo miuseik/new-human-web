@@ -19,7 +19,7 @@
       <!--      </div>-->
     </div>
     <div class="model">
-      <NewHuman @sliderInput="sliderInput"></NewHuman>
+      <NewHuman @modelAction="modelAction" @sliderInput="sliderInput"></NewHuman>
     </div>
   </div>
 </template>
@@ -63,7 +63,10 @@ const confirmSerial = () => {
     state.serialStatus = res.data;
   });
 };
-
+const modelAction = (key, eulerData) => {
+  let e, name, direction, option
+  sliderInput(e, name, direction, option)
+};
 const sliderInput = (e, name, direction, option) => {
   let val = e * 100
   let str_val = val.toFixed(0)

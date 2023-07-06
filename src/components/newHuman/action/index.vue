@@ -12,7 +12,7 @@
       <div class="btn btn-danger">取消</div>
     </div>
     <div class="set-action-box">
-      <slider @sliderInput="sliderInput" :current-action="state.currentAction"></slider>
+      <slider @modelAction = "modelAction" @sliderInput="sliderInput" :current-action="state.currentAction"></slider>
     </div>
   </div>
 </template>
@@ -21,7 +21,7 @@ import slider from '@/components/public/slider/index.vue'
 
 import debounce from "@/utils/putlic/index.js";
 
-const emit = defineEmits(["sliderInput", "switchChange", "updateBoresList"]);
+const emit = defineEmits(["sliderInput", "modelAction", "updateBoresList"]);
 const props = defineProps({
   currentAction     : {
     type   : [String, Number],
@@ -42,6 +42,9 @@ const times = () => {
 // }, 1);
 const sliderInput = (e, name, direction) => {
   emit("sliderInput", e, name, direction);
+};
+const modelAction = (key, eulerData) => {
+  emit("modelAction", key, eulerData);
 };
 </script>
 

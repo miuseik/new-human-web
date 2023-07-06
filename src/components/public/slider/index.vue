@@ -43,7 +43,7 @@ import * as THREE from "three";
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 
 const fbx_loader = new FBXLoader()
-const emit = defineEmits(["sliderInput", "switchChange", "updateBoresList"]);
+const emit = defineEmits(["sliderInput", "modelAction"]);
 const props = defineProps({
   modelValue   : {
     type   : [String, Number],
@@ -71,15 +71,17 @@ const props = defineProps({
   },
 });
 const state = reactive({
-  currentStep : 1,
-  isMouseDown : false,
-  isStart     : false,
-  logAction   : [],
-  duration       : 5000,
-  actions     : {
+  currentStep: 0,
+  mixStep    : 0,
+  isMouseDown: false,
+  isStart    : false,
+  logAction  : [],
+  duration   : 5000,
+  actions    : {
     D1: {
       times    : {},
       values   : {},
+      action   : {},
       key      : 1,
       direction: {
         "x": true,
@@ -91,6 +93,7 @@ const state = reactive({
     D2: {
       times    : {},
       values   : {},
+      action   : {},
       key      : 45,
       direction: {
         "x": true,
@@ -102,6 +105,7 @@ const state = reactive({
     D4: {
       times    : {},
       values   : {},
+      action   : {},
       key      : 46,
       direction: {
         "x": true,
@@ -113,6 +117,7 @@ const state = reactive({
     D6: {
       times    : {},
       values   : {},
+      action   : {},
       key      : 49,
       direction: {
         "x": true,
@@ -124,6 +129,7 @@ const state = reactive({
     D8: {
       times    : {},
       values   : {},
+      action   : {},
       key      : 50,
       direction: {
         "x": true,
@@ -139,54 +145,55 @@ const state = reactive({
 const resetAction = () => {
   for (let key in state.actions) {
     let item = state.actions[key]
-    item.index=0
+    item.index = 0
   }
 }
 
 
-let chunkArray = (arr, len) => {
+let chunkArray = (arr, len, key) => {
   let chunks = Array.from({length: Math.ceil(arr.length / len)}, function (_, i) {
     let data = arr.slice(i * len, i * len + len)
-    let tcb = {
-      isQuaternion: true,
-      "_x"        : data[0],
-      "_y"        : data[1],
-      "_z"        : data[2],
-      "_w"        : data[3]
-    }
+    let x = data[0]
+    let y = data[1]
+    let z = data[2]
+    let w = data[3]
+    let quaternion = new THREE.Quaternion(x, y, z, w);
     let Euler = new THREE.Euler();
-    let newEuler = Euler.setFromQuaternion(tcb)
-    return newEuler;
+    let eulerData = Euler.setFromQuaternion(quaternion)
+    if (key === 'D2' || key === 'D6') {
+      eulerData['_z'] = eulerData['_z'] + Math.PI
+    }
+    return eulerData;
   });
-  state.values = chunks
   return chunks;
 }
 
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
     fbx_loader.load('/Martelo 2.fbx', mesh => {
-    // fbx_loader.load('/Standing Jump.fbx', mesh => {
-    // fbx_loader.load('/Flair.fbx', mesh => {
+    //   fbx_loader.load('/Standing Jump.fbx', mesh => {
+    //   fbx_loader.load('/Flair.fbx', mesh => {
     // fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
-    // fbx_loader.load('/Strut Walking.fbx', mesh => {
+      // fbx_loader.load('/Strut Walking.fbx', mesh => {
+      state.mixStep = 0
       let action = mesh.animations[0]['tracks']
       let duration = mesh.animations[0]['duration'] * 1000
       state.duration = parseInt(duration)
-      console.log(duration)
-      console.log(state.duration )
       resolve(action)
     })
   }))
 }
 
 const init = async () => {
-  console.log(';state.actions', state.actions)
   let action = await initModel()
   for (let key in state.actions) {
     let item = state.actions[key]
     item.times = action[item['key']]['times']
     let val = action[item['key']]['values']
-    item.values = chunkArray(val, 4)
+    item.values = chunkArray(val, 4, key)
+    item.times.forEach((data, index) => {
+      item.action[data.toFixed(3).toString()] = item.values[index]
+    })
   }
 }
 init()
@@ -204,45 +211,43 @@ const mouseup = (item) => {
   state.isMouseDown = false
   checkStep(item)
 }
+const setAction = () => {
+  for (let key in state.actions) {
+    let item = state.actions[key]
+    let index = item.times[item.index] || 0
+    let time = (state.currentStep / 1000).toFixed(3)
+    let eulerData = item['action'][time] || ''
+    if (eulerData) {
+      for (let direction in item.direction) {
+        if (item.direction[direction]) {
+          let value = eulerData[`_${direction}`] || ''
+          emit("sliderInput", value, key, direction)
+        }
+      }
+      emit("modelAction", key, eulerData)
+      item.index++
+    }
+  }
+  state.mixStep = state.mixStep < state.currentStep ? state.currentStep : state.mixStep
+}
 const checkStep = (item) => {
   if (!state.isMouseDown) return
   state.currentStep = item
+  setAction()
 }
 let timer
 const start = () => {
   state.isStart = true
-  let num = state.currentStep || 1;
-  let tim = 0
   timer = setInterval(() => {
-    num++;
-    var time = tim.toFixed(3)
-    for (let key in state.actions) {
-      let item = state.actions[key]
-      let index =  item.times[item.index] || 0
-      let timNums =   index.toFixed(3)
-      if (time === timNums) {
-        for (let direction in item.direction) {
-          if (item.direction[direction]) {
-            let value = item.values[item.index][`_${direction}`] || ''
-            let action = key+direction
-            if (action === 'D2z' || action === 'D6z' ){
-              // console.log(value)
-              value =  value + (Math.PI)
-            }
-            emit("sliderInput", value, key, direction);
-          }
-        }
-        item.index++
-      }
-    }
-    tim += 0.001
-    state.currentStep = num
-    if (num >= state.duration) {
+    setAction()
+    state.currentStep++
+    if (state.currentStep >= state.duration) {
+      state.mixStep = state.duration + 1
       reset()
       clearInterval(timer);
       start()
     }
-  }, 2);
+  }, 1);
 }
 const stop = () => {
   state.isStart = false
@@ -250,9 +255,8 @@ const stop = () => {
 }
 const reset = () => {
   resetAction()
-  console.log(state.actions)
   state.isStart = false
-  state.currentStep = 1
+  state.currentStep = 0
   clearInterval(timer);
 }
 </script>
