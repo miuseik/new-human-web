@@ -49,7 +49,6 @@ const setWs = (socket) => {
   $bus.emit("postWebSocket", socket);
 };
 
-
 const getSerialList = () => {
   API.newHuman.query_bluetooth().then(res => {
     state.serialList = res.data;
@@ -68,7 +67,9 @@ const modelAction = (key, eulerData) => {
   sliderInput(e, name, direction, option)
 };
 const sliderInput = (e, name, direction, option) => {
+
   let val = e * 100
+
   let str_val = val.toFixed(0)
   let data = {
     name     : name,

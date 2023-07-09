@@ -53,16 +53,23 @@ const add = () => {
   let num = Number(state.innerValue)
   num += Number(props.step)
   state.innerValue = num.toFixed(2);
-  sliderInput()
+  setInput()
 }
 const unadd = () => {
   let num = Number(state.innerValue)
   num -= Number(props.step)
   state.innerValue = num.toFixed(2);
-  sliderInput()
+  setInput()
+}
+const setInput = (e = {}) => {
+  state.innerValue = e && e['target'] && e['target'].value || state.innerValue
+  state.value = state.innerValue
+  console.log('??', state.innerValue)
+  emit("sliderInput", state.innerValue );
 }
 const sliderInput = (e = {}) => {
   state.innerValue = e && e['target'] && e['target'].value || state.innerValue
+  console.log('??', state.innerValue)
   emit("update:modelValue", state.innerValue );
 }
 </script>

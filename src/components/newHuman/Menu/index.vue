@@ -108,17 +108,18 @@
               </div>
               <template v-for="(option, index) in item.option">
                 <p v-if="option.open">
-                  {{ index }} {{option.value}}
-<!--                  <inputRange-->
-<!--                      :min="option.min"-->
-<!--                      :max="option.max"-->
-<!--                      :value="option.value"-->
-<!--                      @sliderInput="sliderInput($event, `${item.field}`, index)"-->
-<!--                  ></inputRange>-->
+                  {{ index }} {{ option.value }}
+                  <!--                  <inputRange-->
+                  <!--                      :min="option.min"-->
+                  <!--                      :max="option.max"-->
+                  <!--                      :value="option.value"-->
+                  <!--                      @sliderInput="sliderInput($event, `${item.field}`, index)"-->
+                  <!--                  ></inputRange>-->
                   <inputRange
                       :min="option.min"
                       :max="option.max"
                       v-model="option.value"
+                      @sliderInput="sliderInput( $event,`${item.field}`, index)"
                       @input="sliderInput(option.value, `${item.field}`, index)"
                   ></inputRange>
                 </p>
@@ -222,6 +223,7 @@ getList()
 //   emit("sliderInput", e, name, direction);
 // }, 1);
 const sliderInput = (e, name, direction) => {
+  console.log(e, name, direction)
   emit("sliderInput", e, name, direction);
 }
 const switchChange = (e) => {
@@ -270,6 +272,7 @@ const newBores = (item) => {
   padding: 20px 10px;
   display: flex;
   flex-direction: column;
+
   .slider-item {
     //margin: 20px 0;
   }
@@ -277,6 +280,7 @@ const newBores = (item) => {
   .demonstration {
     margin: 0 10px 10px 0;
   }
+
   .list-warp {
     overflow: auto;
     //height: 100%;

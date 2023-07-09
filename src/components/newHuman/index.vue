@@ -39,7 +39,7 @@ onMounted(() => {
   let dom = document.getElementById("three_id");
   base = new myThree(dom);
 });
-const modelAction = (key, eulerData) => {
+const modelAction = (name, eulerData) => {
   // x = Math.cos(α) *Math.cos(β)
   // y = Math.sin(α) *Math.cos(β)
   // z = Math.sin(β)
@@ -51,29 +51,57 @@ const modelAction = (key, eulerData) => {
   // z = sin45° ≈ 0.7071
   // 因此，该点的坐标为(0.3827, 0.3827, 0.7071)。
   // console.log('eulerData', eulerData)
-  let alpha  =eulerData['_x']
-  let  beta =eulerData['_y']
-  let x = Math.cos(alpha) *Math.cos(beta)
-  let y = Math.sin(alpha) *Math.cos(beta)
+  let alpha = eulerData['_x']
+  let beta = eulerData['_y']
+  let gamma = eulerData['_z']
+  let x = Math.cos(alpha) * Math.cos(beta)
+  let y = Math.sin(alpha) * Math.cos(beta)
   let z = Math.sin(beta)
+  let action = {
+    x: {
+      coordinate: x,
+      euler     : alpha,
+    },
+    y: {
+      coordinate: y,
+      euler     : beta,
+    },
+    z: {
+      coordinate: z,
+      euler     : gamma,
+    },
+  }
   // console.log(key, 'x ------', x)
   // console.log(key, 'y ------', y)
   // console.log(key, 'z ------', z)
-  // for(let item in eulerData){
-  //   console.log(item)
-  // }
+  for (let key in action) {
+    let item = action[key]
+    let option = state.joinTArr[name]['info']['option'][key]
+    driveServer(item['coordinate'], name, key, option)
+    driveModel(item['euler'], name, key, option)
+  }
   // emit("modelAction", key, eulerData);
   // let e, name, direction
   // sliderInput(e, name, direction)
 };
-const sliderInput = (e, name, direction) => {
+const driveServer = (e, name, direction, option) => {
+  let server_val =  180/Math.PI * e
 
+  server_val = option.server_reverse ? server_val * -1 : server_val
+  // console.log("sliderInput", server_val, name, direction);
 
-  state.currentAction = e
+  emit("sliderInput", server_val, name, direction);
+}
+const driveModel = (e, name, direction, option) => {
+  let model_val = option.model_reverse ? e * -1 : e
+  base.setRobotRotation(model_val, name, direction);
+}
+const sliderInput = (e, name, direction, terminal) => {
   let option = state.joinTArr[name]['info']['option'][direction]
   let server_val = option.server_reverse ? e * -1 : e
   let model_val = option.model_reverse ? e * -1 : e
-  emit("sliderInput", server_val, name, direction, option);
+
+  emit("sliderInput", server_val, name, direction);
   base.setRobotRotation(model_val, name, direction);
 };
 const switchChange = (enabled) => {

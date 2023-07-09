@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {STLLoader} from 'three/addons/loaders/STLLoader';
 import boresStore from '@/store/bores/index.ts';
+
 const bores = boresStore()
 export default class myThree {
     constructor(canvas) {
@@ -57,8 +58,8 @@ export default class myThree {
         );
         plane.rotation.x      = -Math.PI / 2;
         plane.position.y      = -.5;
-        this.scene.add(plane);
         plane.receiveShadow = true;
+        this.scene.add(plane);
     }
 
     initCamera() {
@@ -67,22 +68,30 @@ export default class myThree {
         this.scene.add(camera);
         this.camera = camera;
     }
+    addShadowedLight( x, y, z, color, intensity ) {
 
-    inLights() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        this.scene.add(ambientLight);
-        const directionalLight      = new THREE.DirectionalLight(0xffffff, 1.5);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.set(1024, 1024);
-        directionalLight.shadow.camera.far    = 25;
-        directionalLight.shadow.camera.left   = -7;
-        directionalLight.shadow.camera.top    = 7;
-        directionalLight.shadow.camera.right  = 7;
-        directionalLight.shadow.camera.bottom = -7;
-        directionalLight.position.set(5, 5, 5);
-        this.scene.add(directionalLight);
+        const directionalLight = new THREE.DirectionalLight( color, intensity );
+
     }
-
+    inLights() {
+        const addShadowedLight = ( x, y, z, color, intensity )  => {
+            const directionalLight = new THREE.DirectionalLight( color, intensity );
+            directionalLight.position.set( x, y, z );
+            directionalLight.castShadow = true;
+            const d = 1;
+            directionalLight.shadow.camera.left = - d;
+            directionalLight.shadow.camera.right = d;
+            directionalLight.shadow.camera.top = d;
+            directionalLight.shadow.camera.bottom = - d;
+            directionalLight.shadow.camera.near = 1;
+            directionalLight.shadow.camera.far = 4;
+            directionalLight.shadow.bias = - 0.002;
+            this.scene.add( directionalLight );
+        }
+        this.scene.add( new THREE.HemisphereLight( 0x8d7c7c, 0x494966, 3 ) );
+        addShadowedLight( 500, 500, 500, 0xffffff, 3.5 );
+        addShadowedLight( 1000, 1000, 800, 0xffd500, 3 );
+    }
     initHelper() {
         const axes = new THREE.AxesHelper(2000);
         this.scene.add(axes);
@@ -96,10 +105,10 @@ export default class myThree {
         controls.enableDamping = true;
         this.controls          = controls;
     }
+
     setControlsEnabled(enabled) {
         this.controls.enabled = enabled
     }
-
 
     initRobot = async () => {
         this.joinTArr = {}
@@ -107,10 +116,7 @@ export default class myThree {
             this.scene.remove(this.rootModel);
         }
         const loader           = new STLLoader();
-        const sphereMesh       = new THREE.MeshPhongMaterial({color: "#67C23A", specular: 0x494949, shininess: 200})
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
-        const SphereGeometry_d = new THREE.SphereGeometry(.5)
-        const boxMesh          = new THREE.MeshPhongMaterial({color: "#E45826", specular: 0x494949, shininess: 200})
         const material         = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
         let setJoint           = (position, size) => {
             const SphereGeometry = new THREE.SphereGeometry(size || 20)
@@ -118,48 +124,49 @@ export default class myThree {
             joint.position.set(position.x, position.y, position.z);
             return joint
         }
-        let loadingModel       = (name, position, rotation, scale) => {
+        let loadingModel       = (name, position) => {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25}
-                let _rotation = rotation || {x: 0, y: 0, z: 0}
                 loader.load(`/src/assets/human/${name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
-                    Mesh.rotation.set(_rotation.x, _rotation.y, _rotation.z);
                     Mesh.castShadow = true;
-                    // Mesh.scale.set(_scale.x, _scale.y, _scale.z);
                     resolve(Mesh)
                 });
             }))
         }
         // let modelArr     = []
-        let modelArr     = {}
-        let boresList    = bores.boresList || []
-        let modelNum     = boresList.length
-        let setScenes    = async () => {
+        let modelArr           = {}
+        let boresList          = bores.boresList || []
+        let modelNum           = boresList.length
+        let setScenes          = async () => {
             for (let key in modelArr) {
-                let item = modelArr[key]
+                let item  = modelArr[key]
                 let model = item.model
-                let info = item.info
+                let info  = item.info
                 if (info.parent === 0) {
                     this.rootModel = model
                     this.scene.add(this.rootModel);
-                }else {
+                } else {
                     modelArr[info.parent].model.add(model);
+                    // console.log(key)
+                    if (info.field === 'D2') {
+                        const axes = new THREE.AxesHelper(2000);
+                        model.add(axes);
+                    }
                 }
                 if (info.master_slave === 0) {
                     // this.joinTArr[info.field] = model
                     this.joinTArr[info.field] = item
                 }
             }
-            bores.joinTArr  = this.joinTArr
+            bores.joinTArr = this.joinTArr
         }
-        let initAllModel = async (item) => {
+        let initAllModel       = async (item) => {
             let model
             if (item.model_type === 1) {
                 model = setJoint(item.position);
-                // const axes = new THREE.AxesHelper(2000);
-                // model.add(axes);
+
             } else {
                 try {
                     model = await loadingModel(item.model_name, item.position);
@@ -182,44 +189,28 @@ export default class myThree {
     }
 
     setRobotRotation(rotation, name, direction) {
-        // console.log('rotation', rotation, 'name', name, 'direction', direction)
         this.joinTArr[name]['model'].rotation[direction] = rotation
-        //
-        // switch (direction) {
-        //     case 'x':
-        //         this.joinTArr[name]['model'].rotateX(rotation)
-        //         break
-        //     case 'y':
-        //         this.joinTArr[name]['model'].rotateY(rotation)
-        //         break
-        //     case 'z':
-        //         this.joinTArr[name]['model'].rotateZ(rotation)
-        //         break
-        // }
+
+        // this.joinTArr[name]['model'][`rotate${direction.toUpperCase()}`](rotation)
     }
 
     initRenderer() {
-        this.renderer                   = new THREE.WebGLRenderer({
-            canvas: this.canvas,
-        });
-        this.renderer.shadowMap.enabled = true;
+        this.renderer                   = new THREE.WebGLRenderer({canvas: this.canvas,});
         this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
-        this.renderer.setSize(this.sizes.width, this.sizes.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.setClearColor("#fff");
+        this.renderer.setSize(this.sizes.width, this.sizes.height);
+        this.renderer.useLegacyLights = false;
+        this.renderer.shadowMap.enabled = true;
     }
 
     initAnimateTick() {
         const elapsedTime = this.clock.getElapsedTime();
         const deltaTime   = elapsedTime - this.previousTime;
         this.previousTime = elapsedTime;
-
         //Update controls
         this.controls.update();
-
         // Render
         this.renderer.render(this.scene, this.camera);
-
         // Call tick again on the next frame
         window.requestAnimationFrame(() => {
             this.initAnimateTick()
