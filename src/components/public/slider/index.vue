@@ -16,14 +16,7 @@
       <div class="btn btn-brand" @click="stop" v-else>停止</div>
       <div class="btn btn-brand" @click="reset">复位</div>
     </div>
-    <div class="demo">
-      <div class="inner">
-        <div class="dot" id="dot">
-        </div>
-        <div class="dot dot-mark">
-        </div>
-      </div>
-    </div>
+
   </div>
 </template>
 <script lang="ts" setup>
@@ -63,24 +56,23 @@ const state = reactive({
   mixStep    : 0,
   isMouseDown: false,
   isStart    : false,
-  isStartDemo    : false,
+  isStartDemo: false,
   logAction  : [],
   duration   : 5000,
   quaternion : [],
-  dot : null,
   actions    : {
-    // D1: {
-    //   times    : {},
-    //   values   : {},
-    //   action   : {},
-    //   key      : 1,
-    //   direction: {
-    //     "x": true,
-    //     "y": true,
-    //     "z": true,
-    //   },
-    //   index    : 0
-    // },
+    D1: {
+      times    : {},
+      values   : {},
+      action   : {},
+      key      : 1,
+      direction: {
+        "x": true,
+        "y": true,
+        "z": true,
+      },
+      index    : 0
+    },
     D2: {
       times    : {},
       values   : {},
@@ -140,9 +132,8 @@ const resetAction = () => {
   }
 }
 const setRange = (val, key) => {
-  if(Math.abs(val) > Math.PI){
-    console.log('---', key, val)
-    return val - (2*Math.PI)
+  if (Math.abs(val) > Math.PI) {
+    return val - (2 * Math.PI)
   }
   return val
 }
@@ -156,17 +147,12 @@ let chunkArray = (arr, len, key) => {
     let quaternion = new THREE.Quaternion(x, y, z, w);
     let Euler = new THREE.Euler();
     let eulerData = Euler.setFromQuaternion(quaternion)
-
-    // console.log(eulerData)
     if (key === 'D2' || key === 'D6') {
       eulerData['_z'] = eulerData['_z'] + Math.PI
     }
-    eulerData['_x'] = setRange(eulerData['_x'] , '_x')
-    eulerData['_y'] = setRange(eulerData['_y'] , '_y')
-    eulerData['_z'] = setRange(eulerData['_z'] , '_z')
-    if (key === 'D2' ) {
-      state.quaternion.push(quaternion)
-    }
+    eulerData['_x'] = setRange(eulerData['_x'], '_x')
+    eulerData['_y'] = setRange(eulerData['_y'], '_y')
+    eulerData['_z'] = setRange(eulerData['_z'], '_z')
     return eulerData;
   });
   return chunks;
@@ -175,14 +161,13 @@ let chunkArray = (arr, len, key) => {
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
     // fbx_loader.load('/Martelo 2.fbx', mesh => {
-      fbx_loader.load('/Standing Jump.fbx', mesh => {
-    //   fbx_loader.load('/Flair.fbx', mesh => {
-    // fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
-    // fbx_loader.load('/Strut Walking.fbx', mesh => {
+        // fbx_loader.load('/Standing Jump.fbx', mesh => {
+        // fbx_loader.load('/Flair.fbx', mesh => {
+      fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+      // fbx_loader.load('/Strut Walking.fbx', mesh => {
       state.mixStep = 0
       let action = mesh.animations[0]['tracks']
       let duration = mesh.animations[0]['duration'] * 1000
-      console.log(action)
       state.duration = parseInt(duration)
       resolve(action)
     })
@@ -200,9 +185,6 @@ const init = async () => {
       item.action[data.toFixed(3).toString()] = item.values[index]
     })
   }
-  console.log('state.quaternion', state.quaternion)
-  console.log(state.actions['D2'])
-
 }
 init()
 watch(() => props.currentAction, val => {
@@ -219,7 +201,6 @@ const mouseup = (item) => {
   state.isMouseDown = false
   checkStep(item)
 }
-let a           = 3 / (Math.PI / 2)
 const jd = (hd) => {
   // 角度= 弧度 * 180 / Math.PI
   return hd * (180 / Math.PI)
@@ -229,38 +210,12 @@ const hd = (jd) => {
   return jd * (Math.PI / 180)
 }
 
-const setDot = (eulerData) => {
-  const getServer = (val) => {
-    let old_val = val || 0
-    let new_val = parseInt(old_val * a + 300)
-    return new_val
-  }
-  let x = eulerData['_x'] || ''
-  let y = eulerData['_y'] || ''
-  let z = eulerData['_z'] || ''
-  // 弧度= 角度 * Math.PI / 180
-  // 角度= 弧度 * 180 / Math.PI
-  let new_x = x * 100
-  let new_y = y * 100
-  let new_z = z * 100
-  let ser_y = getServer(new_y)
-  let ser_z = getServer(new_z)
-  console.log('new_x', jd(x))
-  console.log('new_y', jd(y))
-  console.log('new_z', jd(z))
-  state.dot.style.top = `${ser_y/2}px`
-  state.dot.style.right = `${ser_z/2}px`
-}
 const setAction = () => {
   for (let key in state.actions) {
     let item = state.actions[key]
     let time = (state.currentStep / 1000).toFixed(3)
     let eulerData = item['action'][time] || ''
     if (eulerData) {
-      if (key === 'D2'){
-        setDot(eulerData)
-        console.log(eulerData)
-      }
       emit("modelAction", key, eulerData)
     }
   }
@@ -283,7 +238,7 @@ const start = () => {
       clearInterval(timer);
       start()
     }
-  }, 1);
+  }, 10);
 }
 const stop = () => {
   state.isStart = false
@@ -296,9 +251,7 @@ const reset = () => {
   clearInterval(timer);
 }
 
-onMounted(() => {
-  state.dot = document.querySelector('#dot')
-})
+
 </script>
 
 <style lang="scss" scoped>
@@ -306,41 +259,6 @@ onMounted(() => {
 .range {
   width: 100%;
 
-  .demo {
-    width: 300px;
-    height: 300px;
-    position: fixed;
-    background-color: #060f14;
-    top: 40px;
-    right: 0;
-
-    .inner {
-      border: #2DC3FE solid 1px;
-      border-radius: 50%;
-      width: 100%;
-      height: 100%;
-      position: relative;
-
-      .dot {
-        border: #2DC3FE solid 1px;
-        background-color: #b3e19d;
-        border-radius: 50%;
-        width: 10px;
-        height: 10px;
-        position: absolute;
-      }
-      .dot-mark{
-        background-color: red;
-        top: 50%;
-        left: 50%;
-        transform: translateX(-50%) translateY(-50%);
-      }
-    }
-
-    .dot {
-
-    }
-  }
 
   .range-box {
     display: flex;

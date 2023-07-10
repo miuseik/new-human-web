@@ -6,6 +6,14 @@
             @updateBoresList="updateBoresList"/>
     </div>
     <action @modelAction="modelAction" @sliderInput="sliderInput" :current-action="state.currentAction"></action>
+    <div class="dot-warp">
+      <div class="inner">
+        <div class="dot" id="dot">
+        </div>
+        <div class="dot dot-mark">
+        </div>
+      </div>
+    </div>
     <canvas class="webgl" ref="webgl" id="three_id"></canvas>
   </div>
 </template>
@@ -20,6 +28,7 @@ import boresStore from '@/store/bores/index.ts';
 
 const bores = boresStore()
 const state = reactive({
+  dot          : null,
   joinTArr     : bores.joinTArr || {},
   currentAction: ''
 })
@@ -39,68 +48,65 @@ onMounted(() => {
   let dom = document.getElementById("three_id");
   base = new myThree(dom);
 });
+let x
+let y
+let z
+const jd = (hd) => {
+  // 角度= 弧度 * 180 / Math.PI
+  return hd * (180 / Math.PI)
+}
+const hd = (jd) => {
+  // 弧度= 角度 * Math.PI / 180
+  return jd * (Math.PI / 180)
+}
+const setDot = (direction, e) => {
+  let PI = 3 / (Math.PI / 2)
+  // let PI = 1.5 / Math.PI
+  const getServer = (val) => {
+    let old_val = val || 0
+    let new_val = parseInt(old_val * PI + 300)
+    return new_val
+  }
+  // 弧度= 角度 * Math.PI / 180
+  // 角度= 弧度 * 180 / Math.PI
+  switch (direction) {
+    case 'x':
+      x = e
+      break
+    case 'y':
+      y = e
+      break
+    case 'z':
+      z = e
+      break
+  }
+  let theta = x
+  let theta_y= y * Math.cos(theta) - z * Math.sin(theta) ;
+  let theta_z= y * Math.sin(theta) + z * Math.cos(theta) ;
+  state.dot.style.top = `${getServer(theta_y *100) / 2}px`
+  state.dot.style.left = `${getServer(theta_z *100) / 2}px`
+}
 const modelAction = (name, eulerData) => {
-  // x = Math.cos(α) *Math.cos(β)
-  // y = Math.sin(α) *Math.cos(β)
-  // z = Math.sin(β)
-  // 其中，α为偏航角，β为俯仰角，γ为翻滚角。
-
-  // 例如，如果给定欧拉角为(30, 45, 60)，则该点在直角坐标系中的坐标为：
-  // x = cos30° cos45° ≈ 0.3827
-  // y = sin30° cos45° ≈ 0.3827
-  // z = sin45° ≈ 0.7071
-  // 因此，该点的坐标为(0.3827, 0.3827, 0.7071)。
-  // console.log('eulerData', eulerData)
   let alpha = eulerData['_x']
   let beta = eulerData['_y']
   let gamma = eulerData['_z']
-  let x = Math.cos(alpha) * Math.cos(beta)
-  let y = Math.sin(alpha) * Math.cos(beta)
-  let z = Math.sin(beta)
   let action = {
-    x: {
-      coordinate: x,
-      euler     : alpha,
-    },
-    y: {
-      coordinate: y,
-      euler     : beta,
-    },
-    z: {
-      coordinate: z,
-      euler     : gamma,
-    },
+    x: {euler     : alpha,},
+    y: {euler     : beta,},
+    z: {euler     : gamma,},
   }
-  // console.log(key, 'x ------', x)
-  // console.log(key, 'y ------', y)
-  // console.log(key, 'z ------', z)
   for (let key in action) {
     let item = action[key]
-    let option = state.joinTArr[name]['info']['option'][key]
-    driveServer(item['coordinate'], name, key, option)
-    driveModel(item['euler'], name, key, option)
+    sliderInput(item['euler'], name, key)
   }
-  // emit("modelAction", key, eulerData);
-  // let e, name, direction
-  // sliderInput(e, name, direction)
 };
-const driveServer = (e, name, direction, option) => {
-  let server_val =  180/Math.PI * e
-
-  server_val = option.server_reverse ? server_val * -1 : server_val
-  // console.log("sliderInput", server_val, name, direction);
-
-  emit("sliderInput", server_val, name, direction);
-}
-const driveModel = (e, name, direction, option) => {
-  let model_val = option.model_reverse ? e * -1 : e
-  base.setRobotRotation(model_val, name, direction);
-}
-const sliderInput = (e, name, direction, terminal) => {
+const sliderInput = (e, name, direction) => {
+  if (name === 'D2') {
+    setDot(direction, e)
+  }
   let option = state.joinTArr[name]['info']['option'][direction]
   let server_val = option.server_reverse ? e * -1 : e
   let model_val = option.model_reverse ? e * -1 : e
-
   emit("sliderInput", server_val, name, direction);
   base.setRobotRotation(model_val, name, direction);
 };
@@ -110,6 +116,9 @@ const switchChange = (enabled) => {
 const updateBoresList = () => {
   base.initRobot();
 };
+onMounted(() => {
+  state.dot = document.querySelector('#dot')
+})
 // defineExpose({ setRobotRotation, setControlsEnabled });
 </script>
 
@@ -129,5 +138,46 @@ const updateBoresList = () => {
     color: #fff;
     font-size: .7rem;
   }
+
+  .dot-warp {
+    width: 300px;
+    height: 300px;
+    position: fixed;
+    background-color: #060f14;
+    top: 40px;
+    right: 0;
+
+    .inner {
+      border: #2DC3FE solid 1px;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      position: relative;
+
+      .dot {
+        border: #2DC3FE solid 1px;
+        background-color: #b3e19d;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
+
+      .dot-mark {
+        background-color: red;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
+    }
+
+    .dot {
+
+    }
+  }
+
 }
 </style>

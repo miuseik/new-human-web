@@ -28,8 +28,9 @@ const state = {
   model:[
       // 'Martelo 2.fbx',
       // 'Brutal Assassination.fbx',
-      'Catwalk Walk Forward Turn 90R.fbx',
+      // 'Catwalk Walk Forward Turn 90R.fbx',
       // 'Strut Walking.fbx'
+      'Standing Jump.fbx'
   ]
 };
 
@@ -181,7 +182,7 @@ const loadFbx = () => {
           // console.log(mesh.animations[i])
         }
         resolve(actions)
-        // actions[0].play()
+        actions[0].play()
         console.log('loadFbx', actions)
         // actions[index][0].play()
       })
