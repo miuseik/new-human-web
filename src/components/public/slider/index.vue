@@ -160,10 +160,10 @@ let chunkArray = (arr, len, key) => {
 
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
-    // fbx_loader.load('/Martelo 2.fbx', mesh => {
-        // fbx_loader.load('/Standing Jump.fbx', mesh => {
-        // fbx_loader.load('/Flair.fbx', mesh => {
-      fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+    fbx_loader.load('/Martelo 2.fbx', mesh => {
+    // fbx_loader.load('/Standing Jump.fbx', mesh => {
+    // fbx_loader.load('/Flair.fbx', mesh => {
+    // fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
       // fbx_loader.load('/Strut Walking.fbx', mesh => {
       state.mixStep = 0
       let action = mesh.animations[0]['tracks']
@@ -227,8 +227,17 @@ const checkStep = (item) => {
   setAction()
 }
 let timer
+let timerOut
 const start = () => {
   state.isStart = true
+  // timerOut = setInterval(() => {
+  //   setAction()
+  //   state.currentStep++
+  //   if (state.currentStep >= state.duration) {
+  //     reset()
+  //   }
+  //   start()
+  // }, 1)
   timer = setInterval(() => {
     setAction()
     state.currentStep++
@@ -238,17 +247,19 @@ const start = () => {
       clearInterval(timer);
       start()
     }
-  }, 10);
+  }, 1);
 }
 const stop = () => {
   state.isStart = false
   clearInterval(timer);
+  clearTimeout(timerOut)
 }
 const reset = () => {
   resetAction()
   state.isStart = false
   state.currentStep = 0
   clearInterval(timer);
+  clearTimeout(timerOut)
 }
 
 

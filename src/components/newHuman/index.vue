@@ -48,17 +48,10 @@ onMounted(() => {
   let dom = document.getElementById("three_id");
   base = new myThree(dom);
 });
-let x
-let y
-let z
-const jd = (hd) => {
-  // 角度= 弧度 * 180 / Math.PI
-  return hd * (180 / Math.PI)
-}
-const hd = (jd) => {
-  // 弧度= 角度 * Math.PI / 180
-  return jd * (Math.PI / 180)
-}
+let x = 0
+let y = 0
+let z = 0
+
 const setDot = (direction, e) => {
   let PI = 3 / (Math.PI / 2)
   // let PI = 1.5 / Math.PI
@@ -67,42 +60,46 @@ const setDot = (direction, e) => {
     let new_val = parseInt(old_val * PI + 300)
     return new_val
   }
-  // 弧度= 角度 * Math.PI / 180
-  // 角度= 弧度 * 180 / Math.PI
   switch (direction) {
     case 'x':
-      x = e
+      x = e || 0
       break
     case 'y':
-      y = e
+      y = e || 0
       break
     case 'z':
-      z = e
+      z = e || 0
       break
   }
+  let action = {
+    x: 0,
+    y: 0,
+    z: 0,
+  }
   let theta = x
-  let theta_y= y * Math.cos(theta) - z * Math.sin(theta) ;
-  let theta_z= y * Math.sin(theta) + z * Math.cos(theta) ;
-  state.dot.style.top = `${getServer(theta_y *100) / 2}px`
-  state.dot.style.left = `${getServer(theta_z *100) / 2}px`
+  let theta_y = y * Math.cos(theta) - z * Math.sin(theta);
+  let theta_z = y * Math.sin(theta) + z * Math.cos(theta);
+  action.x = getServer(x * 100)
+  action.y = getServer(theta_y * 100)
+  action.z = getServer(theta_z * 100)
+  state.dot.style.top = `${action.z / 2}px`
+  state.dot.style.left = `${action.y / 2}px`
 }
 const modelAction = (name, eulerData) => {
-  let alpha = eulerData['_x']
-  let beta = eulerData['_y']
-  let gamma = eulerData['_z']
   let action = {
-    x: {euler     : alpha,},
-    y: {euler     : beta,},
-    z: {euler     : gamma,},
+    x: eulerData['_x'],
+    y: eulerData['_y'],
+    z: eulerData['_z'],
   }
+
   for (let key in action) {
     let item = action[key]
-    sliderInput(item['euler'], name, key)
+    sliderInput(item, name, key)
   }
 };
 const sliderInput = (e, name, direction) => {
-  if (name === 'D2') {
-    setDot(direction, e)
+  if (name === "D2"){
+    let action = setDot(direction, e)
   }
   let option = state.joinTArr[name]['info']['option'][direction]
   let server_val = option.server_reverse ? e * -1 : e
@@ -144,6 +141,7 @@ onMounted(() => {
     height: 300px;
     position: fixed;
     background-color: #060f14;
+    border-radius: 50%;
     top: 40px;
     right: 0;
 

@@ -108,7 +108,7 @@
               </div>
               <template v-for="(option, index) in item.option">
                 <p v-if="option.open">
-                  {{ index }} {{ option.value }}
+                  {{ index }} {{ state.innerData[item.field][index] }}
                   <!--                  <inputRange-->
                   <!--                      :min="option.min"-->
                   <!--                      :max="option.max"-->
@@ -118,9 +118,9 @@
                   <inputRange
                       :min="option.min"
                       :max="option.max"
-                      v-model="option.value"
-                      @sliderInput="sliderInput( $event,`${item.field}`, index)"
-                      @input="sliderInput(option.value, `${item.field}`, index)"
+                      v-model="state.innerData[item.field][index]"
+                      @sliderInput="sliderInput( $event,`${item.field}`, index, state.innerData[item.field])"
+                      @input="sliderInput(state.innerData[item.field][index], `${item.field}`, index, state.innerData[item.field])"
                   ></inputRange>
                 </p>
               </template>
@@ -147,6 +147,9 @@ const state = reactive({
   showGrid     : [
     'name'
   ],
+  innerData:{
+
+  },
   itemTpl      : {
     id          : 0,
     field       : "D",
@@ -216,14 +219,24 @@ const getList = () => {
   boresX.getBoresList().then((data) => {
     emit("updateBoresList");
     state.boresList = data
+    for (let index in state.boresList){
+      let item = state.boresList[index]
+      let option = item.option
+      state.innerData[item.field] = {
+        x:option.x['value'],
+        y:option.y['value'],
+        z:option.z['value'],
+      }
+      console.log(state.innerData)
+    }
   })
 }
 getList()
 // const sliderInput = debounce((e, name, direction) => {
 //   emit("sliderInput", e, name, direction);
 // }, 1);
-const sliderInput = (e, name, direction) => {
-  console.log(e, name, direction)
+const sliderInput = (e, name, direction,option) => {
+  console.log(e, name, direction,option)
   emit("sliderInput", e, name, direction);
 }
 const switchChange = (e) => {
