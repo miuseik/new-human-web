@@ -68,15 +68,21 @@ const setDot = (euler) => {
     y: 0,
     z: 0,
   }
+
   let theta = x
   let theta_y = y * Math.cos(theta) - z * Math.sin(theta);
   let theta_z = y * Math.sin(theta) + z * Math.cos(theta);
+  let thetaData = {
+    x: theta,
+    y: theta_y,
+    z: theta_z,
+  }
   action.x = getServer(x * 100)
   action.y = getServer(theta_y * 100)
   action.z = getServer(theta_z * 100)
   state.dot.style.top = `${action.z / 6}px`
   state.dot.style.left = `${action.y / 6}px`
-  return action
+  return thetaData
 }
 const modelAction = (name, eulerData) => {
   let action = {
@@ -84,17 +90,29 @@ const modelAction = (name, eulerData) => {
     y: eulerData['_y'] || eulerData['y'],
     z: eulerData['_z'] || eulerData['z'],
   }
-  if (name === "D2") {
-     setDot(action)
+  if (name === "D2" ) {
+     // setDot(action)
     // action = setDot(action)
   }
   for (let key in action) {
     let item = action[key]
-    sliderInput(item, name, key)
+    // sliderInput(item, name, key)
+    let option = state.joinTArr[name]['info']['option'][key]
+    driveServer(item['coordinate'], name, key, option)
+    driveModel(item['euler'], name, key, option)
   }
 };
+const driveServer = (e, name, direction, option) => {
+  let server_val =  180/Math.PI * e
+  server_val = option.server_reverse ? server_val * -1 : server_val
+  // console.log("sliderInput", server_val, name, direction);
+  emit("sliderInput", server_val, name, direction);
+}
+const driveModel = (e, name, direction, option) => {
+  let model_val = option.model_reverse ? e * -1 : e
+  base.setRobotRotation(model_val, name, direction);
+}
 const sliderInput = (e, name, direction) => {
-
   let option = state.joinTArr[name]['info']['option'][direction]
   let server_val = option.server_reverse ? e * -1 : e
   let model_val = option.model_reverse ? e * -1 : e
