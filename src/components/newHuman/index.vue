@@ -2,7 +2,7 @@
 <template>
   <div class="three-box">
     <div class="menu">
-      <Menu @sliderInput="sliderInput" @switchChange="switchChange"
+      <Menu @sliderInput="modelAction" @switchChange="switchChange"
             @updateBoresList="updateBoresList"/>
     </div>
     <action @modelAction="modelAction" @sliderInput="sliderInput" :current-action="state.currentAction"></action>
@@ -52,7 +52,7 @@ let x = 0
 let y = 0
 let z = 0
 
-const setDot = (direction, e) => {
+const setDot = (euler) => {
   let PI = 3 / (Math.PI / 2)
   // let PI = 1.5 / Math.PI
   const getServer = (val) => {
@@ -60,17 +60,9 @@ const setDot = (direction, e) => {
     let new_val = parseInt(old_val * PI + 300)
     return new_val
   }
-  switch (direction) {
-    case 'x':
-      x = e || 0
-      break
-    case 'y':
-      y = e || 0
-      break
-    case 'z':
-      z = e || 0
-      break
-  }
+  x = euler.x
+  y = euler.y
+  z = euler.z
   let action = {
     x: 0,
     y: 0,
@@ -82,25 +74,27 @@ const setDot = (direction, e) => {
   action.x = getServer(x * 100)
   action.y = getServer(theta_y * 100)
   action.z = getServer(theta_z * 100)
-  state.dot.style.top = `${action.z / 2}px`
-  state.dot.style.left = `${action.y / 2}px`
+  state.dot.style.top = `${action.z / 6}px`
+  state.dot.style.left = `${action.y / 6}px`
+  return action
 }
 const modelAction = (name, eulerData) => {
   let action = {
-    x: eulerData['_x'],
-    y: eulerData['_y'],
-    z: eulerData['_z'],
+    x: eulerData['_x'] || eulerData['x'],
+    y: eulerData['_y'] || eulerData['y'],
+    z: eulerData['_z'] || eulerData['z'],
   }
-
+  if (name === "D2") {
+     setDot(action)
+    // action = setDot(action)
+  }
   for (let key in action) {
     let item = action[key]
     sliderInput(item, name, key)
   }
 };
 const sliderInput = (e, name, direction) => {
-  if (name === "D2"){
-    let action = setDot(direction, e)
-  }
+
   let option = state.joinTArr[name]['info']['option'][direction]
   let server_val = option.server_reverse ? e * -1 : e
   let model_val = option.model_reverse ? e * -1 : e
@@ -137,8 +131,8 @@ onMounted(() => {
   }
 
   .dot-warp {
-    width: 300px;
-    height: 300px;
+    width: 100px;
+    height: 100px;
     position: fixed;
     background-color: #060f14;
     border-radius: 50%;
@@ -156,8 +150,8 @@ onMounted(() => {
         border: #2DC3FE solid 1px;
         background-color: #b3e19d;
         border-radius: 50%;
-        width: 10px;
-        height: 10px;
+        width: 5px;
+        height: 5px;
         position: absolute;
         top: 50%;
         left: 50%;

@@ -1,10 +1,10 @@
 <!--// 路径：src/views/home/components/Menu/index.vue-->
 <template>
   <div class="human-menu">
-    <div class="slider-item">
-      <span class="demonstration">鼠标视角控制器</span>
-      <el-switch v-model="mouseValue" @change="switchChange"/>
-    </div>
+<!--    <div class="slider-item">-->
+<!--      <span class="demonstration">鼠标视角控制器</span>-->
+<!--      <el-switch v-model="mouseValue" @change="switchChange"/>-->
+<!--    </div>-->
     <div>
       <button class="btn btn-brand" @click="newBores()">新增一条</button>
       <button class="btn btn-brand" @click="state.showAll = !state.showAll">
@@ -236,8 +236,7 @@ getList()
 //   emit("sliderInput", e, name, direction);
 // }, 1);
 const sliderInput = (e, name, direction,option) => {
-  console.log(e, name, direction,option)
-  emit("sliderInput", e, name, direction);
+  emit("sliderInput",  name, option);
 }
 const switchChange = (e) => {
   emit("switchChange", e);
