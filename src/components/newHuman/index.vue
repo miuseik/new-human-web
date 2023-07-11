@@ -6,14 +6,17 @@
             @updateBoresList="updateBoresList"/>
     </div>
     <action @modelAction="modelAction" @sliderInput="sliderInput" :current-action="state.currentAction"></action>
-    <div class="dot-warp">
-      <div class="inner">
-        <div class="dot" id="dot">
-        </div>
-        <div class="dot dot-mark">
-        </div>
+      <div class="dot-warp" >
+        <template v-for="(item, index) in state.specialJoints">
+          <div class="inner">
+            <div class="dot" :id="`dot_${item}`">
+            </div>
+            <div class="dot dot-mark">
+            </div>
+          </div>
+        </template>
       </div>
-    </div>
+
     <canvas class="webgl" ref="webgl" id="three_id"></canvas>
   </div>
 </template>
@@ -29,8 +32,14 @@ import boresStore from '@/store/bores/index.ts';
 const bores = boresStore()
 const state = reactive({
   dot          : null,
+  dotArr          : {
+
+  },
   joinTArr     : bores.joinTArr || {},
-  currentAction: ''
+  currentAction: '',
+  specialJoints:[
+    'D2', 'D6'
+  ]
 })
 watch(() => bores.joinTArr, val => {
   state.joinTArr = val
@@ -44,31 +53,18 @@ watch(() => bores.motionData, val => {
   deep     : true,
   immediate: true
 })
-onMounted(() => {
-  let dom = document.getElementById("three_id");
-  base = new myThree(dom);
-});
-let x = 0
-let y = 0
-let z = 0
 
-const setDot = (euler) => {
+
+const setDot = (name, euler) => {
   let PI = 3 / (Math.PI / 2)
-  // let PI = 1.5 / Math.PI
   const getServer = (val) => {
     let old_val = val || 0
     let new_val = parseInt(old_val * PI + 300)
     return new_val
   }
-  x = euler.x
-  y = euler.y
-  z = euler.z
-  let action = {
-    x: 0,
-    y: 0,
-    z: 0,
-  }
-
+  let x = euler.x.coordinate
+  let y = euler.y.coordinate
+  let z = euler.z.coordinate
   let theta = x
   let theta_y = y * Math.cos(theta) - z * Math.sin(theta);
   let theta_z = y * Math.sin(theta) + z * Math.cos(theta);
@@ -77,27 +73,39 @@ const setDot = (euler) => {
     y: theta_y,
     z: theta_z,
   }
-  action.x = getServer(x * 100)
-  action.y = getServer(theta_y * 100)
-  action.z = getServer(theta_z * 100)
-  state.dot.style.top = `${action.z / 6}px`
-  state.dot.style.left = `${action.y / 6}px`
+  x = getServer(x * 100)
+  y = getServer(theta_y * 100)
+  z = getServer(theta_z * 100)
+  console.log( `dot_${name}`, state.dotArr,  state.dotArr[name])
+  state.dotArr[name].style.top = `${z / 6}px`
+  state.dotArr[name].style.left = `${y / 6}px`
   return thetaData
 }
 const modelAction = (name, eulerData) => {
   let action = {
-    x: eulerData['_x'] || eulerData['x'],
-    y: eulerData['_y'] || eulerData['y'],
-    z: eulerData['_z'] || eulerData['z'],
+    x: {
+      coordinate: eulerData['_x'] || eulerData['x'],
+      euler: eulerData['_x'] || eulerData['x'],
+    },
+    y: {
+      coordinate: eulerData['_y'] || eulerData['y'],
+      euler: eulerData['_y'] || eulerData['y'],
+    },
+    z: {
+      coordinate: eulerData['_z'] || eulerData['z'],
+      euler: eulerData['_z'] || eulerData['z'],
+    },
   }
-  if (name === "D2" ) {
-     // setDot(action)
-    // action = setDot(action)
+  if (name === "D2" || name === "D6" ) {
+    let new_action = setDot(name, action)
+     action.x.coordinate = new_action.x
+     action.y.coordinate = new_action.y
+     action.z.coordinate = new_action.z
   }
   for (let key in action) {
-    let item = action[key]
-    // sliderInput(item, name, key)
     let option = state.joinTArr[name]['info']['option'][key]
+    let item = action[key]
+    sliderInput(item, name, key)
     driveServer(item['coordinate'], name, key, option)
     driveModel(item['euler'], name, key, option)
   }
@@ -125,8 +133,19 @@ const switchChange = (enabled) => {
 const updateBoresList = () => {
   base.initRobot();
 };
+
+
 onMounted(() => {
-  state.dot = document.querySelector('#dot')
+  let dom = document.getElementById("three_id");
+  base = new myThree(dom);
+  setTimeout(()=>{
+    for(let item in state.specialJoints){
+      let key = state.specialJoints[item]
+      state.dotArr[key] = document.querySelector(`#dot_${key}`)
+    }
+    console.log('state.dotArr', state.dotArr)
+
+  },500)
 })
 // defineExpose({ setRobotRotation, setControlsEnabled });
 </script>
