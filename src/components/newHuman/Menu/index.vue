@@ -227,7 +227,6 @@ const getList = () => {
         y:option.y['value'],
         z:option.z['value'],
       }
-      console.log(state.innerData)
     }
   })
 }

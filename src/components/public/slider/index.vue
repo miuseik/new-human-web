@@ -7,16 +7,15 @@
             <i class="none-select">{{ item }}</i>
           </div>
           <div class="grid none-select" :class="index%10 === 0 ? 'grid-10' : index%5 === 0 ? 'grid-5' : ''"></div>
-          <!--          <div >{{item}}</div>-->
         </div>
       </template>
     </div>
-    <div class="option none-select">
-      <div class="btn btn-brand" @click="start" v-if="!state.isStart">开始</div>
-      <div class="btn btn-brand" @click="stop" v-else>停止</div>
-      <div class="btn btn-brand" @click="reset">复位</div>
-    </div>
 
+    <div class="option none-select">
+      <div id="showTime">{{ state.showTime }}</div>
+      <div class="btn btn-brand" id="startBn" @click="clickHandler('startBn')">{{ state.startBn }}</div>
+      <div class="btn btn-brand" id="restBn" @click="clickHandler">复位</div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -52,6 +51,14 @@ const props = defineProps({
   },
 });
 const state = reactive({
+  time     : '',
+  showTime : '00:00:00',
+  startBn  : "启动",
+  restBn   : '',
+  pauseDate: '',
+  bool: false,
+  pauseTime: 0,
+
   currentStep: 0,
   mixStep    : 0,
   isMouseDown: false,
@@ -61,18 +68,18 @@ const state = reactive({
   duration   : 5000,
   quaternion : [],
   actions    : {
-    D1: {
-      times    : {},
-      values   : {},
-      action   : {},
-      key      : 1,
-      direction: {
-        "x": true,
-        "y": true,
-        "z": true,
-      },
-      index    : 0
-    },
+    // D1: {
+    //   times    : {},
+    //   values   : {},
+    //   action   : {},
+    //   key      : 1,
+    //   direction: {
+    //     "x": true,
+    //     "y": true,
+    //     "z": true,
+    //   },
+    //   index    : 0
+    // },
     D2: {
       times    : {},
       values   : {},
@@ -160,10 +167,10 @@ let chunkArray = (arr, len, key) => {
 
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
-    fbx_loader.load('/Martelo 2.fbx', mesh => {
+    // fbx_loader.load('/Martelo 2.fbx', mesh => {
     // fbx_loader.load('/Standing Jump.fbx', mesh => {
     // fbx_loader.load('/Flair.fbx', mesh => {
-    // fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+    fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
       // fbx_loader.load('/Strut Walking.fbx', mesh => {
       state.mixStep = 0
       let action = mesh.animations[0]['tracks']
@@ -226,18 +233,11 @@ const checkStep = (item) => {
   state.currentStep = item
   setAction()
 }
+
 let timer
 let timerOut
 const start = () => {
   state.isStart = true
-  // timerOut = setInterval(() => {
-  //   setAction()
-  //   state.currentStep++
-  //   if (state.currentStep >= state.duration) {
-  //     reset()
-  //   }
-  //   start()
-  // }, 1)
   timer = setInterval(() => {
     setAction()
     state.currentStep++
@@ -247,7 +247,7 @@ const start = () => {
       clearInterval(timer);
       start()
     }
-  }, 1);
+  }, 16);
 }
 const stop = () => {
   state.isStart = false
@@ -261,8 +261,47 @@ const reset = () => {
   clearInterval(timer);
   clearTimeout(timerOut)
 }
+setInterval(animation, 1);
+
+function animation() {
+  if (!state.bool) return;
+  //前时间减去上次开启时间减去暂停累计时间
+  var times = new Date().getTime() - state.time - state.pauseTime;
+  var minutes = Math.floor(times / 60000);//毫秒转化为分钟
+  var seconds = Math.floor((times - minutes * 60000) / 1000);//已知分钟
+  state.currentStep++
+  console.log(state.currentStep)
+  // 将time减去分钟 除去1000得出 秒
+  var ms = Math.floor((times - minutes * 60000 - seconds * 1000) / 10);//
+  state.showTime =
+      (minutes < 10 ? "0" + minutes : minutes) + ":"
+      + (seconds < 10 ? "0" + seconds : seconds) + ":"
+      + (ms < 10 ? "0" + ms : ms);
+}
+//点击时的事件
+function clickHandler(startBn) {
+  console.log(state.actions)
+  startBn = startBn || ''
+  if (startBn) {
+    state.bool = !state.bool;
+    if (state.bool) {
 
 
+      state.startBn = "暂停";
+      state.pauseTime += (!state.pauseDate ? 0 : new Date().getTime() - state.pauseDate);
+      if (state.time) return;
+      state.time = new Date().getTime();
+      return;//是为bool判断跳出
+    }
+    state.startBn = "启动";
+    state.pauseDate = new Date().getTime();
+    return;
+  }
+  state.pauseTime = 0;
+  state.pauseDate = null;
+  state.time = 0;
+  state.showTime = "00:00:00";
+}
 </script>
 
 <style lang="scss" scoped>
@@ -333,5 +372,10 @@ const reset = () => {
     }
   }
 }
-
+#showTime {
+  width: 300px;
+  height: 60px;
+  font-size: 60px;
+  line-height: 60px;
+}
 </style>
