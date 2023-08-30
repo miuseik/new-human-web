@@ -121,6 +121,7 @@ onMounted(() => {
     .serial-list {
       position: absolute;
       top: 30px;
+      right: 0;
       background-color: rgba(0, 0, 0, .3);
       display: none;
       .serial-item {

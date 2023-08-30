@@ -100,7 +100,7 @@
               </template>
             </div>
             <div class="item-info" v-else>
-              <div class="item-info-option">
+              <div class="item-info-option" :class="item.model_type === 0 ?  'b-brand' : 'b-success'">
                 <span class="name"> {{ item.name }}</span>
                 <span>id:{{ item.id }}</span>
                 <span>field:{{ item.field }}</span>
@@ -109,12 +109,6 @@
               <template v-for="(option, index) in item.option">
                 <p v-if="option.open">
                   {{ index }} {{ state.innerData[item.field][index] }}
-                  <!--                  <inputRange-->
-                  <!--                      :min="option.min"-->
-                  <!--                      :max="option.max"-->
-                  <!--                      :value="option.value"-->
-                  <!--                      @sliderInput="sliderInput($event, `${item.field}`, index)"-->
-                  <!--                  ></inputRange>-->
                   <inputRange
                       :min="option.min"
                       :max="option.max"
@@ -303,10 +297,10 @@ const newBores = (item) => {
           .item-set-bar {
             display: flex;
             flex-direction: row;
-            margin: .2rem 0;
+            margin: 1px 0;
 
             .title {
-              width: 3rem;
+              width: 60px;
               flex-shrink: 0;
             }
           }
@@ -356,7 +350,7 @@ const newBores = (item) => {
                 position: absolute;
                 background-color: #fff;
                 cursor: pointer;
-                width: 10rem;
+                width: 100px;
               }
 
               &:hover {
@@ -374,9 +368,9 @@ const newBores = (item) => {
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
-            background-color: var(--Brand);
-            font-size: .8rem;
-            padding: .2rem 0;
+            //background-color: var(--Brand);
+            font-size: 16px;
+            padding: 1px 0;
 
             span {
               display: inline-block;

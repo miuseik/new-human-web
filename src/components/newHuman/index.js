@@ -190,7 +190,6 @@ export default class myThree {
 
     setRobotRotation(rotation, name, direction) {
         this.joinTArr[name]['model'].rotation[direction] = rotation
-
         // this.joinTArr[name]['model'][`rotate${direction.toUpperCase()}`](rotation)
     }
 

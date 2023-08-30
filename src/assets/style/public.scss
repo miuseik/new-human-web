@@ -29,6 +29,37 @@
   color: white;
   border-radius: 5px
 }
+.b-brand {
+  background-color : var(--Brand)
+}
+.b-success {
+  background-color : var(--Success)
+}
+.b-warning {
+  background-color : var(--Warning)
+}
+.b-danger {
+  background-color : var(--Danger)
+}
+.b-info {
+  background-color : var(--Info)
+}
+.b-info-lighter {
+    background-color : var(--Info-lighter)
+}
+.b-info-unset {
+    background-color : var(--Info-lighter)
+}
+.btn{
+  cursor: pointer;
+  position: relative;
+  border: 0;
+  padding: 5px 15px;
+  display: inline-block;
+  text-align: center;
+  color: white;
+  border-radius: 5px
+}
 .btn-brand {background-color: var(--Brand); border: #fff solid 1px;}
 .btn-success {background-color: var(--Success); border: #fff solid 1px; }
 .btn-warning {background-color: var(--Warning); border: #fff solid 1px; }

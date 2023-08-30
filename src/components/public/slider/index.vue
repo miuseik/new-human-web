@@ -12,15 +12,20 @@
     </div>
 
     <div class="option none-select">
-      <div id="showTime">{{ state.showTime }}</div>
-      <div class="btn btn-brand" id="startBn" @click="clickHandler('startBn')">{{ state.startBn }}</div>
-      <div class="btn btn-brand" id="restBn" @click="clickHandler">复位</div>
+      <div id="showTime">{{ state.demoNum }}</div>
+      <div class="btn btn-brand" @click="start" v-if="!state.isStart">开始</div>
+      <div class="btn btn-brand" @click="stop" v-else>停止</div>
+      <div class="btn btn-brand" @click="reset">复位</div>
+      <div class="btn btn-brand" @click="actionTick">actionTick()</div>
+      <div class="btn btn-brand" @click="state.stopTick=true">tick()</div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import * as THREE from "three";
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
+import {cloneDeep, debounce} from "@/utils/putlic/index.js"
+import {ElMessage} from "element-plus";
 
 const fbx_loader = new FBXLoader()
 const emit = defineEmits(["sliderInput", "modelAction"]);
@@ -51,37 +56,40 @@ const props = defineProps({
   },
 });
 const state = reactive({
-  time     : '',
-  showTime : '00:00:00',
-  startBn  : "启动",
-  restBn   : '',
-  pauseDate: '',
-  bool: false,
-  pauseTime: 0,
-
-  currentStep: 0,
-  mixStep    : 0,
-  isMouseDown: false,
-  isStart    : false,
-  isStartDemo: false,
-  logAction  : [],
-  duration   : 5000,
-  quaternion : [],
-  actions    : {
-    // D1: {
-    //   times    : {},
-    //   values   : {},
-    //   action   : {},
-    //   key      : 1,
-    //   direction: {
-    //     "x": true,
-    //     "y": true,
-    //     "z": true,
-    //   },
-    //   index    : 0
-    // },
-    D2: {
-      times    : {},
+  time        : '',
+  stopTick    : false,
+  showTime    : '00:00:00',
+  startBn     : "启动",
+  restBn      : '',
+  pauseDate   : '',
+  bool        : false,
+  pauseTime   : 0,
+  demoNum     : 0,
+  currentStep : 0,
+  currentTime : '',
+  mixStep     : 0,
+  isMouseDown : false,
+  isStart     : false,
+  isStartDemo : false,
+  logAction   : [],
+  duration    : 5000,
+  quaternion  : [],
+  actionsClone: {},
+  actions     : {
+    D1 : {
+      times    : [],
+      values   : {},
+      action   : {},
+      key      : 1,
+      direction: {
+        "x": true,
+        "y": true,
+        "z": true,
+      },
+      index    : 0
+    },
+    D2 : {
+      times    : [],
       values   : {},
       action   : {},
       key      : 45,
@@ -92,20 +100,20 @@ const state = reactive({
       },
       index    : 0
     },
-    D4: {
-      times    : {},
+    D4 : {
+      times    : [],
       values   : {},
       action   : {},
       key      : 46,
       direction: {
         "x": true,
-        "y": true,
-        "z": true,
+        "y": false,
+        "z": false,
       },
       index    : 0
     },
-    D6: {
-      times    : {},
+    D6 : {
+      times    : [],
       values   : {},
       action   : {},
       key      : 49,
@@ -116,14 +124,62 @@ const state = reactive({
       },
       index    : 0
     },
-    D8: {
-      times    : {},
+    D8 : {
+      times    : [],
       values   : {},
       action   : {},
       key      : 50,
       direction: {
         "x": true,
-        "y": true,
+        "y": false,
+        "z": false,
+      },
+      index    : 0
+    },
+    D10: {
+      times    : [],
+      values   : {},
+      action   : {},
+      key      : 51,
+      direction: {
+        "x": true,
+        "y": false,
+        "z": false,
+      },
+      index    : 0
+    },
+    D11: {
+      times    : [],
+      values   : {},
+      action   : {},
+      key      : 47,
+      direction: {
+        "x": true,
+        "y": false,
+        "z": false,
+      },
+      index    : 0
+    },
+    D12: {
+      times    : [],
+      values   : {},
+      action   : {},
+      key      : 47,
+      direction: {
+        "x": false,
+        "y": false,
+        "z": true,
+      },
+      index    : 0
+    },
+    D13: {
+      times    : [],
+      values   : {},
+      action   : {},
+      key      : 51,
+      direction: {
+        "x": false,
+        "y": false,
         "z": true,
       },
       index    : 0
@@ -145,7 +201,7 @@ const setRange = (val, key) => {
   return val
 }
 let chunkArray = (arr, len, key) => {
-  let chunks = Array.from({length: Math.ceil(arr.length / len)}, function (_, i) {
+  let _chunks = Array.from({length: Math.ceil(arr.length / len)}, function (_, i) {
     let data = arr.slice(i * len, i * len + len)
     let x = data[0]
     let y = data[1]
@@ -162,17 +218,18 @@ let chunkArray = (arr, len, key) => {
     eulerData['_z'] = setRange(eulerData['_z'], '_z')
     return eulerData;
   });
-  return chunks;
+  return _chunks;
 }
 
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
-    // fbx_loader.load('/Martelo 2.fbx', mesh => {
-    // fbx_loader.load('/Standing Jump.fbx', mesh => {
-    // fbx_loader.load('/Flair.fbx', mesh => {
-    fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+    fbx_loader.load('/Martelo 2.fbx', mesh => {
+      // fbx_loader.load('/Standing Jump.fbx', mesh => {
+      // fbx_loader.load('/Flair.fbx', mesh => {
+      // fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
       // fbx_loader.load('/Strut Walking.fbx', mesh => {
       state.mixStep = 0
+      console.log('meshmeshmesh', mesh.animations)
       let action = mesh.animations[0]['tracks']
       let duration = mesh.animations[0]['duration'] * 1000
       state.duration = parseInt(duration)
@@ -185,7 +242,9 @@ const init = async () => {
   let action = await initModel()
   for (let key in state.actions) {
     let item = state.actions[key]
-    item.times = action[item['key']]['times']
+    for (let i in action[item['key']]['times']) {
+      item.times.push(action[item['key']]['times'][i])
+    }
     let val = action[item['key']]['values']
     item.values = chunkArray(val, 4, key)
     item.times.forEach((data, index) => {
@@ -195,7 +254,6 @@ const init = async () => {
 }
 init()
 watch(() => props.currentAction, val => {
-  console.log(val)
 }, {
   deep     : true,
   immediate: true
@@ -220,9 +278,13 @@ const hd = (jd) => {
 const setAction = () => {
   for (let key in state.actions) {
     let item = state.actions[key]
+    let direction = item.direction
     let time = (state.currentStep / 1000).toFixed(3)
     let eulerData = item['action'][time] || ''
     if (eulerData) {
+      !direction.x ? eulerData['_x'] = 0 : ''
+      !direction.y ? eulerData['_y'] = 0 : ''
+      !direction.z ? eulerData['_z'] = 0 : ''
       emit("modelAction", key, eulerData)
     }
   }
@@ -233,35 +295,83 @@ const checkStep = (item) => {
   state.currentStep = item
   setAction()
 }
-
+const worker = new Worker("worker.js");
+const demoStop = () => {
+  worker.postMessage({
+    key : "stop",
+    data: state.currentStep
+  });
+}
 let timer
-let timerOut
 const start = () => {
   state.isStart = true
-  timer = setInterval(() => {
+  worker.postMessage({
+    key : "start",
+    data: state.currentStep
+  });
+  worker.onmessage = function (event) {
+    state.currentStep = event.data
     setAction()
-    state.currentStep++
     if (state.currentStep >= state.duration) {
-      state.mixStep = state.duration + 1
-      reset()
-      clearInterval(timer);
-      start()
+      demoStop()
+      console.log('en')
+      loopAction()
     }
-  }, 16);
+  }
 }
+let clock
+
+function tick() {
+  const time = clock.getElapsedTime()
+  console.log(time)
+  if (state.stopTick) return
+  requestAnimationFrame(tick)
+}
+
+function actionTick() {
+  state.stopTick = false
+  clock = new THREE.Clock()
+  tick()
+}
+
+const loopAction = debounce(() => {
+  console.log('ha')
+  state.mixStep = state.duration + 1
+  reset()
+  // clearInterval(timer);
+  start()
+}, 20);
 const stop = () => {
   state.isStart = false
-  clearInterval(timer);
-  clearTimeout(timerOut)
+  // clearInterval(timer);
+  // demoStop()
 }
 const reset = () => {
   resetAction()
   state.isStart = false
   state.currentStep = 0
-  clearInterval(timer);
-  clearTimeout(timerOut)
+  // clearInterval(timer);
+  // demoStop()
 }
-setInterval(animation, 1);
+
+
+const setAc = () => {
+  for (let key in state.actionsClone) {
+    let item = state.actionsClone[key]
+    let currentTime = (state.currentTime / 1000).toFixed(3)
+    let time
+    if (item['times'][0] <= currentTime) {
+      time = item['times'][0]
+      item['times'].shift()
+    }
+    let eulerData = item['action'][currentTime] || ''
+    if (eulerData) {
+      emit("modelAction", key, eulerData)
+    }
+  }
+  state.mixStep = state.mixStep < state.currentStep ? state.currentStep : state.mixStep
+}
+setInterval(animation, .1);
 
 function animation() {
   if (!state.bool) return;
@@ -269,8 +379,12 @@ function animation() {
   var times = new Date().getTime() - state.time - state.pauseTime;
   var minutes = Math.floor(times / 60000);//毫秒转化为分钟
   var seconds = Math.floor((times - minutes * 60000) / 1000);//已知分钟
-  state.currentStep++
-  console.log(state.currentStep)
+  state.currentTime = times
+  setAc()
+  if (state.currentTime >= state.duration) {
+    clickHandler()
+    clickHandler('action')
+  }
   // 将time减去分钟 除去1000得出 秒
   var ms = Math.floor((times - minutes * 60000 - seconds * 1000) / 10);//
   state.showTime =
@@ -278,15 +392,14 @@ function animation() {
       + (seconds < 10 ? "0" + seconds : seconds) + ":"
       + (ms < 10 ? "0" + ms : ms);
 }
+
 //点击时的事件
 function clickHandler(startBn) {
-  console.log(state.actions)
-  startBn = startBn || ''
-  if (startBn) {
-    state.bool = !state.bool;
+  state.actionsClone = cloneDeep(state.actions)
+  let _startBn = startBn || ''
+  state.bool = !state.bool;
+  if (_startBn) {
     if (state.bool) {
-
-
       state.startBn = "暂停";
       state.pauseTime += (!state.pauseDate ? 0 : new Date().getTime() - state.pauseDate);
       if (state.time) return;
@@ -372,6 +485,7 @@ function clickHandler(startBn) {
     }
   }
 }
+
 #showTime {
   width: 300px;
   height: 60px;

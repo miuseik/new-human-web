@@ -123,8 +123,6 @@ const render = () => {
   if (mixer) {
     mixer.update(clock.getDelta())
   }
-
-
   camera.lookAt( cameraTarget );
   renderer.render(scene, camera)
 }
@@ -135,9 +133,7 @@ function initRenderer() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.useLegacyLights = false;
   renderer.shadowMap.enabled = true;
-
   document.body.appendChild(renderer.domElement);
-  // render()
   renderer.setAnimationLoop(render)
 }
 

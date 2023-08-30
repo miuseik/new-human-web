@@ -5,7 +5,7 @@
       <Menu @sliderInput="modelAction" @switchChange="switchChange"
             @updateBoresList="updateBoresList"/>
     </div>
-    <action @modelAction="modelAction" @sliderInput="sliderInput" :current-action="state.currentAction"></action>
+    <action @modelAction="modelAction" :current-action="state.currentAction"></action>
     <div class="dot-warp">
       <template v-for="(item, index) in state.specialJoints">
         <div class="dot-box flex">
@@ -66,12 +66,12 @@ const calculate = (range) => {
     0: {
       a: round(range['min']),
       b: 1,
-      c: 0,
+      c: 500,
     },
     1: {
       a: round(range['max']),
       b: 1,
-      c: 600,
+      c: 2500,
     },
   }
   let res = {
@@ -123,11 +123,10 @@ const setDot = (name, euler, options) => {
     z: z,
   }
   if (state.specialJoints.includes(name)) {
-    state.dotArr[`${name}_x`].style.top = `${x / 6}px`
-    state.dotArr[name].style.top = `${z / 6}px`
-    state.dotArr[name].style.left = `${y / 6}px`
+    state.dotArr[`${name}_x`].style.top = `${(x-500) / 20}px`
+    state.dotArr[name].style.top = `${(z-500) / 20}px`
+    state.dotArr[name].style.left = `${(y-500) / 20}px`
   }
-
   return thetaData
 }
 const modelAction = (name, eulerData) => {
@@ -147,22 +146,21 @@ const modelAction = (name, eulerData) => {
   }
   let options = state.joinTArr[name]['info']['option']
   let dot_action = setDot(name, action, options)
-  return
+  // return
   action.x.coordinate = dot_action.x
   action.y.coordinate = dot_action.y
   action.z.coordinate = dot_action.z
   // console.log('state.actions',state.actions)
+  // console.log(JSON.stringify(action))
+
   for (let key in action) {
     let item = action[key]
     let val = state.actions[name] && state.actions[name][key] || 0
-    console.log(val=== item['coordinate'])
-    console.log(key,val, item['coordinate'])
-    if (val === item['coordinate']) {
-    } else {
+    // if (val !== item['coordinate']) {
       driveServer(item['coordinate'], name, key, options)
-      driveModel(item['euler'], name, key, options)
       state.actions[name] = dot_action
-    }
+    // }
+    driveModel(item['euler'], name, key, options)
   }
 };
 const driveServer = (e, name, direction, options) => {
@@ -175,6 +173,7 @@ const driveModel = (e, name, direction, options) => {
   let option = options[direction]
   let model_val = option.model_reverse ? e * -1 : e
   base.setRobotRotation(model_val, name, direction);
+  // console.log('setDot',model_val, e, name, direction)
 }
 
 const switchChange = (enabled) => {
@@ -183,7 +182,6 @@ const switchChange = (enabled) => {
 const updateBoresList = () => {
   base.initRobot();
 };
-
 
 onMounted(() => {
   let dom = document.getElementById("three_id");
@@ -195,7 +193,6 @@ onMounted(() => {
       state.dotArr[`${key}_x`] = document.querySelector(`#dot_${key}_x`)
     }
     console.log('state.dotArr', state.dotArr)
-
   }, 500)
 })
 // defineExpose({ setRobotRotation, setControlsEnabled });
