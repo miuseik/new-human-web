@@ -41,7 +41,7 @@ const state = reactive({
   joinTArr     : bores.joinTArr || {},
   currentAction: '',
   specialJoints: [
-    'D2', 'D6', 'D4', 'D8'
+    'D2', 'D3', 'D4', 'D5'
   ],
   actions      : {}
 })
@@ -66,12 +66,12 @@ const calculate = (range) => {
     0: {
       a: round(range['min']),
       b: 1,
-      c: 500,
+      c: 100,
     },
     1: {
       a: round(range['max']),
       b: 1,
-      c: 2500,
+      c: 600,
     },
   }
   let res = {
@@ -123,9 +123,9 @@ const setDot = (name, euler, options) => {
     z: z,
   }
   if (state.specialJoints.includes(name)) {
-    state.dotArr[`${name}_x`].style.top = `${(x-500) / 20}px`
-    state.dotArr[name].style.top = `${(z-500) / 20}px`
-    state.dotArr[name].style.left = `${(y-500) / 20}px`
+    state.dotArr[`${name}_x`].style.top = `${(x-100) / 5}px`
+    state.dotArr[name].style.top = `${(z-100) / 5}px`
+    state.dotArr[name].style.left = `${(y-100) / 5}px`
   }
   return thetaData
 }
@@ -166,7 +166,11 @@ const modelAction = (name, eulerData) => {
 const driveServer = (e, name, direction, options) => {
   let option = options[direction]
   let server_val = e
-  server_val = option.server_reverse ? 600 - server_val : server_val
+  if (direction === 'x'){
+    console.log(e, name, direction, options)
+    console.log(700 - server_val)
+  }
+  server_val = option.server_reverse ? 700 - server_val : server_val
   emit("sliderInput", server_val, name, direction);
 }
 const driveModel = (e, name, direction, options) => {

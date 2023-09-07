@@ -29,11 +29,15 @@
             </div>
             <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
               <template v-for="(grid, key) in item ">
-                <div v-if="key === 'size' || key === 'position' || key === 'rotate'" class="item-set-bar">
+                <div v-if="key === 'size'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  x:<input type="text" v-model="state.boresList[index][key]['x']" :disabled="key === 'id'">
-                  y:<input type="text" v-model="state.boresList[index][key]['y']" :disabled="key === 'id'">
-                  z:<input type="text" v-model="state.boresList[index][key]['z']" :disabled="key === 'id'">
+                  <input type="text" v-model="state.boresList[index][key]" @input="setInputVal" :disabled="key === 'id'">
+                </div>
+                <div v-else-if="key === 'position' || key === 'rotate'" class="item-set-bar">
+                  <span class="title">{{ key }}</span>
+                  x:<input type="text" v-model="state.boresList[index][key]['x']" @input="setInputVal" :disabled="key === 'id'">
+                  y:<input type="text" v-model="state.boresList[index][key]['y']" @input="setInputVal" :disabled="key === 'id'">
+                  z:<input type="text" v-model="state.boresList[index][key]['z']" @input="setInputVal" :disabled="key === 'id'">
                 </div>
                 <div v-else-if="key === 'model_type' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
@@ -177,11 +181,7 @@ const state = reactive({
         value         : 0
       }
     },
-    size        : {
-      x: 0,
-      y: 0,
-      z: 0
-    },
+    size        : 10,
     position    : {
       x: 0,
       y: 0,
@@ -213,6 +213,7 @@ const getList = () => {
   boresX.getBoresList().then((data) => {
     emit("updateBoresList");
     state.boresList = data
+    console.log(state.boresList)
     for (let index in state.boresList){
       let item = state.boresList[index]
       let option = item.option
@@ -237,6 +238,19 @@ const switchChange = (e) => {
 const setItem = (item) => {
   state.currentChange.push(item.id)
 };
+const setInputVal = () => {
+  emit("updateBoresList");
+  console.log(state.boresList)
+  for (let index in state.boresList){
+    let item = state.boresList[index]
+    let option = item.option
+    state.innerData[item.field] = {
+      x:option.x['value'],
+      y:option.y['value'],
+      z:option.z['value'],
+    }
+  }
+}
 const saveChange = (item) => {
   let id = item.id
   if (id > 0) {
@@ -274,7 +288,7 @@ const newBores = (item) => {
 
 <style lang="scss" scoped>
 .human-menu {
-  padding: 20px 10px;
+  //padding: 20px 10px;
   display: flex;
   flex-direction: column;
 
@@ -377,7 +391,7 @@ const newBores = (item) => {
             }
 
             .name {
-              width: 30%;
+              width: 40%;
             }
           }
         }

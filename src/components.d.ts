@@ -13,6 +13,6 @@ declare module 'vue' {
     NewHuman: typeof import('./components/newHuman/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Slider: typeof import('./components/public/slider/index.vue')['default']
+    Slider: typeof import('./components/newHuman/slider/index.vue')['default']
   }
 }

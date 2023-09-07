@@ -17,7 +17,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import slider from '@/components/public/slider/index.vue'
+import slider from '@/components/newHuman/slider/index.vue'
 
 import debounce from "@/utils/putlic/index.js";
 

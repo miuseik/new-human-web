@@ -26,11 +26,12 @@ let clock = new THREE.Clock();
 const state = {
   animateBones: false,
   model:[
-      'Martelo 2.fbx',
+      // 'Martelo 2.fbx',
       // 'Brutal Assassination.fbx',
       // 'Catwalk Walk Forward Turn 90R.fbx',
       // 'Strut Walking.fbx'
       // 'Standing Jump.fbx'
+      'Walking.fbx'
   ]
 };
 

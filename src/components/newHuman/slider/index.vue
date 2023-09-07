@@ -25,6 +25,7 @@
 import * as THREE from "three";
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {cloneDeep, debounce} from "@/utils/putlic/index.js"
+import {boneData} from "@/components/newHuman/data/index.js"
 import {ElMessage} from "element-plus";
 
 const fbx_loader = new FBXLoader()
@@ -75,118 +76,8 @@ const state = reactive({
   duration    : 5000,
   quaternion  : [],
   actionsClone: {},
-  actions     : {
-    D1 : {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 1,
-      direction: {
-        "x": true,
-        "y": true,
-        "z": true,
-      },
-      index    : 0
-    },
-    D2 : {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 45,
-      direction: {
-        "x": true,
-        "y": true,
-        "z": true,
-      },
-      index    : 0
-    },
-    D4 : {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 46,
-      direction: {
-        "x": true,
-        "y": false,
-        "z": false,
-      },
-      index    : 0
-    },
-    D6 : {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 49,
-      direction: {
-        "x": true,
-        "y": true,
-        "z": true,
-      },
-      index    : 0
-    },
-    D8 : {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 50,
-      direction: {
-        "x": true,
-        "y": false,
-        "z": false,
-      },
-      index    : 0
-    },
-    D10: {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 51,
-      direction: {
-        "x": true,
-        "y": false,
-        "z": false,
-      },
-      index    : 0
-    },
-    D11: {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 47,
-      direction: {
-        "x": true,
-        "y": false,
-        "z": false,
-      },
-      index    : 0
-    },
-    D12: {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 47,
-      direction: {
-        "x": false,
-        "y": false,
-        "z": true,
-      },
-      index    : 0
-    },
-    D13: {
-      times    : [],
-      values   : {},
-      action   : {},
-      key      : 51,
-      direction: {
-        "x": false,
-        "y": false,
-        "z": true,
-      },
-      index    : 0
-    },
-  },
+  actions     : {},
 });
-
 
 const resetAction = () => {
   for (let key in state.actions) {
@@ -210,8 +101,14 @@ let chunkArray = (arr, len, key) => {
     let quaternion = new THREE.Quaternion(x, y, z, w);
     let Euler = new THREE.Euler();
     let eulerData = Euler.setFromQuaternion(quaternion)
-    if (key === 'D2' || key === 'D6') {
+    if (key === 'D2' || key === 'D4') {
       eulerData['_z'] = eulerData['_z'] + Math.PI
+    }
+    if (key === 'D6' || key === 'D7') {
+      eulerData['_x'] = eulerData['_x'] - Math.PI/2
+    }
+    if (key === 'D10' || key === 'D11'|| key === 'D12'|| key === 'D13'|| key === 'D14'|| key === 'D15'|| key === 'D16'|| key === 'D17'|| key === 'D18'|| key === 'D19') {
+      eulerData['_x'] = eulerData['_x'] - Math.PI/4
     }
     eulerData['_x'] = setRange(eulerData['_x'], '_x')
     eulerData['_y'] = setRange(eulerData['_y'], '_y')
@@ -223,11 +120,12 @@ let chunkArray = (arr, len, key) => {
 
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
-    fbx_loader.load('/Martelo 2.fbx', mesh => {
-      // fbx_loader.load('/Standing Jump.fbx', mesh => {
-      // fbx_loader.load('/Flair.fbx', mesh => {
-      // fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
-      // fbx_loader.load('/Strut Walking.fbx', mesh => {
+    // fbx_loader.load('/Martelo 2.fbx', mesh => {
+    //   fbx_loader.load('/Standing Jump.fbx', mesh => {
+    //   fbx_loader.load('/Flair.fbx', mesh => {
+    //   fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
+    //   fbx_loader.load('/Strut Walking.fbx', mesh => {
+      fbx_loader.load('/Walking.fbx', mesh => {
       state.mixStep = 0
       console.log('meshmeshmesh', mesh.animations)
       let action = mesh.animations[0]['tracks']
@@ -239,6 +137,8 @@ const initModel = async () => {
 }
 
 const init = async () => {
+  state.actions = boneData['actions']
+  state.actions = boneData['actions']
   let action = await initModel()
   for (let key in state.actions) {
     let item = state.actions[key]

@@ -118,16 +118,19 @@ export default class myThree {
         const loader           = new STLLoader();
         const glassMaterial    = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
         const material         = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
-        let setJoint           = (position, size) => {
-            const SphereGeometry = new THREE.SphereGeometry(size || 20)
+        let setJoint           = (size,position) => {
+            let _position = position || {x: 0, y: 0, z: 0}
+            let _size = size || 5
+            const SphereGeometry = new THREE.SphereGeometry(_size)
             const joint          = new THREE.Mesh(SphereGeometry, glassMaterial);
-            joint.position.set(position.x, position.y, position.z);
+            joint.position.set(_position['x'], _position['y'], _position['z']);
             return joint
         }
         let loadingModel       = (name, position) => {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25}
-                loader.load(`/src/assets/human/${name}`, (geometry) => {
+                let _name = name || ''
+                loader.load(`/src/assets/human/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
                     Mesh.castShadow = true;
@@ -165,11 +168,11 @@ export default class myThree {
         let initAllModel       = async (item) => {
             let model
             if (item.model_type === 1) {
-                model = setJoint(item.position);
-
+                console.log(item['size'])
+                model = setJoint(item['size'], item['position']);
             } else {
                 try {
-                    model = await loadingModel(item.model_name, item.position);
+                    model = await loadingModel(item['model_name'], item['position']);
                 } catch (e) {
                 }
             }
