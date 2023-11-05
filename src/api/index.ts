@@ -1,13 +1,11 @@
 import login from './moudules/login'
-import member from './moudules/member'
-import game from './moudules/game'
-import pay from './moudules/pay'
+import bores from './moudules/bores'
+import actions from './moudules/actions'
 import newHuman from './moudules/newHuman'
 const API = {
     login,
-    member,
-    game,
-    pay,
+    bores,
+    actions,
     newHuman,
 }
 export default API

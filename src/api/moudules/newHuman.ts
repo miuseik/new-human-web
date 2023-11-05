@@ -8,8 +8,7 @@ const newHuman = {
     // },
     query_bluetooth(){ // 登陆
         let url = '/serial/query_bluetooth'
-
-        return axios.get(url, '');
+        return axios.get(url);
     },
     confirm_serial(data){ // 登陆
         let url = '/serial/confirm_serial'

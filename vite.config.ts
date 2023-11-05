@@ -47,14 +47,14 @@ export default defineConfig({
         // ws: true, // 是否代理websockets
         // 路径重写，**** 如果你的后端有统一前缀(如:/api)，就不开启；没有就开启
         //简单来说，就是是否改路径 加某些东西
-        // rewrite: (path) => path.replace('^/', '')
+        rewrite: (path) => path.replace('/api', '/')
       }
     }
   },
   css   : {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/assets/style/index.scss";`,
+        // additionalData: `@import "@/assets/style/index.scss";`,
       }
     }
   }

@@ -19,213 +19,63 @@
 .info-unset {
     color : var(--Info-lighter)
 }
-//.disabled {
-//    //cursor: pointer;
-//}
-.title-button {
-  color               : #fff;
-  padding             : 0 1rem;
-  height              : auto !important;
-  font-size           : 1rem;
-  text-align          : center;
-  min-width           : 6rem;
-  line-height         : 1.5rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/login/title.png");
-  //border-image-width  : 1rem 0rem;
-  border-image-slice  : 0 fill;
-  p {
-	 line-height : 1rem;
-  }
-  @media only screen and (max-width : 1000px) {
-	 min-width : 1rem;
-	 p {
-		line-height : .5rem;
-	 }
-  }
-  @media only screen and (max-width : 750px) {
-  }
+.btn{
+  cursor: pointer;
+  position: relative;
+  border: 0;
+  padding: 5px 15px;
+  display: inline-block;
+  text-align: center;
+  color: white;
+  border-radius: 5px
 }
-.operation-button {
-  padding             : .2rem 2rem;
-  border-image-slice  : 0 fill;
-  border-image-source : url("@/assets/img/public/button.png");
-  cursor              : pointer;
-  pointer-events      : auto;
-  text-align          : center;
+.b-brand {
+  background-color : var(--Brand)
 }
-.lace-button {
-  border-image-source : url("@/assets/img/public/lace_button.png");
-  border-image-slice  : 5 10 fill;
-  text-align          : center;
+.b-success {
+  background-color : var(--Success)
 }
-.soak-border {
-  color               : #fff;
-  font-size           : .5rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/public/soak_border.png");
-  border-image-width  : 1rem 0rem;
-  border-image-slice  : 50 0 fill;
-  @media only screen and (max-width : 1200px) {
-	 border-image-width : 1.5rem 1.5rem;
-	 border-image-slice : 100 100 fill;
-  }
+.b-warning {
+  background-color : var(--Warning)
 }
-.text-border {
-  padding             : 1rem 2rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/public/text_border.png");
-  border-image-width  : .2rem 1rem;
-  border-image-slice  : 0 50 fill;
+.b-danger {
+  background-color : var(--Danger)
 }
-.description-border {
-  color               : #fff;
-  //padding             : 1rem 2rem;
-  font-size           : .5rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/public/description_border.png");
-  border-image-width  : 1rem 1rem;
-  border-image-slice  : 60 60 fill;
+.b-info {
+  background-color : var(--Info)
 }
-.img-border {
-  color               : #fff;
-  font-size           : .5rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/public/img-border.png");
-  border-image-width  : 1rem 1rem;
-  border-image-slice  : 60 60 fill;
+.b-info-lighter {
+    background-color : var(--Info-lighter)
 }
-.form-border-m {
-  color               : #fff;
-  font-size           : .5rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/public/form_border_m.png");
-  border-image-width  : 1rem 1rem;
-  border-image-slice  : 60 60 fill;
+.b-info-unset {
+    background-color : var(--Info-lighter)
 }
-.smail-button-border {
-  color               : #fff;
-  font-size           : .5rem;
-  font-family         : TheAncient, serif;
-  border-image-source : url("@/assets/img/public/smail-button.png");
-  border-image-slice  : 0 fill;
+.btn{
+  cursor: pointer;
+  position: relative;
+  border: 0;
+  padding: 5px 15px;
+  display: inline-block;
+  text-align: center;
+  color: white;
+  border-radius: 5px
 }
-.lanterns-border {
-  border-image-source : url("@/assets/img/public/lanterns_border.png");
-  //border-image-width  : 1rem 0rem;
-  border-image-slice  : 0 fill;
+.btn-brand {background-color: var(--Brand); border: #fff solid 1px;}
+.btn-success {background-color: var(--Success); border: #fff solid 1px; }
+.btn-warning {background-color: var(--Warning); border: #fff solid 1px; }
+.btn-danger {background-color: var(--Danger); border: #fff solid 1px; }
+.btn-info {background-color: var(--Info); border: #fff solid 1px; }
+input{
+  outline-style: none ;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  //padding: .2rem .2rem;
+  width: 100%;
+  font-weight: 700;
 }
-.bag-border {
-  border-image-source : url("@/assets/img/public/bag_border.png");
-  border-image-width  : 3rem 1.5rem;
-  border-image-slice  : 130 60 fill;
-  @media only screen and (max-width : 1200px) {
-	 border-image-width : 1.5rem 1.5rem;
-	 border-image-slice : 100 100 fill;
-  }
-}
-.m-border {
-  border-image-source : url("@/assets/img/public/m_border.png");
-  //border-image-width  : 1rem 0rem;
-  border-image-slice  : 0 fill;
-}
-.teb_button_a {
-  border-image-source : url("@/assets/img/public/teb_button_a.png");
-  border-image-width  : 1rem 1rem;
-  border-image-slice  : 30 30 fill;
-}
-.teb_button {
-  border-image-source : url("@/assets/img/public/teb_button.png");
-  border-image-width  : 1rem 1rem;
-  border-image-slice  : 30 30 fill;
-}
-.com-text {
-    font-family             : TheAncient, serif;
-    text-align              : center;
-    font-weight             : bolder;
-}
-.title-text {
-  font-family             : TheAncient, serif;
-  text-align              : center;
-  font-weight             : bolder;
-  background              : -webkit-linear-gradient(#65F2FF, #2DC3FE); /* Safari 5.1 - 6.0 */
-  background              : -o-linear-gradient(#65F2FF, #2DC3FE); /* Opera 11.1 - 12.0 */
-  background              : -moz-linear-gradient(#65F2FF, #2DC3FE); /* Firefox 3.6 - 15 */
-  background              : linear-gradient(#65F2FF, #2DC3FE); /* 标准的语法（必须放在最后） */
-  -webkit-background-clip : text;
-  color                   : transparent;
-}
-.title-text-warning {
-  font-family             : TheAncient, serif;
-  text-align              : center;
-  font-weight             : bolder;
-  background              : -webkit-linear-gradient(var(--Warning), var(--Warning-bold)); /* Safari 5.1 - 6.0 */
-  background              : -o-linear-gradient(var(--Warning), var(--Warning-bold)); /* Opera 11.1 - 12.0 */
-  background              : -moz-linear-gradient(var(--Warning), var(--Warning-bold)); /* Firefox 3.6 - 15 */
-  background              : linear-gradient(var(--Warning), var(--Warning-bold)); /* 标准的语法（必须放在最后） */
-  -webkit-background-clip : text;
-  color                   : transparent;
-}
-.title-text-warning {
-  font-family             : TheAncient, serif;
-  text-align              : center;
-  font-weight             : bolder;
-  background              : -webkit-linear-gradient(var(--Warning), var(--Warning-bold)); /* Safari 5.1 - 6.0 */
-  background              : -o-linear-gradient(var(--Warning), var(--Warning-bold)); /* Opera 11.1 - 12.0 */
-  background              : -moz-linear-gradient(var(--Warning), var(--Warning-bold)); /* Firefox 3.6 - 15 */
-  background              : linear-gradient(var(--Warning), var(--Warning-bold)); /* 标准的语法（必须放在最后） */
-  -webkit-background-clip : text;
-  color                   : transparent;
-}
-.no-drop {
-  cursor : no-drop !important;
-}
-.input-text {
-  width            : 500px;
-  height           : 50px;
-  line-height      : 30px;
-  font-size        : 30px;
-  padding-left     : 30px;
-  border-radius    : 50px;
-  background-color : gainsboro;
-  border           : none;
-}
-.input-text:focus {
-  outline          : none; //设置所有的轮廓属性为none
-  background-color : lightblue;
-}
-.input-form {
-  min-height          : 1.5rem;
-  font-size           : 0.5rem;
-  border-image-source : url("@/assets/img/login/input.png");
-  border-image-slice  : 0 fill;
-  color               : #fff;
-  padding-left        : 0.3rem;
-  text-align          : center;
-}
-.input-form:focus {
-
-//outline : none; //设置所有的轮廓属性为none
-//background-color: lightblue;
-}
-.pattern-input {
-  //line-height         : 30px;
-  //font-size           : 30px;
-  padding        : 0 .5rem;
-  border-radius       : 50px;
-  color: floralwhite;
-  background-image    : url("@/assets/img/public/input_bgm.jpg");
-  background-size     : 1rem 1rem;
-  background-repeat   : repeat;
-  border-image-source : url("@/assets/img/public/input_border.png");
-  border-image-width  : 1rem 1rem;
-  border-image-slice  : 100 100;
-  &:focus {
-	 //outline          : none; //设置所有的轮廓属性为none
-	 background-color : lightblue;
-        border-color: #66afe9;
-    //    outline: 0;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
-  }
+input:focus{
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
 }

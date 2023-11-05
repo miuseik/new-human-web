@@ -7,15 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
-    IconCommunity: typeof import('./components/icons/IconCommunity.vue')['default']
-    IconDocumentation: typeof import('./components/icons/IconDocumentation.vue')['default']
-    IconEcosystem: typeof import('./components/icons/IconEcosystem.vue')['default']
-    IconSupport: typeof import('./components/icons/IconSupport.vue')['default']
-    IconTooling: typeof import('./components/icons/IconTooling.vue')['default']
+    Action: typeof import('./components/newHuman/action/index.vue')['default']
+    InputRange: typeof import('./components/public/inputRange.vue')['default']
+    Menu: typeof import('./components/newHuman/Menu/index.vue')['default']
+    NewHuman: typeof import('./components/newHuman/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TheWelcome: typeof import('./components/TheWelcome.vue')['default']
-    WelcomeItem: typeof import('./components/WelcomeItem.vue')['default']
+    Slider: typeof import('./components/newHuman/slider/index.vue')['default']
   }
 }
