@@ -6,15 +6,36 @@
     <div class="worktop">
       <div class="buttons">
         <el-button :plain="true" @click="getSerialList">查找蓝牙</el-button>
+        <el-button :plain="true" @click="getList">查找蓝牙2</el-button>
         <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认蓝牙</el-button>
       </div>
       <div class="serial-list">
-        <template v-for="(item, index) in state.serialList">
-          <label class="serial-item">
-            <input class="input-radio" type="radio" v-model="state.queryBluetooth" :value="item"
-                   name="serialList">{{ item }}
-          </label>
-        </template>
+        <el-table :data="state.serialList" style="width: 100%">
+          <el-table-column fixed prop="friendlyName" label="friendlyName" width="150"/>
+          <el-table-column prop="locationId" label="locationId" width="120"/>
+          <el-table-column prop="manufacturer" label="manufacturer" width="120"/>
+          <el-table-column prop="path" label="path" width="120"/>
+          <el-table-column prop="pnpId" label="pnpId" width="600"/>
+          <el-table-column prop="productId" label="productId" width="120"/>
+          <el-table-column prop="serialNumber" label="serialNumber" width="120"/>
+          <el-table-column prop="vendorId" label="vendorId" width="120"/>
+          <el-table-column fixed="right" label="Operations" width="120">
+
+            <template #default>
+              <el-button link type="primary" size="small" @click="handleClick"
+              >Detail
+              </el-button
+              >
+              <el-button link type="primary" size="small">Edit</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+<!--        <template v-for="(item, index) in state.serialList">-->
+<!--          <label class="serial-item">-->
+<!--            <input class="input-radio" type="radio" v-model="state.queryBluetooth" :value="item"-->
+<!--                   name="serialList">{{ item }}-->
+<!--          </label>-->
+<!--        </template>-->
       </div>
       <!--      </div>-->
     </div>
@@ -27,6 +48,7 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import NewHuman from '@/components/newHuman/index.vue'
+const  ipcRenderer = window.electron.ipcRenderer
 
 const router = useRouter();
 import API from "@/api";
@@ -42,6 +64,8 @@ const state = reactive({
   serialList    : "",
   res           : "",
   serialStatus  : "",
+  response: []
+
 });
 
 // 点击按钮时给websocket服务器端发送消息
@@ -49,11 +73,20 @@ const setWs = (socket) => {
   $bus.emit("postWebSocket", socket);
 };
 
-const getSerialList = () => {
-  API.newHuman.query_bluetooth().then(res => {
-    state.serialList = res.data;
-  });
+const getSerialList = async() => {
+  state.serialList = await ipcRenderer.invoke('GET_PORT_LIST')
+  // console.log(state.serialStatus) // prints out 'pong'
+
+  // API.newHuman.query_bluetooth().then(res => {
+  //   state.serialList = res.data;
+  // });
 };
+const getList = async () => {
+
+  state.response = await ipcRenderer.invoke('GET_PORT_LIST')
+
+  console.log(state.response) // prints out 'pong'
+}
 getSerialList()
 const confirmSerial = () => {
   let data = state.queryBluetooth
