@@ -209,7 +209,7 @@ onMounted(() => {
   position: relative;
 
   .menu {
-    background-color: rgba(0, 0, 0, .2);
+    //background-color: rgba(0, 0, 0, .2);
     position: absolute;
     width: 15rem;
     height: 80vh;
