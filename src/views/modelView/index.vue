@@ -1,5 +1,6 @@
 <template>
   <div class="new-human">
+    <div class="three-class" id="my_three"></div>
     <div class="ws-res">
       {{ state.res }}
     </div>
@@ -40,6 +41,8 @@
 import {useRouter} from "vue-router";
 import NewHuman from '@/components/newHuman/index.vue'
 const  ipcRenderer = window.electron && window.electron.ipcRenderer
+import mixins from "../../../src/mixin/myThree";
+let {initThree} = mixins();
 
 const router = useRouter();
 import API from "@/api";
@@ -103,6 +106,8 @@ const sliderInput = (e, name, direction, option) => {
 };
 
 onMounted(() => {
+  initThree();
+
   $bus.on("resWebSocket", (parameter) => {
     state.res = parameter
   })
@@ -113,6 +118,14 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
+.three-class {
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -12;
+}
 .new-human {
   display: flex;
   flex-direction: column;

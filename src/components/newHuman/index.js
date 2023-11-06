@@ -50,11 +50,11 @@ export default class myThree {
     }
 
     initScene() {
-        this.scene.background = new THREE.Color(0x72645b);
-        this.scene.fog        = new THREE.Fog(0x72645b, 2, 10000);
+        // this.scene.background = new THREE.Color(0x72645b);
+        // this.scene.fog        = new THREE.Fog(0x72645b, 2, 10000);
         const plane           = new THREE.Mesh(
-            new THREE.PlaneGeometry(40000, 40000),
-            new THREE.MeshPhongMaterial({color: 0xcbcbcb, specular: 0x474747})
+            // new THREE.PlaneGeometry(40000, 40000),
+            // new THREE.MeshPhongMaterial({color: 0xcbcbcb, specular: 0x474747})
         );
         plane.rotation.x      = -Math.PI / 2;
         plane.position.y      = -.5;
@@ -197,7 +197,11 @@ export default class myThree {
     }
 
     initRenderer() {
-        this.renderer                   = new THREE.WebGLRenderer({canvas: this.canvas,});
+        this.renderer                = new THREE.WebGLRenderer({
+            antialias: true, //开启锯齿
+            alpha    : true,
+            canvas   : this.canvas,
+        });
         this.renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.setSize(this.sizes.width, this.sizes.height);
@@ -210,7 +214,7 @@ export default class myThree {
         const deltaTime   = elapsedTime - this.previousTime;
         this.previousTime = elapsedTime;
         //Update controls
-        this.controls.update();
+        // this.controls.update();
         // Render
         this.renderer.render(this.scene, this.camera);
         // Call tick again on the next frame
