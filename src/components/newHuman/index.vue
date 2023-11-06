@@ -5,7 +5,7 @@
       <Menu @sliderInput="modelAction" @switchChange="switchChange"
             @updateBoresList="updateBoresList"/>
     </div>
-    <action @modelAction="modelAction" :current-action="state.currentAction"></action>
+<!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
       <template v-for="(item, index) in state.specialJoints">
         <div class="dot-box flex">

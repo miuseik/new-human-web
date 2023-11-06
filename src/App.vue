@@ -21,7 +21,7 @@ const linkWs = () => {
     });
   };
 };
-linkWs()
+// linkWs()
 
 const setWs = (socket) => {
 

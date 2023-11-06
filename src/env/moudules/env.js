@@ -6,7 +6,8 @@ let API_PREFIX;
 if (process.env.NODE_ENV === "development") {
     API_PREFIX = '/api';
     // API_PREFIX = '/';
-    API_URL = "http://localhost:9000/";
+    // API_URL = "http://localhost:9000/";
+    API_URL = "http://server.houqicg.com:9999";
     WS_URL = "ws://localhost:3002";
 }
 

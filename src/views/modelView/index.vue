@@ -6,7 +6,6 @@
     <div class="worktop">
       <div class="buttons">
         <el-button :plain="true" @click="getSerialList">查找蓝牙</el-button>
-        <el-button :plain="true" @click="getList">查找蓝牙2</el-button>
         <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认蓝牙</el-button>
       </div>
       <div class="serial-list">
@@ -20,9 +19,8 @@
           <el-table-column prop="serialNumber" label="serialNumber" width="120"/>
           <el-table-column prop="vendorId" label="vendorId" width="120"/>
           <el-table-column fixed="right" label="Operations" width="120">
-
-            <template #default>
-              <el-button link type="primary" size="small" @click="handleClick"
+            <template #default="item">
+              <el-button link type="primary" size="small" @click="handleClick(item.row)"
               >Detail
               </el-button
               >
@@ -30,14 +28,7 @@
             </template>
           </el-table-column>
         </el-table>
-<!--        <template v-for="(item, index) in state.serialList">-->
-<!--          <label class="serial-item">-->
-<!--            <input class="input-radio" type="radio" v-model="state.queryBluetooth" :value="item"-->
-<!--                   name="serialList">{{ item }}-->
-<!--          </label>-->
-<!--        </template>-->
       </div>
-      <!--      </div>-->
     </div>
     <div class="model">
       <NewHuman @modelAction="modelAction" @sliderInput="sliderInput"></NewHuman>
@@ -48,7 +39,7 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import NewHuman from '@/components/newHuman/index.vue'
-const  ipcRenderer = window.electron.ipcRenderer
+const  ipcRenderer = window.electron && window.electron.ipcRenderer
 
 const router = useRouter();
 import API from "@/api";
@@ -74,26 +65,26 @@ const setWs = (socket) => {
 };
 
 const getSerialList = async() => {
-  state.serialList = await ipcRenderer.invoke('GET_PORT_LIST')
-  // console.log(state.serialStatus) // prints out 'pong'
+  if (window.electron) {
+    state.serialList = await ipcRenderer.invoke('GET_PORT_LIST');
+  } else {
 
-  // API.newHuman.query_bluetooth().then(res => {
-  //   state.serialList = res.data;
-  // });
+  }
 };
 const getList = async () => {
-
   state.response = await ipcRenderer.invoke('GET_PORT_LIST')
-
   console.log(state.response) // prints out 'pong'
 }
-getSerialList()
+const handleClick = () => {
+  
+}
 const confirmSerial = () => {
   let data = state.queryBluetooth
   state.serialList = []
-  API.newHuman.confirm_serial(data).then(res => {
-    state.serialStatus = res.data;
-  });
+
+  // API.newHuman.confirm_serial(data).then(res => {
+  //   state.serialStatus = res.data;
+  // });
 };
 const modelAction = (key, eulerData) => {
   let e, name, direction, option
@@ -115,6 +106,9 @@ onMounted(() => {
   $bus.on("resWebSocket", (parameter) => {
     state.res = parameter
   })
+  if (window.electron) {
+    getSerialList()
+  }
 })
 </script>
 
@@ -178,6 +172,7 @@ onMounted(() => {
   .model {
     overflow: hidden;
     height: 100vh;
+
     //height: calc(100vh - 3rem);
   }
 }
