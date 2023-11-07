@@ -30,13 +30,13 @@
               <template v-for="(grid, key) in item ">
                 <div v-if="key === 'size'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  <input type="text" v-model="state.boresList[index][key]" @input="setInputVal" :disabled="key === 'id'">
+                  <input class="input-box" type="text" v-model="state.boresList[index][key]" @input="setInputVal" :disabled="key === 'id'">
                 </div>
                 <div v-else-if="key === 'position' || key === 'rotate'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  x:<input type="text" v-model="state.boresList[index][key]['x']" @input="setInputVal" :disabled="key === 'id'">
-                  y:<input type="text" v-model="state.boresList[index][key]['y']" @input="setInputVal" :disabled="key === 'id'">
-                  z:<input type="text" v-model="state.boresList[index][key]['z']" @input="setInputVal" :disabled="key === 'id'">
+                  x:<input type="text" class="input-box" v-model="state.boresList[index][key]['x']" @input="setInputVal" :disabled="key === 'id'">
+                  y:<input type="text" class="input-box" v-model="state.boresList[index][key]['y']" @input="setInputVal" :disabled="key === 'id'">
+                  z:<input type="text" class="input-box" v-model="state.boresList[index][key]['z']" @input="setInputVal" :disabled="key === 'id'">
                 </div>
                 <div v-else-if="key === 'model_type' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
@@ -83,13 +83,13 @@
                         </div>
                         <div class="option-input">
                           <p>
-                            <span>min:</span><input type="text" v-model="opt.min">
+                            <span>min:</span><input class="input-box" type="text" v-model="opt.min">
                           </p>
                           <p>
-                            <span>max:</span><input type="text" v-model="opt.max">
+                            <span>max:</span><input class="input-box" type="text" v-model="opt.max">
                           </p>
                           <p>
-                            <span>value:</span><input type="text" v-model="opt.value">
+                            <span>value:</span><input class="input-box" type="text" v-model="opt.value">
                           </p>
                         </div>
                       </div>
@@ -355,10 +355,9 @@ const newBores = (item) => {
           .item-set-select {
             .select-warp {
               position: relative;
-              background-color: #fff;
               width: 100%;
               z-index: auto;
-              color: var(--Brand);
+              color: var(--Brand-unset);
               cursor: pointer;
 
               .select-box {
@@ -366,7 +365,6 @@ const newBores = (item) => {
                 z-index: 1;
                 border: #2DC3FE solid 1px;
                 position: absolute;
-                background-color: #fff;
                 cursor: pointer;
                 width: 100px;
               }
@@ -386,7 +384,6 @@ const newBores = (item) => {
             display: flex;
             flex-wrap: nowrap;
             justify-content: space-between;
-            //background-color: var(--Brand);
             font-size: 16px;
             padding: 1px 0;
 
