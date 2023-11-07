@@ -66,3 +66,17 @@ button{cursor: pointer !important;}
     -ms-overflow-style: none;
 
 }
+::-webkit-scrollbar {width: 8px;height: 8px;background-color: #F5F5F5; padding: 5rem}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    background-image: url("@/assets/img/public/scroll_bar.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    border: #FFFFFF solid 1px;
+    background-color: #1b3862;
+}

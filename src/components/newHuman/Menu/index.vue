@@ -1,30 +1,31 @@
 <!--// 路径：src/views/home/components/Menu/index.vue-->
 <template>
   <div class="human-menu">
-    <div>
-      <button class="btn btn-brand" @click="newBores()">新增一条</button>
-      <button class="btn btn-brand" @click="state.showAll = !state.showAll">
+    <div class="human-menu-action">
+      <div class="form-button" @click="newBores()">新增一条</div>
+      <div class="form-button" @click="state.showAll = !state.showAll">
         {{
           state.showAll ?
               '控制模式' :
               '全部模型'
         }}
-      </button>
+      </div>
       <span class="demonstration">鼠标视角控制器</span>
       <el-switch v-model="mouseValue" @change="switchChange"/>
     </div>
     <div class="list-warp">
       <template v-for="(item, index) in state.boresList ">
         <div class="bores-item">
-          <div class="item-data">
-            <div class="operate" v-if="state.currentChange.includes(item.id)">
-              <button class="btn btn-success" @click="saveChange(item)">保存</button>
-              <button class="btn btn-info" @click="filterId(item.id)">取消</button>
-              <button class="btn btn-danger" @click="deleteItem(item.id)">删除</button>
+          <div class="item-data card-warp">
+            <div class="operate flex" v-if="state.currentChange.includes(item.id)">
+              <div class="login_short_btn" @click="saveChange(item)">保存</div>
+              <div class="login_short_btn" @click="filterId(item.id)">取消</div>
+              <div class="login_short_btn" @click="deleteItem(item.id)">删除</div>
             </div>
             <div class="operate" v-else>
               <button class="btn btn-warning" @click="setItem(item)">修改</button>
             </div>
+
             <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
               <template v-for="(grid, key) in item ">
                 <div v-if="key === 'size'" class="item-set-bar">
@@ -293,18 +294,23 @@ const newBores = (item) => {
   .slider-item {
     //margin: 20px 0;
   }
-
+  .human-menu-action{
+    display: flex;
+  }
   .demonstration {
+    font-size: 15px;
     margin: 0 10px 10px 0;
   }
 
   .list-warp {
     overflow: auto;
     //height: 100%;
-    height: calc(80vh - 100px);
+    //height: calc(80vh - 100px);
 
     .bores-item {
       .item-data {
+        font-family: MeiHei;
+        font-size: 15px;
         .item-set {
           .item-set-bar {
             display: flex;

@@ -1,10 +1,10 @@
 <!--// 路径：src/views/home/components/Robot3d/index.vue-->
 <template>
   <div class="three-box">
-    <div class="menu">
+<!--    <div class="menu">-->
       <Menu @sliderInput="modelAction" @switchChange="switchChange"
             @updateBoresList="updateBoresList"/>
-    </div>
+<!--    </div>-->
 <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
       <template v-for="(item, index) in state.specialJoints">
@@ -208,16 +208,16 @@ onMounted(() => {
   height: 100%;
   position: relative;
 
-  .menu {
-    //background-color: rgba(0, 0, 0, .2);
-    position: absolute;
-    width: 15rem;
-    height: 80vh;
-    flex-shrink: 0;
-    overflow: hidden;
-    color: #fff;
-    font-size: .7rem;
-  }
+  //.menu {
+  //  //background-color: rgba(0, 0, 0, .2);
+  //  position: absolute;
+  //  width: 15rem;
+  //  height: 80vh;
+  //  flex-shrink: 0;
+  //  overflow: hidden;
+  //  color: #fff;
+  //  font-size: .7rem;
+  //}
 
   .dot-warp {
     position: fixed;

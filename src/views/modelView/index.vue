@@ -7,8 +7,8 @@
     </div>
     <div class="worktop">
       <div class="buttons">
-        <el-button :plain="true" @click="getSerialList">查找蓝牙</el-button>
-        <el-button v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认蓝牙</el-button>
+        <div class="form-button" :plain="true" @click="getSerialList">查找蓝牙</div>
+        <div class="form-button" v-if="state.serialList.length>0" :plain="true" @click="confirmSerial">确认蓝牙</div>
       </div>
       <div class="serial-list">
         <el-table :data="state.serialList" style="width: 100%">

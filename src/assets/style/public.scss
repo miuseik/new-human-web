@@ -79,3 +79,49 @@ input:focus{
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
 }
+
+.form-button {
+  text-align: center;
+  //margin-top: .5rem;
+  width: 200px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  cursor: pointer;
+  border-image-slice: 20 fill;
+  border-image-width: 8px 10px;
+  border-image-source: url("@/assets/img/public/login_btn.png");
+}
+.login_short_btn {
+  text-align: center;
+  //margin-top: .5rem;
+  width: 100px;
+  height: 50px;
+  line-height: 50px;
+  font-size: 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  cursor: pointer;
+  border-image-slice: 33 fill;
+  border-image-width: 30px 20px;
+
+  border-image-source: url("../img/public/login_short_btn.png");
+}
+.card-warp {
+  width: 100%;
+  min-width: 100px;
+  text-align: center;
+  align-items: center;
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #00fff6;
+  padding: 10px;
+  border-image-slice: 60 fill;
+  border-image-width: .55rem;
+  border-image-source: url("@/assets/img/public/card_box1.png");
+}
