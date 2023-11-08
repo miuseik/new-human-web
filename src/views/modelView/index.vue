@@ -151,6 +151,7 @@ onMounted(() => {
     position: absolute;
     width: 100vw;
     height: 100vh;
+    background-image: url("src/assets/img/window/9.png");
     border-image-slice: 180 150;
     border-image-width: 3rem;
     border-image-source: url("../../assets/img/background/index_com_border.png");

@@ -81,7 +81,7 @@
                           <span>模型反转:</span>
                           <el-switch v-model="opt.model_reverse"/>
                         </div>
-                        <div class="option-input">
+                        <div class="option-input ">
                           <p>
                             <span>min:</span><input class="input-box" type="text" v-model="opt.min">
                           </p>
@@ -98,7 +98,7 @@
                 </div>
                 <div v-else class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  <input type="text" v-model="state.boresList[index][key]" :disabled="key === 'id'">
+                  <input type="text" class="input-box" v-model="state.boresList[index][key]" :disabled="key === 'id'">
                 </div>
               </template>
             </div>
@@ -113,6 +113,7 @@
                 <p v-if="option.open">
                   {{ index }} {{ state.innerData[item.field][index] }}
                   <inputRange
+                      class="input-box"
                       :min="option.min"
                       :max="option.max"
                       v-model="state.innerData[item.field][index]"

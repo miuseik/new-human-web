@@ -1,6 +1,7 @@
 <template>
   <div class="input-range">
     <input
+        class="input-box"
         type="range" id="volume" name="volume"
         :value="state.innerValue"
         :min="min"

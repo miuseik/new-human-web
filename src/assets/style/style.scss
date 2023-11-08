@@ -54,11 +54,14 @@ a,a:active,a:hover,a:visited{color:#333; text-decoration:none}
 a:active{text-shadow:0 0 1px #CCC}
 :focus{outline:0}
 div,header{display:block}
-
-//input:-internal-autofill-previewed, input:-internal-autofill-selected {
-//    -webkit-text-fill-color: #807c7c;
-//    transition: background-color 5000s ease-out 0.5s;
-//}
+input{
+    background: none;
+    border: none;
+}
+input:-internal-autofill-previewed, input:-internal-autofill-selected {
+    -webkit-text-fill-color: #807c7c;
+    transition: background-color 5000s ease-out 0.5s;
+}
 button{cursor: pointer !important;}
 .pointer{cursor: pointer}
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
