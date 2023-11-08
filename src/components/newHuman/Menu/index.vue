@@ -40,26 +40,26 @@
                 </div>
                 <div v-else-if="key === 'model_type' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
-                  <div class="select-warp">
+                  <div class="select-warp input-box">
                     <div>
                       {{ state.modelType[state.boresList[index][key]] }}
                     </div>
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.modelType">
-                        <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                        <div class="input-box" @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                       </template>
                     </div>
                   </div>
                 </div>
                 <div v-else-if="key === 'master_slave' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
-                  <div class="select-warp">
+                  <div class="select-warp input-box">
                     <div>
                       {{ state.masterSlave[state.boresList[index][key]] }}
                     </div>
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.masterSlave">
-                        <div @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                        <div class="input-box" @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                       </template>
                     </div>
                   </div>
@@ -319,7 +319,8 @@ const newBores = (item) => {
             margin: 1px 0;
 
             .title {
-              width: 60px;
+              display: block;
+              width: 120px;
               flex-shrink: 0;
             }
           }
