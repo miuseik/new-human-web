@@ -62,13 +62,13 @@ const calculate = (range) => {
   const round = (x) => {
     return Math.round(x * 10000) / 100
   }
-  let data = {
-    0: {
+  let dataFloat = {
+    min: {
       a: round(range['min']),
       b: 1,
       c: 100,
     },
-    1: {
+    max: {
       a: round(range['max']),
       b: 1,
       c: 600,
@@ -78,12 +78,12 @@ const calculate = (range) => {
     x: 0,
     y: 0
   }
-  var a = parseFloat(data['0']['a']);
-  var b = parseFloat(data['0']['b']);
-  var c = parseFloat(data['1']['a']);
-  var d = parseFloat(data['1']['b']);
-  var p = parseFloat(data['0']['c']);
-  var q = parseFloat(data['1']['c']);
+  var a = parseFloat(dataFloat['min']['a'].toString());
+  var b = parseFloat(dataFloat['min']['b'].toString());
+  var c = parseFloat(dataFloat['max']['a'].toString());
+  var d = parseFloat(dataFloat['max']['b'].toString());
+  var p = parseFloat(dataFloat['min']['c'].toString());
+  var q = parseFloat(dataFloat['max']['c'].toString());
   var dtr = a * d - b * c;
   var bx = a * q - c * p;
   var ax = p * d - q * b;

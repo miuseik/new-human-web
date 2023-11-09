@@ -57,17 +57,17 @@ const props = defineProps({
   },
 });
 const state = reactive({
-  time        : '',
+  time        : null,
   stopTick    : false,
   showTime    : '00:00:00',
   startBn     : "启动",
   restBn      : '',
-  pauseDate   : '',
+  pauseDate   : null,
   bool        : false,
   pauseTime   : 0,
   demoNum     : 0,
   currentStep : 0,
-  currentTime : '',
+  currentTime : null,
   mixStep     : 0,
   isMouseDown : false,
   isStart     : false,
@@ -130,7 +130,7 @@ const initModel = async () => {
       console.log('meshmeshmesh', mesh.animations)
       let action = mesh.animations[0]['tracks']
       let duration = mesh.animations[0]['duration'] * 1000
-      state.duration = parseInt(duration)
+      state.duration = duration
       resolve(action)
     })
   }))
@@ -258,7 +258,7 @@ const reset = () => {
 const setAc = () => {
   for (let key in state.actionsClone) {
     let item = state.actionsClone[key]
-    let currentTime = (state.currentTime / 1000).toFixed(3)
+    let currentTime = parseFloat((1000 / state.currentTime).toFixed(3))
     let time
     if (item['times'][0] <= currentTime) {
       time = item['times'][0]
@@ -282,7 +282,7 @@ function animation() {
   state.currentTime = times
   setAc()
   if (state.currentTime >= state.duration) {
-    clickHandler()
+    clickHandler('')
     clickHandler('action')
   }
   // 将time减去分钟 除去1000得出 秒

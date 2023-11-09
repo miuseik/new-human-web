@@ -31,7 +31,7 @@ const errorHandle = (data, status, message) => {
     switch (status) {
         case 401: // 401: 未登录状态，跳转登录页
             // router.replace ({path: '/login'});
-            if (router.currentRoute.value.name != 'login') {
+            if (router.currentRoute.value.name !== 'login') {
                 setTimeout(() => {
                     tip('Login Expired');
                     localStorage.removeItem('ACCESS_TOKEN');
@@ -42,8 +42,7 @@ const errorHandle = (data, status, message) => {
 
             break;
         case 403: // 403 token过期
-
-            if (router.currentRoute.value.name != 'login') {
+            if (router.currentRoute.value.name !== 'login') {
                 setTimeout(() => {
                     tip('Login Expired');
                     localStorage.removeItem('ACCESS_TOKEN');

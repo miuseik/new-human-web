@@ -29,7 +29,7 @@ const props = defineProps({
   },
 });
 const state = reactive({
-  currentAction: []
+  currentAction: ''
 
 });
 const times = () => {

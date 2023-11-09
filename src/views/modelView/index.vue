@@ -22,7 +22,7 @@
           <el-table-column prop="vendorId" label="vendorId" width="120"/>
           <el-table-column fixed="right" label="Operations" width="120">
             <template #default="item">
-              <el-button link type="primary" size="small" @click="handleClick(item.row)"
+              <el-button link type="primary" size="small" @click="handleClick(item['row'])"
               >Detail
               </el-button
               >
@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import NewHuman from '@/components/newHuman/index.vue'
-const  ipcRenderer = window.electron && window.electron.ipcRenderer
+const  ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 import mixins from "../../../src/mixin/myThree";
 let {initThree} = mixins();
 
@@ -56,7 +56,7 @@ const state = reactive({
   socket        : "",
   messages      : [],
   queryBluetooth: {},
-  serialList    : "",
+  serialList    : [],
   res           : "",
   serialStatus  : "",
   response: []
@@ -65,11 +65,11 @@ const state = reactive({
 
 // 点击按钮时给websocket服务器端发送消息
 const setWs = (socket) => {
-  $bus.emit("postWebSocket", socket);
+  $bus['emit']("postWebSocket", socket);
 };
 
 const getSerialList = async() => {
-  if (window.electron) {
+  if (window['electron']) {
     state.serialList = await ipcRenderer.invoke('GET_PORT_LIST');
   } else {
 
@@ -79,7 +79,7 @@ const getList = async () => {
   state.response = await ipcRenderer.invoke('GET_PORT_LIST')
   console.log(state.response) // prints out 'pong'
 }
-const handleClick = () => {
+const handleClick = itemElement => {
   
 }
 const confirmSerial = () => {
@@ -109,10 +109,10 @@ const sliderInput = (e, name, direction, option) => {
 onMounted(() => {
   initThree();
 
-  $bus.on("resWebSocket", (parameter) => {
+  $bus['on']("resWebSocket", (parameter) => {
     state.res = parameter
   })
-  if (window.electron) {
+  if (window['electron']) {
     getSerialList()
   }
 })
@@ -151,7 +151,7 @@ onMounted(() => {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    background-image: url("src/assets/img/window/10.png");
+    background-image: url("../../assets/img/window/10.png");
     border-image-slice: 180 150;
     border-image-width: 3rem;
     border-image-source: url("../../assets/img/background/index_com_border.png");

@@ -48,7 +48,8 @@ const props = defineProps({
   },
 });
 const state = reactive({
-  innerValue: props.modelValue
+  innerValue: props.modelValue,
+  value: undefined
 });
 const add = () => {
   let num = Number(state.innerValue)

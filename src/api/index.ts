@@ -7,5 +7,9 @@ const API = {
     bores,
     actions,
     newHuman,
+    member: undefined,
+    pay: undefined,
+    game: undefined
+
 }
 export default API
