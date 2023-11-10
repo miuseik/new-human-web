@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #showTime
+        {
+            width: 300px;
+            height: 60px;
+            font-size: 60px;
+            line-height: 60px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div id="showTime">00:00:00</div>
+    <button id="startBn">启动</button>
+    <button id="restBn">复位</button>
+</div>
+<script>
+    var time,showTime,startBn,restBn,pauseDate;
+    //布尔开关
+    var bool=false;
+    //暂停的累计时间
+    var pauseTime=0;
+
+    init();
+    function init() {
+        showTime=document.getElementById("showTime");
+        startBn=document.getElementById("startBn");
+        restBn=document.getElementById("restBn");
+        startBn.addEventListener("click",clickHandler);//开始按钮 ~ 暂停按钮
+        restBn.addEventListener("click",clickHandler);//复位按钮
+        setInterval(animation,1);
+    }
+
+    //转化时间函数
+    function animation() {
+        console.log(times)
+
+        if(!bool) return;
+        //前时间减去上次开启时间减去暂停累计时间
+        var times=new Date().getTime()-time-pauseTime;
+        var minutes=Math.floor(times/60000);//毫秒转化为分钟
+        var seconds=Math.floor((times-minutes*60000)/1000);//已知分钟
+        console.log(times)
+
+        // 将time减去分钟 除去1000得出 秒
+        var ms=Math.floor((times-minutes*60000-seconds*1000)/10);//
+        showTime.innerHTML=
+            (minutes<10 ? "0" +minutes : minutes)+":"
+            +(seconds<10 ? "0"+seconds :seconds)+":"
+            +(ms<10 ? "0"+ms : ms);
+    }
+
+    //点击时的事件
+    function clickHandler(e) {
+        e= e || window.event;
+        if(this===startBn){
+            bool=!bool;
+            if(bool){
+                this.innerHTML="暂停";
+                //如果我们上一次暂停时间是空，表示没有暂停过，因此，直接返回0
+                //如果上次的暂停时间是有值得，用当前毫秒数减去上次的毫秒数，这样就会得到暂停时间
+                pauseTime+=(!pauseDate ? 0 : new Date().getTime()-pauseDate);
+                if(time) return;
+                time=new Date().getTime();
+                return;//是为bool判断跳出
+            }
+            this.innerHTML="启动";
+            pauseDate=new Date().getTime();
+            return;//是为this是否等于startBn判断跳出
+        }
+        startBn.innerHTML="启动";
+        pauseTime=0;
+        pauseDate=null;
+        bool=false;
+        time=0;
+        showTime.innerHTML="00:00:00";
+    }
+
+</script>
+</body>
+</html>
