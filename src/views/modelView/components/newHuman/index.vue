@@ -22,7 +22,9 @@
         </div>
       </template>
     </div>
-    <canvas class="webgl" ref="webgl" id="three_id"></canvas>
+    <div class="canvas-parent-node">
+      <canvas class="webgl" ref="webgl" id="three_id"></canvas>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -189,6 +191,7 @@ const updateBoresList = () => {
 
 onMounted(() => {
   let dom = document.getElementById("three_id");
+  console.log('domdomdomdomdom',dom)
   base = new myThree(dom);
   setTimeout(() => {
     for (let item in state.specialJoints) {
@@ -205,19 +208,14 @@ onMounted(() => {
 <style lang="scss" scoped>
 .three-box {
   display: flex;
+  flex-direction: row;
+  width: 100vw;
   height: 100%;
   position: relative;
+.human-menu{
 
-  //.menu {
-  //  //background-color: rgba(0, 0, 0, .2);
-  //  position: absolute;
-  //  width: 15rem;
-  //  height: 80vh;
-  //  flex-shrink: 0;
-  //  overflow: hidden;
-  //  color: #fff;
-  //  font-size: .7rem;
-  //}
+}
+
 
   .dot-warp {
     position: fixed;
@@ -267,5 +265,11 @@ onMounted(() => {
     }
   }
 
+  .canvas-parent-node {
+    overflow: hidden;
+    height: 100vh;
+    min-width: 500px;
+    width: 100%;
+  }
 }
 </style>

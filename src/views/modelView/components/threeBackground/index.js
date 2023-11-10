@@ -36,14 +36,14 @@ function init() {
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
     createImg(IndexBg.starC, {scale: {x: 500, y: 500, z: 0}, position: {x: -20, y: 100, z: 100}});
-    createImg(IndexBg.starM, {scale: {x: 200, y: 200, z: 0}, position: {x: -150, y: -150, z: 50}});
+    createImg(IndexBg.starM, {scale: {x: 1200, y: 800, z: 0}, position: {x: 1000, y: 150, z: -1150}});
     createImg(IndexBg.earth, {scale: {x: 1500, y: 875, z: 0}, position: {x: 0, y: 0, z: -100}});
     createImg(IndexBg.starE, {scale: {x: 250, y: 250, z: 0}, position: {x: 380, y: 130, z: -100}});
     createImg(IndexBg.starB, {scale: {x: 1000, y: 300, z: 0}, position: {x: -150, y: 150, z: -1000}});
-    createImg(IndexBg.star1, {scale: {x: 400, y: 100, z: 0}, position: {x: 450, y: -150, z: -1000}});
+    createImg(IndexBg.star1, {scale: {x: 400, y: 100, z: 0}, position: {x: 1700, y: 600, z: -900}});
     createImg(IndexBg.star2, {scale: {x: 100, y: 100, z: 0}, position: {x: -450, y: -150, z: -800}});
-    createImg(IndexBg.star3, {scale: {x: 200, y: 200, z: 0}, position: {x: -150, y: 150, z: -1100}});
-    createImg(IndexBg.star4, {scale: {x: 700, y: 200, z: 0}, position: {x: -750, y: 350, z: -500}});
+    createImg(IndexBg.star3, {scale: {x: 500, y: 500, z: 0}, position: {x: 1150, y: -150, z: -100}});
+    createImg(IndexBg.star4, {scale: {x: 700, y: 200, z: 0}, position: {x: -350, y: 350, z: -500}});
     createImg(IndexBg.star5, {scale: {x: 50, y: 50, z: 0}, position: {x: 50, y: -150, z: 0}});
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

@@ -32,19 +32,20 @@
         </el-table>
       </div>
     </div>
-    <div class="model">
-      <NewHuman @modelAction="modelAction" @sliderInput="sliderInput"></NewHuman>
-    </div>
+    <!--    <div class="model">-->
+    <NewHuman @modelAction="modelAction" @sliderInput="sliderInput"></NewHuman>
+    <!--    </div>-->
   </div>
 </template>
 
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import NewHuman from '@/components/newHuman/index.vue'
-const  ipcRenderer = window['electron'] && window['electron'].ipcRenderer
-import mixins from "../../../src/mixin/myThree";
-let {initThree} = mixins();
+import NewHuman from "./components/newHuman/index.vue"
 
+const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
+import mixins from "./components/threeBackground/index.js";
+
+let {initThree} = mixins();
 const router = useRouter();
 import API from "@/api";
 // const bus = inject('bus')
@@ -59,7 +60,7 @@ const state = reactive({
   serialList    : [],
   res           : "",
   serialStatus  : "",
-  response: []
+  response      : []
 
 });
 
@@ -68,7 +69,7 @@ const setWs = (socket) => {
   $bus['emit']("postWebSocket", socket);
 };
 
-const getSerialList = async() => {
+const getSerialList = async () => {
   if (window['electron']) {
     state.serialList = await ipcRenderer.invoke('GET_PORT_LIST');
   } else {
@@ -80,7 +81,7 @@ const getList = async () => {
   console.log(state.response) // prints out 'pong'
 }
 const handleClick = itemElement => {
-  
+
 }
 const confirmSerial = () => {
   let data = state.queryBluetooth
@@ -108,7 +109,6 @@ const sliderInput = (e, name, direction, option) => {
 
 onMounted(() => {
   initThree();
-
   $bus['on']("resWebSocket", (parameter) => {
     state.res = parameter
   })
@@ -127,6 +127,7 @@ onMounted(() => {
   overflow: hidden;
   z-index: -12;
 }
+
 .new-human {
   display: flex;
   flex-direction: column;
@@ -136,6 +137,7 @@ onMounted(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
+
   .ws-res {
     width: 300px;
     overflow: hidden;
@@ -147,7 +149,8 @@ onMounted(() => {
     z-index: 1;
     font-size: 16px;
   }
-  .index-border{
+
+  .index-border {
     position: absolute;
     width: 100vw;
     height: 100vh;
@@ -158,6 +161,7 @@ onMounted(() => {
     //background-image: url("../../assets/img/background/first_bg.png");
     background-size: 100vw 100vh;
   }
+
   .worktop {
     position: fixed;
     max-width: 15rem;
@@ -167,6 +171,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     background-color: rgba(0, 0, 0, .3);
+
     .buttons {
       display: flex;
       justify-content: right;
@@ -180,6 +185,7 @@ onMounted(() => {
       right: 0;
       background-color: rgba(0, 0, 0, .3);
       display: none;
+
       .serial-item {
         display: flex;
         flex-direction: row;
@@ -191,7 +197,8 @@ onMounted(() => {
         }
       }
     }
-    &:hover{
+
+    &:hover {
       .serial-list {
         display: block;
       }
@@ -199,8 +206,8 @@ onMounted(() => {
   }
 
   .model {
-    overflow: hidden;
-    height: 100vh;
+    //overflow: hidden;
+    //height: 100vh;
 
     //height: calc(100vh - 3rem);
   }

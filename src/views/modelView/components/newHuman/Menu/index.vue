@@ -10,8 +10,8 @@
               '全部模型'
         }}
       </div>
-      <span class="demonstration">鼠标视角控制器</span>
-      <el-switch v-model="mouseValue" @change="switchChange"/>
+<!--      <span class="demonstration">鼠标视角控制器</span>-->
+<!--      <el-switch v-model="mouseValue" @change="switchChange"/>-->
     </div>
     <div class="list-warp">
       <template v-for="(item, index) in state.boresList ">
@@ -293,9 +293,11 @@ const newBores = () => {
 <style lang="scss" scoped>
 .human-menu {
   //padding: 20px 10px;
+
   display: flex;
   flex-direction: column;
-
+  width: 500px;
+  flex-shrink: 0;
   .slider-item {
     //margin: 20px 0;
   }
