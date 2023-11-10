@@ -25,7 +25,7 @@
 import * as THREE from "three";
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {cloneDeep, debounce} from "@/utils/putlic/index.js"
-import {boneData} from "@/components/newHuman/data/index.js"
+import {boneData} from "../data/index.js"
 import {ElMessage} from "element-plus";
 
 const fbx_loader = new FBXLoader()

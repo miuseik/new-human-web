@@ -7,12 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Action: typeof import('./components/newHuman/action/index.vue')['default']
     InputRange: typeof import('./components/public/inputRange.vue')['default']
-    Menu: typeof import('./components/newHuman/Menu/index.vue')['default']
-    NewHuman: typeof import('./components/newHuman/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Slider: typeof import('./components/newHuman/slider/index.vue')['default']
   }
 }
