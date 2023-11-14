@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite --port 8088",
+    "prd": "set NODE_ENV=production&& vite --port 8088",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
