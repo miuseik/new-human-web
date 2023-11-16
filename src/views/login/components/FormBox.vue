@@ -75,19 +75,19 @@ import {
   onBeforeUnmount,
   computed,
 } from "vue";
-import { string } from "vue-types";
+// import { string } from "vue-types";
 import { formTplGroup } from "../data";
 import { validateForm } from "@/utils/validateForm";
 import {
-  login,
-  logOut,
-  reg,
-  resetPwd,
-  sendSignupCode,
-  resetPwdSendEmail,
-  verifyInvitationCode,
-  getVerifyImage,
-} from "../../../api/login";
+  // login,
+  // logOut,
+  // reg,
+  // resetPwd,
+  // sendSignupCode,
+  // resetPwdSendEmail,
+  // verifyInvitationCode,
+  // getVerifyImage,
+} from "@/api/index.ts";
 import { getCurrentInstance } from "vue";
 
 const cxt = getCurrentInstance(); //相当于Vue2中的this
@@ -95,7 +95,7 @@ const bus = cxt.appContext.config.globalProperties.$bus;
 import {
   messageBoxWarningConfirm,
   messageBoxSuccessAutoClose,
-} from "../../../utils/popup";
+} from "@/utils/popup";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -108,7 +108,7 @@ const props = defineProps({
     default: {},
   },
   pageType: {
-    type: string,
+    type: String,
     default: "login",
   },
   cardStyle: {
@@ -342,7 +342,7 @@ onBeforeUnmount(() => {});
         line-height: 1.1rem;
         border-image-slice: 30 fill;
         border-image-width: 1rem;
-        border-image-source: url("../../../assets/img/login/form_box/title.png");
+        //border-image-source: url("../../../assets/img/login/form_box/title.png");
         position: relative;
         span {
           font-size: .6rem;
@@ -415,7 +415,7 @@ onBeforeUnmount(() => {});
               width: 100%;
               height: 1.05rem;
               font-size: .5rem;
-              border-image-source: url('../../../assets/img/login/login_form_input.png');
+              //border-image-source: url('../../../assets/img/login/login_form_input.png');
               border-top: .1rem solid;
               border-right: .1rem solid;
               border-bottom: .1rem solid;
@@ -440,7 +440,7 @@ onBeforeUnmount(() => {});
             line-height: 1.25rem;
             font-size: .25rem;
             font-weight: bold;
-            background-image: url("../../../assets/img/login/login_btn.png");
+            //background-image: url("../../../assets/img/login/login_btn.png");
             background-repeat: no-repeat;
             background-position: center;
             background-size: 100% 1.25rem;
@@ -482,7 +482,7 @@ onBeforeUnmount(() => {});
       height: 1rem;
       line-height: 1rem;
       font-size: .5rem;
-      background-image: url("../../../assets/img/login/login_btn.png");
+      //background-image: url("../../../assets/img/login/login_btn.png");
       background-repeat: no-repeat;
       background-position: center;
       background-size: 100%;
@@ -557,7 +557,7 @@ onBeforeUnmount(() => {});
               //border-image-source: url("../../assets/img/login/login_btn.png");
               //border-image-slice: 20 fill;
               //border-image-width: .5rem;
-              background-image: url("../../../assets/img/login/login_btn.png");
+              //background-image: url("../../../assets/img/login/login_btn.png");
               background-repeat: no-repeat;
               background-position: center;
               background-size: 100% 3rem;
@@ -584,7 +584,7 @@ onBeforeUnmount(() => {});
         line-height: 5rem;
         border-image-slice: 20 fill;
         border-image-width: 1rem;
-        border-image-source: url("../../../assets/img/login/login_btn.png");
+        //border-image-source: url("../../../assets/img/login/login_btn.png");
       }
     }
   }

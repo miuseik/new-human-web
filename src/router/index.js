@@ -22,6 +22,23 @@ let routes= [
         name: 'login',
         component: () => import(/* webpackChunkName: "about" */ '../views/login/login.vue')
     },
+    // {
+    //     path: '/login',
+    //     component: () => import('../views/login/index.vue'),
+    //     hidden: false
+    // },
+    {
+        path: '/reg',
+        name: 'reg',
+        component: () => import('../views/login/reg.vue'),
+        hidden: false
+    },
+    {
+        path: '/retrieve',
+        name: 'retrieve',
+        component: () => import('../views/login/retrieve.vue'),
+        hidden: false
+    },
     //{
     //配置404页面
     //path: '/:catchAll(.*)',
