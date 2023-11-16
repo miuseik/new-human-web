@@ -17,6 +17,11 @@ let routes= [
         name: 'home',
         component: () => import(/* webpackChunkName: "about" */ '../views/home/index.vue')
     },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import(/* webpackChunkName: "about" */ '../views/login/login.vue')
+    },
     //{
     //配置404页面
     //path: '/:catchAll(.*)',
