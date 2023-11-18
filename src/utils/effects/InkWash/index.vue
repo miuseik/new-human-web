@@ -4,23 +4,29 @@
  </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // import * as dat from 'dat.gui';
 // const gui = new dat.GUI();
 import webgljs from './script.js'
-// gui
-window.ga = window.ga || function () {
-  (ga.q = ga.q || []).push(arguments);
-};
-ga.l      = +new Date;
-ga("create", "UA-105392568-1", "auto");
-ga("send", "pageview");
+
+const initGa = () => {
+  // window.ga = window.ga || function () {
+  //   (ga.q = ga.q || []).push(arguments);
+  // };
+  // ga.l      = +new Date;
+  // ga("create", "UA-105392568-1", "auto");
+  // ga("send", "pageview");
+}
 
 import {ref, reactive, watch, onMounted, onBeforeUnmount} from "vue";
 const state = reactive({
 });
 onMounted(() => {
+  if (window['ga']) {
+    initGa()
+  }
   webgljs()
+
 })
 
 </script>

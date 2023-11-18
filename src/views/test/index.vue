@@ -2,8 +2,8 @@
   <InkWash class="ink-wash"></InkWash>
 </template>
 
-<script setup>
-import InkWash from "@/utils/effects/inkWash/index.vue";
+<script setup lang="ts">
+import InkWash from "src/utils/effects/InkWash/index.vue";
 
 import {ref, reactive, watch, onMounted, onBeforeUnmount} from "vue";
 const state = reactive({
