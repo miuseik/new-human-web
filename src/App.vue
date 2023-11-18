@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import mixins from "@/components/threeBackground/index.js";
+
+let {initThree} = mixins();
+
 // import { ElMessage } from 'element-plus';
 
 // import env from "@/env/moudules/env.js";
@@ -28,6 +32,8 @@ const bus = inject('$bus')
 //   ws.send(socket);
 // };
 onMounted(() => {
+  initThree();
+
   // bus.on("postWebSocket", (parameter) => {
   //   setWs(parameter);
   // })
@@ -35,33 +41,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <router-view></router-view>
+  <div class="three-class" id="my_three"></div>
+
+  <router-view class="prohibit-selection"></router-view>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.three-class {
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -12;
 }
 </style>

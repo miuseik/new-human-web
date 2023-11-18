@@ -2,7 +2,8 @@
   <form-box :page-type="'login'"></form-box>
 </template>
 
-<script setup>
+<script setup lang="ts">
+
 import FormBox from './components/FormBox.vue';
 
 </script>

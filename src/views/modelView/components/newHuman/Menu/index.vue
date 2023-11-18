@@ -293,7 +293,9 @@ const newBores = () => {
 <style lang="scss" scoped>
 .human-menu {
   //padding: 20px 10px;
-
+  .input-box{
+    height: 30px;
+  }
   display: flex;
   flex-direction: column;
   width: 500px;

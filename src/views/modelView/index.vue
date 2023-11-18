@@ -43,9 +43,7 @@ import {useRouter} from "vue-router";
 import NewHuman from "./components/newHuman/index.vue"
 
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
-import mixins from "./components/threeBackground/index.js";
 
-let {initThree} = mixins();
 const router = useRouter();
 import API from "@/api";
 // const bus = inject('bus')
@@ -108,7 +106,6 @@ const sliderInput = (e, name, direction, option) => {
 };
 
 onMounted(() => {
-  initThree();
   $bus['on']("resWebSocket", (parameter) => {
     state.res = parameter
   })

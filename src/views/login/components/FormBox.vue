@@ -11,13 +11,13 @@
           <!--          <i class="icon icon-form-header"></i>-->
           <template v-for="(item, index) in state.currentFormTpl" key="index">
             <div class="form-item">
-              <i class="icon icon-center-column" :class="item.icon"></i>
-              <div class="input-box" :class="item.code ? 'input-box-code' : ''">
-                <span class="input-title">{{ item.title }}</span>
+              <i class="icon icon-center-column" :class="item['icon']"></i>
+              <div class="input-box" :class="item['code'] ? 'input-box-code' : ''">
+                <span class="input-title">{{ item['title'] }}</span>
                 <input
-                  :type="item.field === 'pwd' ? 'password' : 'text'"
-                  :placeholder="item.placeholder"
-                  v-model="state.formData[item.field]"
+                  :type="item['field'] === 'pwd' ? 'password' : 'text'"
+                  :placeholder="item['placeholder']"
+                  v-model="state.formData[item['field']]"
                 />
                 <span class="warning">{{ validateItem(item) }}</span>
               </div>
@@ -26,7 +26,7 @@
                 ref="invitation_ref"
                 id="invitation_id"
                 @click="clickGetVerify"
-                v-if="item.code && item.field === 'verification'"
+                v-if="item['code'] && item['field'] === 'verification'"
                 class="input-button"
               >
                 <img :src="state.verifyImage" alt="" />
@@ -36,10 +36,10 @@
                 ref="verification_ref"
                 id="verification_id"
                 @click="handleGetVerify"
-                v-if="item.code && item.field === 'verification_email'"
+                v-if="item['code'] && item['field'] === 'verification_email'"
                 class="input-button"
               >
-                {{ item.code }}
+                {{ item['code'] }}
               </div>
             </div>
           </template>
@@ -65,12 +65,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
-  ref,
   reactive,
-  shallowReactive,
-  watch,
   onMounted,
   onBeforeUnmount,
   computed,
@@ -78,29 +75,10 @@ import {
 // import { string } from "vue-types";
 import { formTplGroup } from "../data";
 import { validateForm } from "@/utils/validateForm";
-import {
-  // login,
-  // logOut,
-  // reg,
-  // resetPwd,
-  // sendSignupCode,
-  // resetPwdSendEmail,
-  // verifyInvitationCode,
-  // getVerifyImage,
-} from "@/api/index.ts";
+import {} from "@/api/index.ts";
 import { getCurrentInstance } from "vue";
 
 const cxt = getCurrentInstance(); //相当于Vue2中的this
-const bus = cxt.appContext.config.globalProperties.$bus;
-import {
-  messageBoxWarningConfirm,
-  messageBoxSuccessAutoClose,
-} from "@/utils/popup";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-
-const router = useRouter();
-const store = useStore();
 
 const props = defineProps({
   msg: {
@@ -117,7 +95,7 @@ const props = defineProps({
   },
 });
 const state = reactive({
-  currentFormTpl: {},
+  currentFormTpl: [],
   postEd: false,
   formData: {
     email: "",
@@ -146,7 +124,7 @@ const validateItem = computed(() => {
 });
 const toPost = () => {
   state.postEd = true;
-  for (var i = 0; i < state.currentFormTpl.length; i++) {
+  for (let i = 0; i < state.currentFormTpl.length; i++) {
     let item = state.currentFormTpl[i];
     let data = {
       key: item.field || "",
@@ -172,128 +150,32 @@ const toPost = () => {
 };
 
 const openLogin = () => {
-  bus.emit("openLogin", "login");
-  console.log("login");
+
 };
 const Reg = () => {
-  bus.emit("openLogin", "reg");
-  console.log("reg");
+
 };
 const Forget = () => {
-  bus.emit("openLogin", "retrieve");
-  console.log("retrieve");
+
 };
 const closeLogin = () => {
-  bus.emit("closeLogin");
 };
 
 const reqlogin = () => {
-  let userinfo = {
-    Email: state.formData.email,
-    Password: state.formData.pwd,
-  };
-  store.dispatch("Login", userinfo).then(() => {
-    window.location.reload();
-  });
+
 };
 const reqreg = () => {
-  let data = {
-    Email: state.formData.email,
-    Name: state.formData.uname,
-    Code: state.formData.verification_email,
-    Password: state.formData.pwd,
-    InvitationCode: state.formData.invitation || "",
-  };
-  reg(data).then((res) => {
-    state.submitLoading = true;
-    console.log("reg", res);
-    if (res.Code == 200) {
-      messageBoxSuccessAutoClose("Register successfully.", () => {
-        // store.dispatch("Login", {
-        //   Email   : data.email,
-        //   Password: data.pwd,
-        // }).then(() => {
-        //   window.location.reload();
-        // }).catch(err => {
 
-        openLogin();
-
-        //  window.location.reload();
-
-        // });
-      });
-    }
-  });
 };
 const retrieve = () => {
-  let data = {
-    Email: state.formData.email,
-    Name: state.formData.uname,
-    Code: state.formData.verification_email,
-    Password: state.formData.pwd,
-    InvitationCode: state.formData.invitation,
-  };
-  resetPwd(data).then((res) => {
-    console.log("resetPwd", res);
 
-    if (res.Code == 200) {
-      messageBoxSuccessAutoClose("Reset password successfully");
-      openLogin();
-    }
-  });
 };
 const clickGetVerify = () => {
-  getVerifyImage()
-    .then((res) => {
-      let data = (res && res.Data) || "";
-      state.verifyImage = data.Image;
-      state.verifyImageId = data.ImageId;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+
 };
 const handleGetVerify = () => {
   console.log("state.pageType", props.pageType);
   if (state.verifyTime < 60 || state.isVerify) return;
-  if (
-    state.formData.verification &&
-    state.formData.verification != "" &&
-    state.formData.email
-  ) {
-    state.sendLoading = true;
-    state.isVerify = true;
-    let postType = props.pageType == "reg" ? sendSignupCode : resetPwdSendEmail;
-    postType({
-      Email: state.formData.email,
-      ImageId: state.verifyImageId,
-      Code: state.formData.verification,
-    })
-      .then((res) => {
-        state.sendLoading = false;
-        const timer = setInterval(() => {
-          state.verifyTime--;
-          if (state.verifyTime < 0) {
-            clearInterval(timer);
-            state.verifyTime = 60;
-            state.isVerify = false;
-          }
-        }, 1000);
-        messageBoxSuccessAutoClose("Verfication code has been sent.");
-      })
-      .catch((err) => {
-        if (err.code === "WKS1020") {
-          setTimeout(() => {
-            block.value?.openDialog(state.formData.email);
-          }, 1800);
-        } else {
-          state.sendLoading = false;
-          state.isVerify = false;
-        }
-      });
-  } else {
-    messageBoxWarningConfirm("Please Input Verify Result and email!");
-  }
 };
 const getCurrentTpl = () => {
   state.currentFormTpl = formTplGroup[props.pageType];
@@ -309,16 +191,13 @@ onBeforeUnmount(() => {});
 
 <style scoped lang="scss">
 .account-channel-page {
-
   color: #fff;
   height: 100vh;
   text-align: center;
   position: fixed;
   z-index: 100;
   .form-warp {
-    //max-height: 90vh;
     height: 100vh;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -327,25 +206,28 @@ onBeforeUnmount(() => {});
     z-index: 99999;
     left: 50%;
     transform: translateX(-50%);
-    padding: 1rem 0;
+    padding: 120px 0;
     overflow: auto;
     &::-webkit-scrollbar {
       display: none;
     }
     .form-box {
-      width: 11.9rem;
+      width: 50vw;
+      max-width: 500px;
+      min-width: 300px;
       display: flex;
       flex-direction: column;
 
       .form-title {
-        height: 1.1rem;
-        line-height: 1.1rem;
+        height: 30px;
+        font-family: MeiHei;
+        line-height: 30px;
         border-image-slice: 30 fill;
-        border-image-width: 1rem;
-        //border-image-source: url("../../../assets/img/login/form_box/title.png");
+        border-image-width: 20px;
+        border-image-source: url("../../../assets/img/login/form_box/title.png");
         position: relative;
         span {
-          font-size: .6rem;
+          font-size: 20px;
         }
         .icon:before {
           bottom: 0;
@@ -354,15 +236,13 @@ onBeforeUnmount(() => {});
       }
 
       .form-content {
-        //overflow: auto;
         position: relative;
-        //height: 5rem;
         z-index: 1;
-        border-image-slice: 40 fill;
-        border-image-width: 1rem;
-        border-image-source: url("../../../assets/img/home/card_box1.png");
-        padding:.5rem 2rem;
-        min-height: 10rem;
+        border-image-slice: 30 fill;
+        border-image-width: 30px;
+        border-image-source: url("../../../assets/img/public/card_box1.png");
+        padding: 20px 60px;
+        min-height: 100px;
         display: flex;
         flex-direction: column;
         //justify-content: center;
@@ -373,20 +253,19 @@ onBeforeUnmount(() => {});
           align-items: center;
           justify-content: center;
           position: relative;
-          margin-top: .5rem;
+          margin-top: 30px;
           width: 100%;
-          //height: 3rem;
           .icon {
             display: block;
             &:before {
-              left: -1rem;
-              margin-top: .3rem;
-              width: 1rem;
-              height: 1rem;
+              left: -40px;
+              margin-top: 7.5px;
+              width: 50px;
+              height: 50px;
             }
           }
 
-          padding-top: .5rem;
+          padding-top: 15px;
           .input-box {
             position: relative;
             display: flex;
@@ -395,35 +274,25 @@ onBeforeUnmount(() => {});
             width: 100%;
 
             .input-title {
-              font-size: .4rem;
+              font-size: 15px;
               font-weight: 400;
               color: #00FFF6;
-              padding-left: .5rem;
+              //padding-left: 10px;
               white-space: nowrap;
               position: absolute;
-              top: -.6rem;
+              top: -25px;
             }
 
             .warning {
               position: absolute;
-              bottom: -.5rem;
-              left: .5rem;
-              font-size: .3rem;
+              bottom: -15px;
+              left: 15px;
+              font-size: 13px;
             }
 
             input {
-              width: 100%;
-              height: 1.05rem;
-              font-size: .5rem;
-              //border-image-source: url('../../../assets/img/login/login_form_input.png');
-              border-top: .1rem solid;
-              border-right: .1rem solid;
-              border-bottom: .1rem solid;
-              border-left: .1rem solid;
-              border-image-slice: 33 fill;
-              border-image-width: .55rem;
+              height: 30px;
               color: #fff;
-              padding-left: .3rem;
             }
           }
 
@@ -434,16 +303,16 @@ onBeforeUnmount(() => {});
           }
 
           .input-button {
-            width: 7rem;
+            width: 102px;
             cursor: pointer;
-            height: 1.25rem;
-            line-height: 1.25rem;
-            font-size: .25rem;
+            height: 102px;
+            line-height: 102px;
+            font-size: 12px;
             font-weight: bold;
             //background-image: url("../../../assets/img/login/login_btn.png");
             background-repeat: no-repeat;
             background-position: center;
-            background-size: 100% 1.25rem;
+            background-size: 100% 102px;
           }
         }
 
@@ -451,8 +320,8 @@ onBeforeUnmount(() => {});
           width: 100%;
           display: flex;
           justify-content: space-between;
-          margin-top: .5rem;
-          font-size: .4rem;
+          margin-top: 15px;
+          font-size: .12px;
 
           span {
             cursor: pointer;
@@ -460,29 +329,29 @@ onBeforeUnmount(() => {});
         }
 
         .form-bottom {
-          margin-top: 1rem;
+          margin-top: 30px;
           display: flex;
           justify-content: center;
           flex-direction: column;
           p:first-child {
             color: #00FFF6;
-            font-size: .4rem;
+            font-size: .12px;
           }
 
           p:last-child {
-            font-size: .1rem;
+            font-size: 10px;
           }
         }
       }
     }
 
     .form-button {
-      margin-top: .5rem;
-      width: 4.8725rem;
-      height: 1rem;
-      line-height: 1rem;
-      font-size: .5rem;
-      //background-image: url("../../../assets/img/login/login_btn.png");
+      margin-top: 15px;
+      width: 155px;
+      font-family: MeiHei;
+      height: 50px;
+      line-height: 50px;
+      font-size: 15px;
       background-repeat: no-repeat;
       background-position: center;
       background-size: 100%;
@@ -494,99 +363,6 @@ onBeforeUnmount(() => {});
     height: 100vh;
     position: fixed;
     z-index: 9999;
-  }
-  @media only screen and (max-width: 1024px) {
-    .form-warp {
-      width: 100vw;
-      padding: 3rem;
-      .form-box {
-        width: 100%;
-        .form-title {
-          height: 3rem;
-          line-height: 3rem;
-          border-image-slice: 30 fill;
-          span {
-            font-size: 1.5rem;
-          }
-          .icon:before {
-            bottom: 0;
-            right: -.3rem;
-            width: 4rem;
-            height: 4rem;
-          }
-        }
-
-        .form-content {
-          justify-content: start;
-          min-height: 25rem;
-          padding: 1rem 2rem;
-          .form-item {
-            margin-top: 3rem;
-            .icon {
-              display: none;
-              &:before {
-                width: 3rem;
-                height: 3rem;
-              }
-            }
-            .input-box {
-              .input-title {
-                top: -2rem;
-                font-size: 1rem;
-              }
-              input {
-                height: 2rem;
-                font-size: .8rem;
-              }
-            }
-            .input-box-code {
-              width: 50%;
-              input {
-                width: 100%;
-              }
-            }
-
-            .input-button {
-              width: 50%;
-              cursor: pointer;
-              height: 3rem;
-              line-height: 3rem;
-              font-size: .25rem;
-              font-weight: bold;
-              padding: 0 .5rem;
-              //border-image-source: url("../../assets/img/login/login_btn.png");
-              //border-image-slice: 20 fill;
-              //border-image-width: .5rem;
-              //background-image: url("../../../assets/img/login/login_btn.png");
-              background-repeat: no-repeat;
-              background-position: center;
-              background-size: 100% 3rem;
-            }
-          }
-          .form-bottom {
-            width: 100%;
-            padding:0 2rem;
-            p:first-child {
-              color: #00FFF6;
-              font-size: 1.2rem;
-            }
-
-            p:last-child {
-              font-size: .9rem;
-            }
-          }
-        }
-      }
-
-      .form-button {
-        width: 50%;
-        height: 5rem;
-        line-height: 5rem;
-        border-image-slice: 20 fill;
-        border-image-width: 1rem;
-        //border-image-source: url("../../../assets/img/login/login_btn.png");
-      }
-    }
   }
 }
 

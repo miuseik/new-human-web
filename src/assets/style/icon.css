@@ -1,0 +1,130 @@
+.icon, i {
+    text-transform: none;
+    font-weight: 400;
+    font-style: normal;
+    font-variant: normal;
+    font-family: iconfont, serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    speak: none;
+    /*display: block;*/
+}
+
+.icon-mask {
+    -webkit-mask-position: center;
+    -webkit-mask-size: 50%;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 50%;
+    mask-repeat: no-repeat;
+}
+
+.icon::before, .icon::after {
+    position: absolute;
+    content: '';
+    display: block;
+    min-height: .5rem;
+    min-width: .5rem;
+    /*height: 100%;*/
+    /*width: 100%;*/
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.icon-center:before, .icon-center:after {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.icon-center-row:before, .icon-center-row:after {
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.icon-center-column:before, .icon-center-column:after {
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.icon-email:before {
+    background-image: url(../img/icon/icon_email.png);
+}
+
+.icon-pwd:before {
+    background-image: url(../img/icon/icon_pwd.png);
+}
+
+.icon-account:before {
+    background-image: url(../img/icon/icon_account.png);
+}
+
+.icon-account-on:before {
+    background-image: url(../img/icon/icon_account_on.png);
+}
+
+.icon-backpack:before {
+    background-image: url(../img/icon/icon_backpack.png);
+}
+
+.icon-back:before {
+    width: 5rem;
+    height: 2rem;
+    background-image: url(../img/icon/icon_back.png);
+}
+
+.icon-backpack-on:before {
+    background-image: url(../img/icon/icon_backpack_on.png);
+}
+
+.icon-close:before {
+    width: 1.53125rem;
+    height: 1.53125rem;
+    background-image: url(../img/login/login_close.png);
+}
+
+.icon-link:before {
+    width: .8rem;
+    height: .8rem;
+    background-image: url(../img/icon/icon_link.png);
+}
+
+.icon-form-header:before {
+    width: 11.9rem;
+    height: 2.125rem;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-image: url(../img/login/form_box/header.png);
+}
+
+.icon-form-bottom:after {
+    width: 11.9rem;
+    height: 2.125rem;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background-image: url(../img/login/form_box/bottom.png);
+}
+
+
+.icon-backpack-on:before {
+    background-image: url(../img/icon/icon_backpack_on.png);
+}
+
+.icon-Telegram:before {
+    background-image: url(../img/icon/share/Telegram.png);
+}
+
+.icon-Telegram2:before {
+    background-image: url(../img/icon/share/Telegram.png);
+}
+
+.icon-Discord:before {
+    background-image: url(../img/icon/share/Discordicon.png);
+}
+
+.icon-Twitter:before {
+    background-image: url(../img/icon/share/Twittericon.png);
+}

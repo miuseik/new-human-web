@@ -79,6 +79,9 @@ const sliderInput = (e = {}) => {
 <style lang="scss" scoped>
 .input-range {
   display: flex;
+  .input-box{
+    height: 30px;
+  }
 }
 
 </style>

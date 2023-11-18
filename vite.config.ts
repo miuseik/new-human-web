@@ -8,7 +8,7 @@ import AutoImport from "unplugin-auto-import/vite"
 //自动导入ui-组件 比如说ant-design-vue  element-plus等
 import Components from 'unplugin-vue-components/vite';
 
-import env from "./src/env/moudules/env.js";
+import env from ".//src/env/moudules/env.js";
 
 import path from "path";
 // https://vitejs.dev/config/

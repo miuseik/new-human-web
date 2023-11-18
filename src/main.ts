@@ -10,9 +10,7 @@ import "element-plus/dist/index.css";
 import locale from 'element-plus/lib/locale/lang/zh-cn'
 
 // import 'element-plus/lib/theme-chalk/index.css'
-import '@/assets/styles/base.scss'
-import '@/assets/styles/overall.scss'
-import '@/assets/styles/resetElement.scss'
+
 import '@/utils/rem'
 
 import "@/assets/style/index.scss";

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import * as IndexBg from "@/assets/img/background/index.js";
+import * as IndexBg from "@/assets/img/background";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 let container;

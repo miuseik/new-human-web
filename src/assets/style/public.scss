@@ -1,141 +1,251 @@
 .brand {
-  color : var(--Brand)
+	color: var(Brand)
 }
+
 .success {
-  color : var(--Success)
+	color: var(Success)
 }
+
 .warning {
-  color : var(--Warning)
+	color: var(Warning)
 }
+
 .danger {
-  color : var(--Danger)
+	color: var(Danger)
 }
+
 .info {
-  color : var(--Info)
+	color: var(Info)
 }
+
 .info-lighter {
-    color : var(--Info-lighter)
+	color: var(Info-lighter)
 }
+
 .info-unset {
-    color : var(--Info-lighter)
+	color: var(Info-lighter)
 }
-.btn{
-  cursor: pointer;
-  position: relative;
-  border: 0;
-  padding: 5px 15px;
-  display: inline-block;
-  text-align: center;
-  color: white;
-  border-radius: 5px
+
+.btn {
+	cursor: pointer;
+	position: relative;
+	border: 0;
+	padding: 5px 15px;
+	display: inline-block;
+	text-align: center;
+	color: white;
+	border-radius: 5px
 }
+
 .b-brand {
-  background-color : var(--Brand)
+	background-color: var(Brand)
 }
+
 .b-success {
-  background-color : var(--Success)
+	background-color: var(Success)
 }
+
 .b-warning {
-  background-color : var(--Warning)
+	background-color: var(Warning)
 }
+
 .b-danger {
-  background-color : var(--Danger)
+	background-color: var(Danger)
 }
+
 .b-info {
-  background-color : var(--Info)
+	background-color: var(Info)
 }
+
 .b-info-lighter {
-    background-color : var(--Info-lighter)
+	background-color: var(Info-lighter)
 }
+
 .b-info-unset {
-    background-color : var(--Info-lighter)
+	background-color: var(Info-lighter)
 }
-.btn{
-  cursor: pointer;
-  position: relative;
-  border: 0;
-  padding: 5px 15px;
-  display: inline-block;
-  text-align: center;
-  color: white;
-  border-radius: 5px
+
+.btn {
+	cursor: pointer;
+	position: relative;
+	border: 0;
+	padding: 5px 15px;
+	display: inline-block;
+	text-align: center;
+	color: white;
+	border-radius: 5px
 }
-.btn-brand {background-color: var(--Brand); border: #fff solid 1px;}
-.btn-success {background-color: var(--Success); border: #fff solid 1px; }
-.btn-warning {background-color: var(--Warning); border: #fff solid 1px; }
-.btn-danger {background-color: var(--Danger); border: #fff solid 1px; }
-.btn-info {background-color: var(--Info); border: #fff solid 1px; }
-input{
-  outline-style: none ;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  //padding: .2rem .2rem;
-  width: 100%;
-  font-weight: 700;
+
+.btn-brand {
+	background-color: var(Brand);
+	border: #fff solid 1px;
 }
-input:focus{
-  border-color: #66afe9;
-  outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+
+.btn-success {
+	background-color: var(Success);
+	border: #fff solid 1px;
+}
+
+.btn-warning {
+	background-color: var(Warning);
+	border: #fff solid 1px;
+}
+
+.btn-danger {
+	background-color: var(Danger);
+	border: #fff solid 1px;
+}
+
+.btn-info {
+	background-color: var(Info);
+	border: #fff solid 1px;
+}
+
+input {
+	outline-style: none;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	//padding: .2rem .2rem;
+	width: 100%;
+	font-weight: 700;
+}
+
+input:focus {
+	border-color: #66afe9;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
 }
 
 .form-button {
-  text-align: center;
-  //margin-top: .5rem;
-  width: 200px;
-  height: 50px;
-  line-height: 50px;
-  font-size: 15px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-  cursor: pointer;
-  border-image-slice: 20 fill;
-  border-image-width: 8px 10px;
-  border-image-source: url("@/assets/img/public/login_btn.png");
+	text-align: center;
+	//margin-top: .5rem;
+	width: 200px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 15px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	cursor: pointer;
+	border-image-slice: 20 fill;
+	border-image-width: 8px 10px;
+	border-image-source: url("@/assets/img/public/login_btn.png");
 }
-.login_short_btn {
-  text-align: center;
-  //margin-top: .5rem;
-  width: 100px;
-  height: 50px;
-  line-height: 50px;
-  font-size: 15px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-  cursor: pointer;
-  border-image-slice: 33 fill;
-  border-image-width: 30px 20px;
 
-  border-image-source: url("../img/public/login_short_btn.png");
+.login_short_btn {
+	text-align: center;
+	//margin-top: .5rem;
+	width: 100px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 15px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+	cursor: pointer;
+	border-image-slice: 33 fill;
+	border-image-width: 30px 20px;
+	
+	border-image-source: url("../img/public/login_short_btn.png");
 }
+
 .card-warp {
-  width: 100%;
-  min-width: 100px;
-  text-align: center;
-  align-items: center;
-  background-size: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: #00fff6;
-  padding: 10px;
-  border-image-slice: 60 fill;
-  border-image-width: .55rem;
-  border-image-source: url("@/assets/img/public/card_box1.png");
+	width: 100%;
+	min-width: 100px;
+	text-align: center;
+	align-items: center;
+	background-size: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	color: #00fff6;
+	padding: 10px;
+	border-image-slice: 60 fill;
+	border-image-width: .55rem;
+	border-image-source: url("@/assets/img/public/card_box1.png");
 }
+
 .input-box {
-  width: 100%;
-  height: 30px;
-  font-size: 15px;
-  border-image-source: url('@/assets/img/public/login_form_input.png');
-  //border-top: 10px solid;
-  //border-right: 10px solid;
-  //border-bottom: 10px solid;
-  //border-left: 10px solid;
-  border-image-slice: 33 fill;
-  border-image-width: 55px;
-  color: #fff;
-  padding-left: 10px;
+	width: 100%;
+	//height: 30px;
+	font-size: 15px;
+	border-image-source: url('@/assets/img/public/login_form_input.png');
+	//border-top: 10px solid;
+	//border-right: 10px solid;
+	//border-bottom: 10px solid;
+	//border-left: 10px solid;
+	border-image-slice: 33 fill;
+	border-image-width: 55px;
+	color: #fff;
+	padding-left: 10px;
+}
+
+//CSS禁止选中代码
+.prohibit-selection {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+//CSS禁止复制文字
+.prohibit-copying-text {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+//CSS禁止选中文本
+.prohibit-selecting-text {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+//CSS禁止选中图片
+.prohibit-selecting-images {
+	-webkit-user-drag: none;
+	-moz-user-drag: none;
+	-ms-user-drag: none;
+	user-drag: none;
+}
+
+//CSS禁止换行
+.no-line-breaks {
+	white-space: nowrap;
+}
+
+//CSS禁止点击
+.prohibit-clicking {
+	pointer-events: none;
+}
+
+//CSS禁止滚动
+.prohibit-clicking {
+	overflow: hidden;
+}
+
+//CSS禁止复制
+.prohibit-copying {
+	::selection {
+		background-color: transparent;
+	}
+}
+
+
+//CSS禁止页面滚动选取
+.disable-page-scrolling-selection {
+	&::-moz-selection {
+		background-color: transparent;
+	}
+	
+	&::selection {
+		background-color: transparent;
+	}
 }
