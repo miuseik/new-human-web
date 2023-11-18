@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import mixins from "@/components/threeBackground/index.js";
+import InkWash from "@/utils/effects/InkWash/index.vue";
 
 let {initThree} = mixins();
 
@@ -33,7 +34,6 @@ const bus = inject('$bus')
 // };
 onMounted(() => {
   initThree();
-
   // bus.on("postWebSocket", (parameter) => {
   //   setWs(parameter);
   // })
@@ -42,7 +42,7 @@ onMounted(() => {
 
 <template>
   <div class="three-class" id="my_three"></div>
-
+  <InkWash class="ink-wash"></InkWash>
   <router-view class="prohibit-selection"></router-view>
 </template>
 
@@ -55,4 +55,11 @@ onMounted(() => {
   overflow: hidden;
   z-index: -12;
 }
+.ink-wash{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+
+}
+
 </style>

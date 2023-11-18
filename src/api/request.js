@@ -32,23 +32,23 @@ const errorHandle = (data, status, message) => {
         case 401: // 401: 未登录状态，跳转登录页
             // router.replace ({path: '/login'});
             if (router.currentRoute.value.name !== 'login') {
-                setTimeout(() => {
+                // setTimeout(() => {
                     tip('Login Expired');
                     localStorage.removeItem('ACCESS_TOKEN');
                     // window.localStorage.clear (); //清除缓存
                     router.replace({path: '/login'});
-                }, 1000);
+                // }, 1000);
             }
 
             break;
         case 403: // 403 token过期
             if (router.currentRoute.value.name !== 'login') {
-                setTimeout(() => {
+                // setTimeout(() => {
                     tip('Login Expired');
                     localStorage.removeItem('ACCESS_TOKEN');
                     // window.localStorage.clear (); //清除缓存
                     router.replace({path: '/login'});
-                }, 1000);
+                // }, 1000);
             }
 
             // tip ('Login Expired');
@@ -60,6 +60,9 @@ const errorHandle = (data, status, message) => {
             break;
         case 404: // 404请求不存在
             tip('The requested resource does not exist');
+            break;
+        case 500: // 404请求不存在
+            tip('500);
             break;
         default:
             console.log('data', data)

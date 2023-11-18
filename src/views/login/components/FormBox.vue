@@ -5,7 +5,7 @@
       <div class="form-box">
         <div class="form-title">
           <span>{{ props.pageType && props.pageType.toUpperCase() }}</span>
-          <i @click="closeLogin" class="icon icon-close"></i>
+<!--          <i @click="closeLogin" class="icon icon-close"></i>-->
         </div>
         <div class="form-content">
           <!--          <i class="icon icon-form-header"></i>-->
@@ -15,29 +15,29 @@
               <div class="input-box" :class="item['code'] ? 'input-box-code' : ''">
                 <span class="input-title">{{ item['title'] }}</span>
                 <input
-                  :type="item['field'] === 'pwd' ? 'password' : 'text'"
-                  :placeholder="item['placeholder']"
-                  v-model="state.formData[item['field']]"
+                    :type="item['field'] === 'pwd' ? 'password' : 'text'"
+                    :placeholder="item['placeholder']"
+                    v-model="state.formData[item['field']]"
                 />
                 <span class="warning">{{ validateItem(item) }}</span>
               </div>
               <!--              行为验证码-->
               <div
-                ref="invitation_ref"
-                id="invitation_id"
-                @click="clickGetVerify"
-                v-if="item['code'] && item['field'] === 'verification'"
-                class="input-button"
+                  ref="invitation_ref"
+                  id="invitation_id"
+                  @click="clickGetVerify"
+                  v-if="item['code'] && item['field'] === 'verification'"
+                  class="input-button"
               >
-                <img :src="state.verifyImage" alt="" />
+                <img :src="state.verifyImage" alt=""/>
               </div>
               <!--              邮箱验证码-->
               <div
-                ref="verification_ref"
-                id="verification_id"
-                @click="handleGetVerify"
-                v-if="item['code'] && item['field'] === 'verification_email'"
-                class="input-button"
+                  ref="verification_ref"
+                  id="verification_id"
+                  @click="handleGetVerify"
+                  v-if="item['code'] && item['field'] === 'verification_email'"
+                  class="input-button"
               >
                 {{ item['code'] }}
               </div>
@@ -49,10 +49,11 @@
             <span v-if="pageType !== 'retrieve'" @click="Forget">FORGET PASSWORD</span>
           </div>
           <div class="form-bottom">
-            <p>Welcome Join FUNNY COIN</p>
+            <p>Since the future</p>
             <p>
-              For all WarSindia Warriors, please check your email to get our amazing
-              SPACEPASS!
+              Correct the concept of robots and create real robots instead of machines with limbs
+              <br>
+              纠正机器人概念,打造真正的机器人,而不是带肢体的机器
             </p>
           </div>
           <!--          <i class="icon icon-form-bottom"></i>-->
@@ -73,49 +74,50 @@ import {
   computed,
 } from "vue";
 // import { string } from "vue-types";
-import { formTplGroup } from "../data";
-import { validateForm } from "@/utils/validateForm";
+import {formTplGroup} from "../data";
+import {validateForm} from "@/utils/validateForm";
 import {} from "@/api/index.ts";
-import { getCurrentInstance } from "vue";
+
+import {getCurrentInstance} from "vue";
 
 const cxt = getCurrentInstance(); //相当于Vue2中的this
 
 const props = defineProps({
-  msg: {
-    type: Object,
+  msg      : {
+    type   : Object,
     default: {},
   },
-  pageType: {
-    type: String,
+  pageType : {
+    type   : String,
     default: "login",
   },
   cardStyle: {
-    type: Object,
+    type   : Object,
     default: {},
   },
 });
 const state = reactive({
   currentFormTpl: [],
-  postEd: false,
-  formData: {
-    email: "",
-    pwd: "",
-    uname: "",
-    verification: "", //行为验证码
+  postEd        : false,
+  formData      : {
+    email             : "",
+    pwd               : "",
+    uname             : "",
+    verification      : "", //行为验证码
     verification_email: "", //邮箱验证码
-    invitation: "", //邀请码
+    invitation        : "", //邀请码
   },
-  verifyTime: 60,
-  isVerify: false,
-  sendLoading: false,
-  submitLoading: false,
-  verifyImage: "",
-  verifyImageId: "",
+  verifyTime    : 60,
+  isVerify      : false,
+  sendLoading   : false,
+  submitLoading : false,
+  verifyImage   : "",
+  verifyImageId : "",
 });
 const validateItem = computed(() => {
   return function (item) {
     let data = {
-      key: item.field || "",
+      key  : item.field || "",
       value: state.formData[item.field] || "",
       title: item.title || "",
     };
@@ -127,7 +129,7 @@ const toPost = () => {
   for (let i = 0; i < state.currentFormTpl.length; i++) {
     let item = state.currentFormTpl[i];
     let data = {
-      key: item.field || "",
+      key  : item.field || "",
       value: state.formData[item.field] || "",
       title: item.title || "",
     };
@@ -185,19 +187,35 @@ const created = () => {
   clickGetVerify();
 };
 created();
-onMounted(() => {});
-onBeforeUnmount(() => {});
+onMounted(() => {
+});
+onBeforeUnmount(() => {
+});
 </script>
 
 <style scoped lang="scss">
+
+
 .account-channel-page {
   color: #fff;
   height: 100vh;
   text-align: center;
   position: fixed;
   z-index: 100;
+  .ink-wash {
+    //position: fixed;
+    //width: 100px;
+    //height: 100px;
+    //top: 0;
+    //left: 50%;
+    //z-index: 0;
+    //pointer-events: auto;
+    //transform: translateX(-50%);
+    ////background-color: #00ffd9;
+  }
   .form-warp {
-    height: 100vh;
+    //height: 100vh;
+    padding-top: 10vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -206,11 +224,13 @@ onBeforeUnmount(() => {});
     z-index: 99999;
     left: 50%;
     transform: translateX(-50%);
-    padding: 120px 0;
+    //padding: 120px 0;
     overflow: auto;
+
     &::-webkit-scrollbar {
       display: none;
     }
+
     .form-box {
       width: 50vw;
       max-width: 500px;
@@ -226,9 +246,11 @@ onBeforeUnmount(() => {});
         border-image-width: 20px;
         border-image-source: url("../../../assets/img/login/form_box/title.png");
         position: relative;
+
         span {
           font-size: 20px;
         }
+
         .icon:before {
           bottom: 0;
           right: 0;
@@ -247,6 +269,7 @@ onBeforeUnmount(() => {});
         flex-direction: column;
         //justify-content: center;
         align-items: center;
+
         .form-item {
           display: flex;
           flex-direction: row;
@@ -255,8 +278,10 @@ onBeforeUnmount(() => {});
           position: relative;
           margin-top: 30px;
           width: 100%;
+
           .icon {
             display: block;
+
             &:before {
               left: -40px;
               margin-top: 7.5px;
@@ -266,6 +291,7 @@ onBeforeUnmount(() => {});
           }
 
           padding-top: 15px;
+
           .input-box {
             position: relative;
             display: flex;
@@ -329,10 +355,11 @@ onBeforeUnmount(() => {});
         }
 
         .form-bottom {
-          margin-top: 30px;
+          padding: 30px;
           display: flex;
           justify-content: center;
           flex-direction: column;
+
           p:first-child {
             color: #00FFF6;
             font-size: .12px;
@@ -358,6 +385,7 @@ onBeforeUnmount(() => {});
       cursor: pointer;
     }
   }
+
   .mask {
     background-color: rgba(0, 0, 0, .8);
     height: 100vh;
