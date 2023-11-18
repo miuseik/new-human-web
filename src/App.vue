@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import mixins from "@/components/threeBackground/index.js";
 import InkWash from "@/utils/effects/InkWash/index.vue";
+// import env from "./env/moudules/env.js";
 
 let {initThree} = mixins();
 
@@ -8,6 +9,7 @@ let {initThree} = mixins();
 
 // import env from "@/env/moudules/env.js";
 const bus = inject('$bus')
+// console.log(env)
 // let ws;
 // const linkWs = () => {
 //   ws = new WebSocket(env.WS_URL);
@@ -32,8 +34,11 @@ const bus = inject('$bus')
 //
 //   ws.send(socket);
 // };
+console.log(process.env)
+
 onMounted(() => {
   initThree();
+
   // bus.on("postWebSocket", (parameter) => {
   //   setWs(parameter);
   // })

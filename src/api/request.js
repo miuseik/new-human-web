@@ -62,7 +62,7 @@ const errorHandle = (data, status, message) => {
             tip('The requested resource does not exist');
             break;
         case 500: // 404请求不存在
-            tip('500);
+            tip('500')
             break;
         default:
             console.log('data', data)
