@@ -34,7 +34,6 @@ const bus = inject('$bus')
 //
 //   ws.send(socket);
 // };
-console.log(process.env)
 
 onMounted(() => {
   initThree();

@@ -10,6 +10,7 @@ import Components from 'unplugin-vue-components/vite';
 
 import env from ".//src/env/moudules/env.js";
 
+
 import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -35,22 +36,38 @@ export default defineConfig({
       "@": path.resolve("src"),
     },
   },
-
+  // server: {
+  //   host : '0.0.0.0',
+  //   proxy: {
+  //     '/api': { // 匹配请求路径，
+  //       target: env.API_URL,
+  //       // 开发模式，默认的127.0.0.1,开启后代理服务会把origin修改为目标地址
+  //       changeOrigin: true,
+  //       // secure: true, // 是否https接口
+  //       // ws: true, // 是否代理websockets
+  //       // 路径重写，**** 如果你的后端有统一前缀(如:/api)，就不开启；没有就开启
+  //       //简单来说，就是是否改路径 加某些东西
+  //       rewrite: (path) => path.replace('/api', '/')
+  //     }
+  //   }
+  // },
   server: {
-    host : '0.0.0.0',
+    cors: true, // 默认启用并允许任何源
+    open: false,// 默认打开浏览器
+    port: 80,// 访问的端口号
+    host: "0.0.0.0",// 访问的地址
     proxy: {
-      '/api': { // 匹配请求路径，
-        target: env.API_URL,
-        // 开发模式，默认的127.0.0.1,开启后代理服务会把origin修改为目标地址
-        changeOrigin: true,
-        // secure: true, // 是否https接口
-        // ws: true, // 是否代理websockets
-        // 路径重写，**** 如果你的后端有统一前缀(如:/api)，就不开启；没有就开启
-        //简单来说，就是是否改路径 加某些东西
-        rewrite: (path) => path.replace('/api', '/')
+      '/api': {	//
+        target: env.API_URL, // 目标地址
+        // target: 'http://121.40.151.10:9000', // 目标地址
+        ws: true,
+        secure: false,
+        changeOrigin: true,// 是否允许跨域代理
+        rewrite: (path) => path.replace(/^\/api/, '') // 重定向地址
       }
-    }
+    },
   },
+  base: './',
   css   : {
     preprocessorOptions: {
       scss: {
