@@ -2,7 +2,7 @@
 <template>
   <div class="human-menu">
     <div class="human-menu-action">
-      <div class="form-button" @click="newBores()">新增一条</div>
+      <div class="form-button" @click="newBone()">新增一条</div>
       <div class="form-button" @click="state.showAll = !state.showAll">
         {{
           state.showAll ?
@@ -14,8 +14,8 @@
 <!--      <el-switch v-model="mouseValue" @change="switchChange"/>-->
     </div>
     <div class="list-warp">
-      <template v-for="(item, index) in state.boresList ">
-        <div class="bores-item">
+      <template v-for="(item, index) in state.boneList ">
+        <div class="bone-item">
           <div class="item-data card-warp">
             <div class="operate flex" v-if="state.currentChange.includes(item.id)">
               <div class="login_short_btn" @click="saveChange(item)">保存</div>
@@ -30,23 +30,23 @@
               <template v-for="(grid, key) in item ">
                 <div v-if="key.toString() === 'size'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  <input class="input-box" type="text" v-model="state.boresList[index][key]" @input="setInputVal" :disabled="key.toString() === 'id'">
+                  <input class="input-box" type="text" v-model="state.boneList[index][key]" @input="setInputVal" :disabled="key.toString() === 'id'">
                 </div>
                 <div v-else-if="key.toString() === 'position' || key.toString() === 'rotate'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  x:<input type="text" class="input-box" v-model="state.boresList[index][key]['x']" @input="setInputVal" :disabled="key.toString() === 'id'">
-                  y:<input type="text" class="input-box" v-model="state.boresList[index][key]['y']" @input="setInputVal" :disabled="key.toString() === 'id'">
-                  z:<input type="text" class="input-box" v-model="state.boresList[index][key]['z']" @input="setInputVal" :disabled="key.toString() === 'id'">
+                  x:<input type="text" class="input-box" v-model="state.boneList[index][key]['x']" @input="setInputVal" :disabled="key.toString() === 'id'">
+                  y:<input type="text" class="input-box" v-model="state.boneList[index][key]['y']" @input="setInputVal" :disabled="key.toString() === 'id'">
+                  z:<input type="text" class="input-box" v-model="state.boneList[index][key]['z']" @input="setInputVal" :disabled="key.toString() === 'id'">
                 </div>
                 <div v-else-if="key.toString() === 'model_type' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
                   <div class="select-warp input-box">
                     <div>
-                      {{ state.modelType[state.boresList[index][key]] }}
+                      {{ state.modelType[state.boneList[index][key]] }}
                     </div>
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.modelType">
-                        <div class="input-box" @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                        <div class="input-box" @click="state.boneList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                       </template>
                     </div>
                   </div>
@@ -55,11 +55,11 @@
                   <span class="title">{{ key }}</span>
                   <div class="select-warp input-box">
                     <div>
-                      {{ state.masterSlave[state.boresList[index][key]] }}
+                      {{ state.masterSlave[state.boneList[index][key]] }}
                     </div>
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.masterSlave">
-                        <div class="input-box" @click="state.boresList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                        <div class="input-box" @click="state.boneList[index][key]=select_index">{{ select }}{{ select_index }}</div>
                       </template>
                     </div>
                   </div>
@@ -98,7 +98,7 @@
                 </div>
                 <div v-else class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  <input type="text" class="input-box" v-model="state.boresList[index][key]" :disabled="key.toString() === 'id'">
+                  <input type="text" class="input-box" v-model="state.boneList[index][key]" :disabled="key.toString() === 'id'">
                 </div>
               </template>
             </div>
@@ -134,14 +134,14 @@
 import API from "@/api";
 import debounce from "@/utils/putlic/index.js";
 import inputRange from '@/components/public/inputRange.vue'
-import boresStore from '@/store/bores/index.ts';
+import boneStore from '@/store/bone/index.ts';
 
-const boresX = boresStore()
+const boneX = boneStore()
 function parseNumber(input: string): number {
   return parseFloat(input); // 或者使用 parseInt(input, 10)
 }
 const state = reactive({
-  boresList    : boresX.boresList || [],
+  boneList    : boneX.boneList || [],
   currentChange: [],
   showAll      : false,
   newId        : 0,
@@ -211,15 +211,15 @@ const state = reactive({
 })
 
 const mouseValue = ref(true);
-const emit = defineEmits(["sliderInput", "switchChange", "updateBoresList"]);
+const emit = defineEmits(["sliderInput", "switchChange", "updateBoneList"]);
 
 const getList = () => {
-  boresX.getBoresList().then((data:any[]) => {
-    emit("updateBoresList");
-    state.boresList = data
-    console.log(state.boresList)
-    for (let index in state.boresList){
-      let item = state.boresList[index]
+  boneX.getBoneList().then((data:any[]) => {
+    emit("updateBoneList");
+    state.boneList = data
+    console.log(state.boneList)
+    for (let index in state.boneList){
+      let item = state.boneList[index]
       let option = item.option
       state.innerData[item.field] = {
         x:option.x['value'],
@@ -243,10 +243,10 @@ const setItem = (item) => {
   state.currentChange.push(item.id)
 };
 const setInputVal = () => {
-  emit("updateBoresList");
-  console.log(state.boresList)
-  for (let index in state.boresList){
-    let item = state.boresList[index]
+  emit("updateBoneList");
+  console.log(state.boneList)
+  for (let index in state.boneList){
+    let item = state.boneList[index]
     let option = item.option
     state.innerData[item.field] = {
       x:option.x['value'],
@@ -258,12 +258,12 @@ const setInputVal = () => {
 const saveChange = (item) => {
   let id = item.id
   if (id > 0) {
-    API.bores.revise(item).then(res => {
+    API.bone.revise(item).then(res => {
       getList()
       filterId(id)
     })
   } else {
-    API.bores.push(item).then(res => {
+    API.bone.push(item).then(res => {
       state.itemTpl.parent = res.data.id
       getList()
       filterId(id)
@@ -274,18 +274,18 @@ const filterId = (id) => {
   if (id > 0) {
     state.currentChange = state.currentChange.filter(item => item !== id);
   } else {
-    state.boresList = state.boresList.filter(item => item.id !== id);
+    state.boneList = state.boneList.filter(item => item.id !== id);
   }
 };
 const deleteItem = (id) => {
-  API.bores.delete({'id': id}).then(() => {
+  API.bone.delete({'id': id}).then(() => {
     getList()
   })
 };
-const newBores = () => {
+const newBone = () => {
   state.itemTpl.id--
   let tpl = JSON.parse(JSON.stringify(state.itemTpl));
-  state.boresList.push(tpl)
+  state.boneList.push(tpl)
   state.currentChange.push(state.itemTpl.id)
 };
 </script>
@@ -316,7 +316,7 @@ const newBores = () => {
     //height: 100%;
     //height: calc(80vh - 100px);
 
-    .bores-item {
+    .bone-item {
       .item-data {
         font-family: MeiHei;
         font-size: 15px;

@@ -1,7 +1,6 @@
 import {defineStore} from "pinia"
 import storage from "store2";
 import API from "@/api";
-import axios from "axios";
 
 const setBody = (data) => {
     data.map(group => {
@@ -16,9 +15,9 @@ const setBody = (data) => {
     })
     return data
 }
-const bores = defineStore('bores', {
+const bone = defineStore('bone', {
     state  : () => ({
-        boresList: [],
+        boneList: [],
         joinTArr: {},
         motionData:{
             Leg_lift:['','','','','','','','','','','','','','',],
@@ -29,16 +28,16 @@ const bores = defineStore('bores', {
         }
     }),
     actions: {
-        getBoresList() {
+        getBoneList() {
             return new Promise(((resolve, reject) => {
-                API.bores.list().then(res => {
+                API.bone.list().then(res => {
                     console.log('--------------------',1)
                     let data = res.data
                     console.log('--------------------',2)
                     // let newData = data
                     console.log('--------------------',3)
-                    this.boresList = data
-                    resolve(this.boresList)
+                    this.boneList = data
+                    resolve(this.boneList)
                 }).catch(err => {
                     reject(err)
                 })
@@ -47,4 +46,4 @@ const bores = defineStore('bores', {
     }
 })
 
-export default bores
+export default bone

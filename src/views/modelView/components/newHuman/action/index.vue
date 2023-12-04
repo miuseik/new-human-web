@@ -21,7 +21,7 @@ import slider from '../slider/index.vue'
 
 import debounce from "@/utils/putlic/index.js";
 
-const emit = defineEmits(["sliderInput", "modelAction", "updateBoresList"]);
+const emit = defineEmits(["sliderInput", "modelAction", "updateBoneList"]);
 const props = defineProps({
   currentAction     : {
     type   : [String, Number],

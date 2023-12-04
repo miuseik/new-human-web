@@ -1,8 +1,8 @@
 export const formTplGroup = {
     login    : [
         {
-            title      : "EMAIL",
-            field      : "email",
+            title      : "NAME",
+            field      : "username",
             icon       : "icon-email",
             placeholder: "Please enter",
             required   : true,

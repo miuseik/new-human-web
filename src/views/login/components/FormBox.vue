@@ -77,7 +77,8 @@ import {
 import {formTplGroup} from "../data";
 import {validateForm} from "@/utils/validateForm";
 import {} from "@/api/index.ts";
-
+import user from "@/store/user/index.ts";
+const userStore = user();
 import {getCurrentInstance} from "vue";
 
 const cxt = getCurrentInstance(); //相当于Vue2中的this
@@ -100,7 +101,7 @@ const state = reactive({
   currentFormTpl: [],
   postEd        : false,
   formData      : {
-    email             : "",
+    username             : "",
     pwd               : "",
     uname             : "",
     verification      : "", //行为验证码
@@ -152,25 +153,30 @@ const toPost = () => {
 };
 
 const openLogin = () => {
-
+  console.log('openLogin')
 };
 const Reg = () => {
-
+  console.log('Reg')
 };
 const Forget = () => {
-
+  console.log('Forget')
 };
 const closeLogin = () => {
 };
 
-const reqlogin = () => {
-
+const reqlogin = async () => {
+  let data = {
+    username   : state.formData.username,
+    password: state.formData.pwd,
+  };
+  console.log('reqlogin')
+  let res = await userStore.toLogin(data);
 };
 const reqreg = () => {
-
+  console.log('reqreg')
 };
 const retrieve = () => {
-
+  console.log('retrieve')
 };
 const clickGetVerify = () => {
 

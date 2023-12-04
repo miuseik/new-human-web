@@ -7,8 +7,8 @@ import {debounce} from "@/utils/putlic/index.js"
 // 创建axios实例
 const request   = axios.create({
     //     target: env.API_URL, // 目标地址
-    baseURL        : "",// 所有的请求地址前缀部分(没有后端请求不用写)
-    // baseURL        : "/api",// 所有的请求地址前缀部分(没有后端请求不用写)
+    // baseURL        : "",// 所有的请求地址前缀部分(没有后端请求不用写)
+    baseURL        : "/api",// 所有的请求地址前缀部分(没有后端请求不用写)
     // baseURL        : env.API_URL,// 所有的请求地址前缀部分(没有后端请求不用写)
     timeout        : 8000, // 请求超时时间(毫秒)
     withCredentials: true,// 异步请求携带cookie  baseURL: '/api',
@@ -74,12 +74,13 @@ const errorHandle = (data, status, message) => {
 };
 // request拦截器
 request.interceptors.request.use(config => {
-        // const token = storage.get('ACCESS_TOKEN');
-        // if (token) {
-        //     config.headers["Authorization"] = `Bearer ${token}`;
-        // } else {
-        //     sessionStorage.removeItem("ACCESS_TOKEN");
-        // }
+        const token = storage.get('ACCESS_TOKEN');
+        if (token) {
+            console.log(token)
+            config.headers["Authorization"] = `Bearer ${token}`;
+        } else {
+            sessionStorage.removeItem("ACCESS_TOKEN");
+        }
         return config;
     }, error => {
         Promise.reject(error);

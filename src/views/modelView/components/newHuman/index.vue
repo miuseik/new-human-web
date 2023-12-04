@@ -3,7 +3,7 @@
   <div class="three-box">
 <!--    <div class="menu">-->
       <Menu @sliderInput="modelAction" @switchChange="switchChange"
-            @updateBoresList="updateBoresList"/>
+            @updateBoneList="updateBoneList"/>
 <!--    </div>-->
 <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
@@ -34,26 +34,26 @@ import Menu from "./Menu/index.vue";
 import action from "./action/index.vue";
 
 let base = null;
-import boresStore from '@/store/bores/index.ts';
+import boneStore from '@/store/bone/index.ts';
 
-const bores = boresStore()
+const bone = boneStore()
 const state = reactive({
   dot          : null,
   dotArr       : {},
-  joinTArr     : bores.joinTArr || {},
+  joinTArr     : bone.joinTArr || {},
   currentAction: '',
   specialJoints: [
     'D2', 'D3', 'D4', 'D5'
   ],
   actions      : {}
 })
-watch(() => bores.joinTArr, val => {
+watch(() => bone.joinTArr, val => {
   state.joinTArr = val
 }, {
   deep     : true,
   immediate: true
 })
-watch(() => bores.motionData, val => {
+watch(() => bone.motionData, val => {
   state.joinTArr = val
 }, {
   deep     : true,
@@ -185,7 +185,7 @@ const driveModel = (e, name, direction, options) => {
 const switchChange = (enabled) => {
   base.setControlsEnabled(enabled);
 };
-const updateBoresList = () => {
+const updateBoneList = () => {
   base.initRobot();
 };
 

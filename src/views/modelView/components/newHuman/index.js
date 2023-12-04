@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
-import boresStore from '@/store/bores/index.ts';
+import boneStore from '@/store/bone/index.ts';
 import {STLLoader} from 'three/addons/loaders/STLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -10,7 +10,7 @@ const stl_loader  = new STLLoader()
 const gLtf_loader = new GLTFLoader();
 
 const lookAt = {x: 0, y: 100, z: 0}
-const bores  = boresStore()
+const bone  = boneStore()
 export default class myThree {
     constructor(canvas) {
         this.canvas       = canvas
@@ -184,8 +184,8 @@ export default class myThree {
         }
         // let modelArr     = []
         let modelArr        = {}
-        let boresList       = bores.boresList || []
-        let modelNum        = boresList.length
+        let boneList       = bone.boneList || []
+        let modelNum        = boneList.length
         let setScenes       = async () => {
             for (let key in modelArr) {
                 let item  = modelArr[key]
@@ -207,7 +207,7 @@ export default class myThree {
                     this.joinTArr[info.field] = item
                 }
             }
-            bores.joinTArr = this.joinTArr
+            bone.joinTArr = this.joinTArr
         }
         let initAllModel    = async (item) => {
             let model
@@ -230,7 +230,7 @@ export default class myThree {
                 setScenes()
             }
         }
-        boresList.map((item) => {
+        boneList.map((item) => {
             initAllModel(item)
         })
     }

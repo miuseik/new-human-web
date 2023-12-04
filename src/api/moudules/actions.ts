@@ -18,7 +18,6 @@ const login = {
     },
     revise(data = {}) {
         let url = '/actions/revise'
-        // let url = '/bores/newnw'
         let param = data || {}
         return axios.post(url, param);
     },
