@@ -134,14 +134,14 @@
 import API from "@/api";
 import debounce from "@/utils/putlic/index.js";
 import inputRange from '@/components/public/inputRange.vue'
-import boneStore from '@/store/bone/index.ts';
+import bone from '@/store/bone/index.ts';
 
-const boneX = boneStore()
+const boneStore = bone()
 function parseNumber(input: string): number {
   return parseFloat(input); // 或者使用 parseInt(input, 10)
 }
 const state = reactive({
-  boneList    : boneX.boneList || [],
+  boneList    : boneStore.boneList || [],
   currentChange: [],
   showAll      : false,
   newId        : 0,
@@ -214,10 +214,9 @@ const mouseValue = ref(true);
 const emit = defineEmits(["sliderInput", "switchChange", "updateBoneList"]);
 
 const getList = () => {
-  boneX.getBoneList().then((data:any[]) => {
+  boneStore.getBoneList().then((data:any[]) => {
     emit("updateBoneList");
     state.boneList = data
-    console.log(state.boneList)
     for (let index in state.boneList){
       let item = state.boneList[index]
       let option = item.option
@@ -244,7 +243,6 @@ const setItem = (item) => {
 };
 const setInputVal = () => {
   emit("updateBoneList");
-  console.log(state.boneList)
   for (let index in state.boneList){
     let item = state.boneList[index]
     let option = item.option

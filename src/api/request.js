@@ -5,7 +5,7 @@ import {ElMessage} from 'element-plus';
 import env from "@/env/moudules/env.js";
 import {debounce} from "@/utils/putlic/index.js"
 // 创建axios实例
-const request   = axios.create({
+const instance   = axios.create({
     //     target: env.API_URL, // 目标地址
     // baseURL        : "",// 所有的请求地址前缀部分(没有后端请求不用写)
     baseURL        : "/api",// 所有的请求地址前缀部分(没有后端请求不用写)
@@ -53,13 +53,6 @@ const errorHandle = (data, status, message) => {
                     router.replace({path: '/login'});
                 // }, 1000);
             }
-
-            // tip ('Login Expired');
-
-            // window.localStorage.clear (); //清除缓存
-            // setTimeout (() => {
-            // 		router.replace ({path: '/login'});
-            // }, 1000);
             break;
         case 404: // 404请求不存在
             tip('The requested resource does not exist');
@@ -68,15 +61,13 @@ const errorHandle = (data, status, message) => {
             tip('500')
             break;
         default:
-            console.log('data', data)
             tip(message);
     }
 };
 // request拦截器
-request.interceptors.request.use(config => {
+instance.interceptors.request.use(config => {
         const token = storage.get('ACCESS_TOKEN');
         if (token) {
-            console.log(token)
             config.headers["Authorization"] = `Bearer ${token}`;
         } else {
             sessionStorage.removeItem("ACCESS_TOKEN");
@@ -87,7 +78,7 @@ request.interceptors.request.use(config => {
     },
 );
 // response 拦截器
-request.interceptors.response.use(res => {
+instance.interceptors.response.use(res => {
         resHandle(res.data);
         return res.data;
     }, error => {
@@ -98,4 +89,20 @@ request.interceptors.response.use(res => {
         }
     },
 );
-export default request;
+
+// export default function  (method, url, data) {
+//     method = method.toLowerCase();
+//     if (method === 'post') {
+//         return instance.post(url, data)
+//     } else if (method === 'get') {
+//         return instance.get(url, { params: data })
+//     } else if (method === 'delete') {
+//         return instance.delete(url, { params: data })
+//     }else if(method === 'put'){
+//         return instance.put(url,data)
+//     }else{
+//         console.error('未知的method'+method)
+//         return false
+//     }
+// }
+export default instance;

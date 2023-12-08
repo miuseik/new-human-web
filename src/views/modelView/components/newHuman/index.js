@@ -196,7 +196,6 @@ export default class myThree {
                     this.scene.add(this.rootModel);
                 } else {
                     modelArr[info.parent].model.add(model);
-                    // console.log(key)
                     if (info.field === 'D2') {
                         const axes = new THREE.AxesHelper(2000);
                         model.add(axes);
@@ -212,7 +211,6 @@ export default class myThree {
         let initAllModel    = async (item) => {
             let model
             if (item.model_type === 1) {
-                console.log(item['size'])
                 model = setJoint(item['size'], item['position']);
             } else {
                 try {

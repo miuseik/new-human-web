@@ -70,14 +70,11 @@ const setWs = (socket) => {
 const getSerialList = async () => {
   if (window['electron']) {
     state.serialList = await ipcRenderer.invoke('GET_PORT_LIST');
+    console.log('serialList=======',state.serialList)
   } else {
-
+    console.log('serialList!!!!!!!!!!!!!!!!!!!!!!!!')
   }
 };
-const getList = async () => {
-  state.response = await ipcRenderer.invoke('GET_PORT_LIST')
-  console.log(state.response) // prints out 'pong'
-}
 const handleClick = itemElement => {
 
 }

@@ -3,8 +3,7 @@ import axios from "@/api/request.js";
 const bone = {
     list(data = {}) { //          * 所有
         let url = '/bone/list'
-        let param = data
-        return axios.get(url, param);
+        return axios.get(url, { params: data });
     },
     push(data = {}) {
         let url = '/bone/new'
@@ -13,8 +12,7 @@ const bone = {
     },
     delete(data = {}) {
         let url = '/bone/delete'
-        let param = data || {}
-        return axios.post(url, param);
+        return axios.get(url, { params: data });
     },
     revise(data = {}) {
         let url = '/bone/revise'

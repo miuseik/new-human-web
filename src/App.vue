@@ -9,7 +9,6 @@ let {initThree} = mixins();
 
 // import env from "@/env/moudules/env.js";
 const bus = inject('$bus')
-// console.log(env)
 // let ws;
 // const linkWs = () => {
 //   ws = new WebSocket(env.WS_URL);

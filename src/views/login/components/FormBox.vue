@@ -5,7 +5,7 @@
       <div class="form-box">
         <div class="form-title">
           <span>{{ props.pageType && props.pageType.toUpperCase() }}</span>
-<!--          <i @click="closeLogin" class="icon icon-close"></i>-->
+          <!--          <i @click="closeLogin" class="icon icon-close"></i>-->
         </div>
         <div class="form-content">
           <!--          <i class="icon icon-form-header"></i>-->
@@ -78,47 +78,52 @@ import {formTplGroup} from "../data";
 import {validateForm} from "@/utils/validateForm";
 import {} from "@/api/index.ts";
 import user from "@/store/user/index.ts";
+
 const userStore = user();
+
+
 import {getCurrentInstance} from "vue";
+import {useRouter} from "vue-router";
+const router = useRouter()
 
 const cxt = getCurrentInstance(); //相当于Vue2中的this
 
 const props = defineProps({
-  msg      : {
-    type   : Object,
+  msg: {
+    type: Object,
     default: {},
   },
-  pageType : {
-    type   : String,
+  pageType: {
+    type: String,
     default: "login",
   },
   cardStyle: {
-    type   : Object,
+    type: Object,
     default: {},
   },
 });
 const state = reactive({
   currentFormTpl: [],
-  postEd        : false,
-  formData      : {
-    username             : "",
-    pwd               : "",
-    uname             : "",
-    verification      : "", //行为验证码
+  postEd: false,
+  formData: {
+    username: "",
+    pwd: "",
+    uname: "",
+    verification: "", //行为验证码
     verification_email: "", //邮箱验证码
-    invitation        : "", //邀请码
+    invitation: "", //邀请码
   },
-  verifyTime    : 60,
-  isVerify      : false,
-  sendLoading   : false,
-  submitLoading : false,
-  verifyImage   : "",
-  verifyImageId : "",
+  verifyTime: 60,
+  isVerify: false,
+  sendLoading: false,
+  submitLoading: false,
+  verifyImage: "",
+  verifyImageId: "",
 });
 const validateItem = computed(() => {
   return function (item) {
     let data = {
-      key  : item.field || "",
+      key: item.field || "",
       value: state.formData[item.field] || "",
       title: item.title || "",
     };
@@ -130,7 +135,7 @@ const toPost = () => {
   for (let i = 0; i < state.currentFormTpl.length; i++) {
     let item = state.currentFormTpl[i];
     let data = {
-      key  : item.field || "",
+      key: item.field || "",
       value: state.formData[item.field] || "",
       title: item.title || "",
     };
@@ -138,7 +143,6 @@ const toPost = () => {
       return;
     }
   }
-  console.log("props.pageType", props.pageType);
   switch (props.pageType) {
     case "login":
       reqlogin();
@@ -153,36 +157,32 @@ const toPost = () => {
 };
 
 const openLogin = () => {
-  console.log('openLogin')
 };
 const Reg = () => {
-  console.log('Reg')
 };
 const Forget = () => {
-  console.log('Forget')
 };
 const closeLogin = () => {
 };
 
 const reqlogin = async () => {
   let data = {
-    username   : state.formData.username,
+    username: state.formData.username,
     password: state.formData.pwd,
   };
-  console.log('reqlogin')
   let res = await userStore.toLogin(data);
+  if (res && res['code'] === 200) {
+    router.replace('/')
+  }
 };
 const reqreg = () => {
-  console.log('reqreg')
 };
 const retrieve = () => {
-  console.log('retrieve')
 };
 const clickGetVerify = () => {
 
 };
 const handleGetVerify = () => {
-  console.log("state.pageType", props.pageType);
   if (state.verifyTime < 60 || state.isVerify) return;
 };
 const getCurrentTpl = () => {
@@ -208,6 +208,7 @@ onBeforeUnmount(() => {
   text-align: center;
   position: fixed;
   z-index: 100;
+
   .ink-wash {
     //position: fixed;
     //width: 100px;
@@ -219,6 +220,7 @@ onBeforeUnmount(() => {
     //transform: translateX(-50%);
     ////background-color: #00ffd9;
   }
+
   .form-warp {
     //height: 100vh;
     padding-top: 10vh;

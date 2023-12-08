@@ -35,11 +35,7 @@ const state = reactive({
 const times = () => {
 
 }
-//
-// const sliderInput = debounce((e, name, direction) => {
-//   console.log(e, name, direction)
-//   emit("sliderInput", e, name, direction);
-// }, 1);
+
 const sliderInput = (e, name, direction) => {
   emit("sliderInput", e, name, direction);
 };

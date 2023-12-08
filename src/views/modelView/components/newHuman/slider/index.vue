@@ -127,7 +127,6 @@ const initModel = async () => {
     //   fbx_loader.load('/Strut Walking.fbx', mesh => {
       fbx_loader.load('/Walking.fbx', mesh => {
       state.mixStep = 0
-      console.log('meshmeshmesh', mesh.animations)
       let action = mesh.animations[0]['tracks']
       let duration = mesh.animations[0]['duration'] * 1000
       state.duration = duration
@@ -214,7 +213,6 @@ const start = () => {
     setAction()
     if (state.currentStep >= state.duration) {
       demoStop()
-      console.log('en')
       loopAction()
     }
   }
@@ -223,7 +221,6 @@ let clock
 
 function tick() {
   const time = clock.getElapsedTime()
-  console.log(time)
   if (state.stopTick) return
   requestAnimationFrame(tick)
 }
@@ -235,7 +232,6 @@ function actionTick() {
 }
 
 const loopAction = debounce(() => {
-  console.log('ha')
   state.mixStep = state.duration + 1
   reset()
   // clearInterval(timer);

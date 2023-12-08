@@ -152,13 +152,9 @@ const modelAction = (name, eulerData) => {
   action.x.coordinate = dot_action.x
   action.y.coordinate = dot_action.y
   action.z.coordinate = dot_action.z
-  // console.log('state.actions',state.actions)
-  // console.log(JSON.stringify(action))
-
   for (let key in action) {
     let item = action[key]
     let val = state.actions[name] && state.actions[name][key] || 0
-    // if (val !== item['coordinate']) {
       driveServer(item['coordinate'], name, key, options)
       state.actions[name] = dot_action
     // }
@@ -169,8 +165,6 @@ const driveServer = (e, name, direction, options) => {
   let option = options[direction]
   let server_val = e
   if (direction === 'x'){
-    console.log(e, name, direction, options)
-    console.log(700 - server_val)
   }
   server_val = option.server_reverse ? 700 - server_val : server_val
   emit("sliderInput", server_val, name, direction);
@@ -179,7 +173,6 @@ const driveModel = (e, name, direction, options) => {
   let option = options[direction]
   let model_val = option.model_reverse ? e * -1 : e
   base.setRobotRotation(model_val, name, direction);
-  // console.log('setDot',model_val, e, name, direction)
 }
 
 const switchChange = (enabled) => {
@@ -191,7 +184,6 @@ const updateBoneList = () => {
 
 onMounted(() => {
   let dom = document.getElementById("three_id");
-  console.log('domdomdomdomdom',dom)
   base = new myThree(dom);
   setTimeout(() => {
     for (let item in state.specialJoints) {
@@ -199,7 +191,6 @@ onMounted(() => {
       state.dotArr[key] = document.querySelector(`#dot_${key}`)
       state.dotArr[`${key}_x`] = document.querySelector(`#dot_${key}_x`)
     }
-    console.log('state.dotArr', state.dotArr)
   }, 500)
 })
 // defineExpose({ setRobotRotation, setControlsEnabled });

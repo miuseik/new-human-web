@@ -3,7 +3,6 @@ let WS_URL;
 let env = process.env.NODE_ENV
 let API_PREFIX;
 if (env === "development") {
-    console.log('env',env)
     API_PREFIX = '/api';
     // API_PREFIX = '/';
     API_URL = "http://localhost:9000";
@@ -12,7 +11,6 @@ if (env === "development") {
 }
 
 if (env === "production") {
-    console.log('env',env)
     API_PREFIX = '/api';
     API_URL = "http://server.houqicg.com";
     // API_URL = "http://121.40.151.10:9000";
