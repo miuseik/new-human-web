@@ -56,7 +56,6 @@
               纠正机器人概念,打造真正的机器人,而不是带肢体的机器
             </p>
           </div>
-          <!--          <i class="icon icon-form-bottom"></i>-->
         </div>
       </div>
       <div @click="toPost" class="form-button">
@@ -73,21 +72,16 @@ import {
   onBeforeUnmount,
   computed,
 } from "vue";
-// import { string } from "vue-types";
 import {formTplGroup} from "../data";
 import {validateForm} from "@/utils/validateForm";
 import {} from "@/api/index.ts";
 import user from "@/store/user/index.ts";
-
 const userStore = user();
-
-
 import {getCurrentInstance} from "vue";
 import {useRouter} from "vue-router";
 const router = useRouter()
-
 const cxt = getCurrentInstance(); //相当于Vue2中的this
-
+import bus from "@/utils/Bus";
 const props = defineProps({
   msg: {
     type: Object,
@@ -193,6 +187,11 @@ const created = () => {
   clickGetVerify();
 };
 created();
+bus.on("keyboardEvent", (event) => {
+  if (event === 'Enter') {
+    toPost()
+  }
+})
 onMounted(() => {
 });
 onBeforeUnmount(() => {

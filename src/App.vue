@@ -1,54 +1,60 @@
 <script setup lang="ts">
 import mixins from "@/components/threeBackground/index.js";
-import InkWash from "@/utils/effects/InkWash/index.vue";
-// import env from "./env/moudules/env.js";
+import inkWash from "@/utils/effects/InkWash/index.vue";
+import storage from "store2";
+import bus from "@/utils/Bus";
 
 let {initThree} = mixins();
-
-// import { ElMessage } from 'element-plus';
-
-// import env from "@/env/moudules/env.js";
-const bus = inject('$bus')
-// let ws;
-// const linkWs = () => {
-//   ws = new WebSocket(env.WS_URL);
-//   ws.addEventListener("open", function (event) {
-//     ws.send("hello");
-//   });
-//   ws.addEventListener("message", function (event) {
-//
-//       bus.emit('resWebSocket', event.data)
-//   });
-//   ws.onclose = function () {
-//     ElMessage({
-//       showClose: true,
-//       message: '连接已关闭 ...',
-//       type: 'warning',
-//     });
-//   };
-// };
-// linkWs()
-
-// const setWs = (socket) => {
-//
-//   ws.send(socket);
-// };
-
+const getLogoinBrowser =()=>{
+  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+  console.log("loginuserAgent:", userAgent)
+  //判断是否Opera浏览器
+  if (userAgent.indexOf("Opera") > -1) {
+    return "Opera"
+  }
+  if (userAgent.indexOf("Edg") > -1){
+    return 'Edge'
+  }
+  if (userAgent.indexOf("Firefox") > -1) {
+    return "firefox";
+  }
+  if (userAgent.indexOf("Chrome") > -1){
+    return "Chrome";
+  }
+  if (userAgent.indexOf("Safari") > -1) {
+    return "Safari";
+  }
+  if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 ) {
+    return "IE";
+  }
+  if ( userAgent.indexOf("Trident") > -1){
+    return "IE";
+  }
+}
+const getKeyboard = (event) => {
+  bus.emit("keyboardEvent", event.key)
+  console.log('event.key====',event.key)
+    if (event.key === 'Enter') {
+      console.log()
+  }
+}
 onMounted(() => {
   initThree();
-
-  // bus.on("postWebSocket", (parameter) => {
-  //   setWs(parameter);
-  // })
+  getLogoinBrowser()
+  if (window && window['electron']) {
+    storage.set('currentBrowser', 'electron');
+  } else {
+    getLogoinBrowser()
+    storage.set('currentBrowser', getLogoinBrowser());
+  }
+  window.addEventListener('keydown', getKeyboard);
 })
 </script>
-
 <template>
-  <div class="three-class" id="my_three"></div>
-  <InkWash class="ink-wash"></InkWash>
-  <router-view class="prohibit-selection"></router-view>
+  <div class="three-class" id="my_three"/>
+  <ink-wash class="ink-wash"/>
+  <router-view class="prohibit-selection"/>
 </template>
-
 <style scoped>
 .three-class {
   left: 50%;
@@ -58,11 +64,10 @@ onMounted(() => {
   overflow: hidden;
   z-index: -12;
 }
-.ink-wash{
+
+.ink-wash {
   position: fixed;
   width: 100%;
   height: 100%;
-
 }
-
 </style>

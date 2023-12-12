@@ -14,13 +14,13 @@ import locale from 'element-plus/lib/locale/lang/zh-cn'
 import '@/utils/rem'
 
 import "@/assets/style/index.scss";
-import EventBus from "@/utils/Bus.js";
-const $bus = new EventBus()
-// ② 挂载
-// 1.使用provide提供
-app.provide('$bus', $bus)
-// 2.挂载到this上
-app.config.globalProperties.$bus = $bus
+// import EventBus from "@/utils/Bus.js";
+// const $bus = new EventBus()
+// // ② 挂载
+// // 1.使用provide提供
+// app.provide('$bus', $bus)
+// // 2.挂载到this上
+// app.config.globalProperties.$bus = $bus
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

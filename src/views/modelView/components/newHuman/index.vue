@@ -2,8 +2,7 @@
 <template>
   <div class="three-box">
 <!--    <div class="menu">-->
-      <Menu @sliderInput="modelAction" @switchChange="switchChange"
-            @updateBoneList="updateBoneList"/>
+      <Menu @sliderInput="modelAction" @switchChange="switchChange" @updateBoneList="updateBoneList"/>
 <!--    </div>-->
 <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
