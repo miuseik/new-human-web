@@ -4,11 +4,13 @@ const state = reactive({
   queryBluetooth: {},
   serialList    : [],
 });
+const portMsg = ref()
+const port = ref()
 const getSerialList = async () => {
   if (window['electron']) {
     console.log('getSerialList')
     state.serialList = await ipcRenderer.invoke('GET_PORT_LIST');
-    AutoLinkPort()
+    // AutoLinkPort()
   } else {
   }
 };
@@ -20,21 +22,35 @@ const AutoLinkPort = async () => {
     state.serialList = await ipcRenderer.invoke('CHECKOUT_POR',path);
   }
 };
-
+const openPort = async (item) => {
+  let path = item['path']
+  // port.value = await ipcRenderer.invoke('CHECKOUT_POR',path,"control");
+  console.log(await ipcRenderer.invoke('CHECKOUT_POR',path,"control"))
+  // port, portPath,portType
+};
+const putPortMsg = async () => {
+  let msg = await ipcRenderer.invoke('SEND_DATA_TO_PORT',"COM6","control");
+  console.log('msg=====', msg)
+}
 const handleClick = itemElement => {
-
+  console.log(itemElement)
 }
 const confirmSerial = () => {
   let data = state.queryBluetooth
   state.serialList = []
 };
 onMounted(() => {
-    getSerialList()
+  ipcRenderer.on('message-from-main', (event, message) => {
+    console.log('=====',event, message)
+  });
+  getSerialList()
 })
 </script>
 <template>
   <div class="worktop">
     <div class="buttons">
+      <input type="text" value="">
+      <div class="form-button" @click="putPortMsg">发送消息</div>
       <div class="form-button" @click="getSerialList">查找蓝牙</div>
       <div class="form-button" v-if="state.serialList.length>0" @click="confirmSerial">确认蓝牙</div>
     </div>
@@ -55,7 +71,8 @@ onMounted(() => {
             >Detail
             </el-button
             >
-            <el-button link type="primary" size="small">Edit</el-button>
+            <el-button link type="primary" size="small" @click="openPort(item['row'])"
+            >Edit</el-button>
           </template>
         </el-table-column>
       </el-table>
