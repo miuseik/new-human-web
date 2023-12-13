@@ -10,5 +10,6 @@ declare module 'vue' {
     InputRange: typeof import('./components/public/inputRange.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Table: typeof import('./components/public/table.vue')['default']
   }
 }

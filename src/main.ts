@@ -11,7 +11,7 @@ import locale from 'element-plus/lib/locale/lang/zh-cn'
 
 // import 'element-plus/lib/theme-chalk/index.css'
 
-import '@/utils/rem'
+// import '@/utils/rem'
 
 import "@/assets/style/index.scss";
 // import EventBus from "@/utils/Bus.js";
