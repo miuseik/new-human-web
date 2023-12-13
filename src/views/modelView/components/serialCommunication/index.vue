@@ -22,8 +22,8 @@
               </template>
               <template v-if="item.field === 'option'">
                 {{ group[item.field] }}
-                <el-button link type="primary" size="small" @click="deletePort(item)">delete</el-button>
-                <el-button link type="primary" size="small" @click="openPort(item)">Edit</el-button>
+                <el-button link type="primary" size="small" @click="deletePort(group)">delete</el-button>
+                <el-button link type="primary" size="small" @click="openPort(group)">Edit</el-button>
               </template>
             </td>
           </tr>
@@ -35,12 +35,12 @@
       <template v-for="(item,index) in state.checkedSerial">
         <div class="serial-msg-item">
           <div class="serial-msg-input">
-            <div class="serial-msg-title">{{ item.path }}</div>
-            <input type="text" class="input-box">
-            <div class="submit">发送</div>
+            <div class="serial-msg-title">{{ item['path'] }}</div>
+            <input type="text" class="input-box" v-model="item['input']">
+            <div class="submit pointer" @click="putPortMsg(item)">发送</div>
           </div>
           <div class="serial-msg-msg">
-            msg
+            {{ item['msg'] || '----------' }}
           </div>
         </div>
         <hr>
@@ -56,29 +56,8 @@ import Table from "@/components/public/table.vue";
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 const state = reactive({
   queryBluetooth: {},
-  serialList: [
-    {path: 'COM6', manufacturer: 'Silicon Laboratories', serialNumber: '0001', pnpId: 'USB\\VID_10C4&PID_EA60\\0001', locationId: 'Port_#0002.Hub_#0005'},
-    {path: 'COM3', manufacturer: 'Microsoft', serialNumber: undefined, pnpId: 'BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0002\\7&107EDF7B&0&EC626032C722_C00000000', locationId: undefined},
-    {path: 'COM3', manufacturer: 'Microsoft', serialNumber: undefined, pnpId: 'BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0002\\7&107EDF7B&0&EC626032C722_C00000000', locationId: undefined},
-    {path: 'COM3', manufacturer: 'Microsoft', serialNumber: undefined, pnpId: 'BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0002\\7&107EDF7B&0&EC626032C722_C00000000', locationId: undefined},
-    {path: 'COM3', manufacturer: 'Microsoft', serialNumber: undefined, pnpId: 'BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0002\\7&107EDF7B&0&EC626032C722_C00000000', locationId: undefined},
-    {path: 'COM3', manufacturer: 'Microsoft', serialNumber: undefined, pnpId: 'BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0002\\7&107EDF7B&0&EC626032C722_C00000000', locationId: undefined},
-    {path: 'COM4', manufacturer: 'Microsoft', serialNumber: undefined, pnpId: 'BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0000\\7&107EDF7B&0&000000000000_00000002', locationId: undefined},
-  ],
-  checkedSerial: [
-    {
-      path: "COM6",
-      type: 'remote',
-      input: '',
-      msg:''
-    },
-    {
-      path: "COM4",
-      type: 'body',
-      input: '',
-      msg:''
-    },
-  ],
+  serialList: [],
+  checkedSerial: {},
   showList: [
     {
       field: 'path',
@@ -143,19 +122,27 @@ const AutoLinkPort = async () => {
 };
 const openPort = async (item) => {
   let path = item['path']
+  console.log(item)
   let port = await ipcRenderer.invoke('CHECKOUT_POR', path, "control");
-  state.checkedSerial.push(path)
+  state.checkedSerial[path]={
+      path: path,
+      type: 'remote',
+      input: '',
+      msg: ''
+  }
   console.log(state.checkedSerial)
 };
 
 const deletePort = async (item) => {
   let path = item['path']
-  let port = await ipcRenderer.invoke('CLOSE_PORT', path, "control");
-  var newArr = state.checkedSerial.filter((str) => str !== path);
-  console.log(newArr)
+  let port = await ipcRenderer.invoke('CLOSE_PORT', path);
+  delete state.checkedSerial[path];
+  console.log(state.checkedSerial)
 }
-const putPortMsg = async () => {
-  let msg = await ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM6", "control");
+const putPortMsg = async (item) => {
+  let path = item['path']
+  let data = item['input']
+  let msg = await ipcRenderer.invoke('SEND_DATA_TO_PORT', path, data);
   console.log('msg=====', msg)
 }
 const confirmSerial = () => {
@@ -163,8 +150,9 @@ const confirmSerial = () => {
   state.serialList = []
 };
 onMounted(() => {
-  ipcRenderer.on('message-from-main', (event, message) => {
-    console.log('=====', event, message)
+  ipcRenderer.on('message-from-main', (event, res) => {
+    state.checkedSerial[res.path].msg = res.data
+    console.log('===主进程获取的串口信息==',  res)
   });
   getSerialList()
 })
@@ -264,14 +252,17 @@ onMounted(() => {
     .serial-msg-item {
       display: flex;
       flex-direction: column;
+
       .serial-msg-input {
         display: flex;
         flex-direction: row;
         height: 30px;
         line-height: 30px;
+
         .serial-msg-title {
 
         }
+
         .input-box {
 
         }
