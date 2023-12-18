@@ -10,6 +10,19 @@
               '全部模型'
         }}
       </div>
+
+      <div class="skeleton-description">
+        <el-icon class="description-icon"><InfoFilled /></el-icon>
+        <div class="description-info card-warp">
+          <template v-for="group in state.helpDescription">
+            <div>
+              <template v-for="(item, key) in group">
+                <p :class="key">{{item}}</p>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
 <!--      <span class="demonstration">鼠标视角控制器</span>-->
 <!--      <el-switch v-model="mouseValue" @change="switchChange"/>-->
     </div>
@@ -18,14 +31,21 @@
         <div class="bone-item">
           <div class="item-data card-warp">
             <div class="operate flex" v-if="state.currentChange.includes(item.id)">
-              <div class="login_short_btn" @click="saveChange(item)">保存</div>
               <div class="login_short_btn" @click="filterId(item.id)">取消</div>
+              <div class="login_short_btn" @click="saveChange(item)">保存</div>
               <div class="login_short_btn" @click="deleteItem(item.id)">删除</div>
             </div>
             <div class="operate" v-else>
-              <button class="btn btn-warning" @click="setItem(item)">修改</button>
+              <div class="login_short_btn" @click="setItem(item)">修改</div>
             </div>
-
+            <div class="item-info-option" :class="item.model_type === 0 ?  'b-brand' : 'b-success'">
+              <div class="name"> {{ item.name }}</div>
+              <div class="option">
+                <div>id: <span>{{ item.id }}</span>-</div>
+                <div>field: <span>{{ item['field'] }}</span>-</div>
+                <div>Pid: <span>{{ item.parent }}</span></div>
+              </div>
+            </div>
             <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
               <template v-for="(grid, key) in item ">
                 <div v-if="key.toString() === 'size'" class="item-set-bar">
@@ -103,12 +123,6 @@
               </template>
             </div>
             <div class="item-info" v-else>
-              <div class="item-info-option" :class="item.model_type === 0 ?  'b-brand' : 'b-success'">
-                <span class="name"> {{ item.name }}</span>
-                <span>id:{{ item.id }}</span>
-                <span>field:{{ item['field'] }}</span>
-                <span>Pid:{{ item.parent }}</span>
-              </div>
               <template v-for="(option, index) in item.option">
                 <p v-if="option.open">
                   {{ index }} {{ state.innerData[item['field']][index] }}
@@ -135,12 +149,15 @@ import API from "@/api";
 import debounce from "@/utils/putlic/index.js";
 import inputRange from '@/components/public/inputRange.vue'
 import bone from '@/store/bone/index.ts';
+// import {boneData} from "../data/index.js"
+import dataIndex from "../data/index.js"
 
 const boneStore = bone()
 function parseNumber(input: string): number {
   return parseFloat(input); // 或者使用 parseInt(input, 10)
 }
 const state = reactive({
+  helpDescription: [],
   boneList    : boneStore.boneList || [],
   currentChange: [],
   showAll      : false,
@@ -229,6 +246,8 @@ const getList = () => {
   })
 }
 getList()
+state.helpDescription = dataIndex['helpDescription']
+
 // const sliderInput = debounce((e, name, direction) => {
 //   emit("sliderInput", e, name, direction);
 // }, 1);
@@ -278,6 +297,7 @@ const filterId = (id) => {
   }
 };
 const deleteItem = (id) => {
+
   API.bone.delete({'id': id}).then(() => {
     getList()
   })
@@ -291,6 +311,7 @@ const newBone = () => {
 </script>
 
 <style lang="scss" scoped>
+@import "./style/index.scss";
 .human-menu {
   //padding: 20px 10px;
   .input-box{
@@ -305,6 +326,29 @@ const newBone = () => {
   }
   .human-menu-action{
     display: flex;
+    .skeleton-description{
+      position: relative;
+      .description-icon{
+        cursor: pointer;
+        height: 40px;
+        width: 40px;
+        font-size: 20px;
+      }
+      .description-info{
+        //display: none;
+        padding: 20px 30px;
+        position: absolute;
+        text-align: left;
+        z-index: 1;
+        min-width: 400px;
+        max-width: 600px;
+      }
+      &:hover{
+        .description-info{
+          display: block;
+        }
+      }
+    }
   }
   .demonstration {
     font-size: 15px;
@@ -320,6 +364,26 @@ const newBone = () => {
       .item-data {
         font-family: MeiHei;
         font-size: 15px;
+        position: relative;
+        .item-info-option {
+          line-height: 25px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          font-size: 16px;
+          padding: 1px 0;
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          .option {
+            display: flex;
+            flex-direction: row;
+            span{
+              display: inline-block;
+              width: 15px;
+            }
+          }
+        }
         .item-set {
           .item-set-bar {
             display: flex;
@@ -390,21 +454,7 @@ const newBone = () => {
         }
 
         .item-info {
-          .item-info-option {
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            font-size: 16px;
-            padding: 1px 0;
 
-            span {
-              display: inline-block;
-            }
-
-            .name {
-              width: 40%;
-            }
-          }
         }
       }
     }

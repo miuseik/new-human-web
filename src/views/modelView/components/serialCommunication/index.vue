@@ -183,12 +183,17 @@ onMounted(() => {
       const num1 = Math.floor(Math.random() * 16);
       const num2 = Math.floor(Math.random() * 60);
       let json = `aa${num2} `
-      ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM8", json);
+      if (window['electron']) {
+        ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM8", json);
+      }
     }
   })
-  ipcRenderer.on('message-from-main', (event, res) => {
-    state.checkedSerial[res.path].msg = res.data
-  });
+  if (window['electron']) {
+    ipcRenderer.on('message-from-main', (event, res) => {
+      state.checkedSerial[res.path].msg = res.data
+    });
+  }
+
   getSerialList()
 })
 </script>

@@ -5,22 +5,23 @@ import {STLLoader} from 'three/addons/loaders/STLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
-const fbx_loader  = new FBXLoader()
-const stl_loader  = new STLLoader()
+const fbx_loader = new FBXLoader()
+const stl_loader = new STLLoader()
 const gLtf_loader = new GLTFLoader();
 
-const lookAt = {x: 0, y: 100, z: 0}
-const bone  = boneStore()
-export default class myThree {
+// const lookAt = {x: 0, y: 100, z: 0}
+const lookAt = {x: 10, y: 500, z: 10}
+const bone = boneStore()
+export default class baseThree {
     constructor(canvas) {
-        this.canvas       = canvas
-        this.sizes        = {}
-        this.camera       = null
-        this.renderer     = null
-        this.joinTArr     = {}
-        this.rootModel    = null
-        this.scene        = new THREE.Scene();
-        this.clock        = new THREE.Clock();
+        this.canvas = canvas
+        this.sizes = {}
+        this.camera = null
+        this.renderer = null
+        this.joinTArr = {}
+        this.rootModel = null
+        this.scene = new THREE.Scene();
+        this.clock = new THREE.Clock();
         this.previousTime = 0;
         this.initWindowSizes()
         this.initCamera()
@@ -28,7 +29,7 @@ export default class myThree {
         this.inLights()
         this.initHelper()
         this.initControls()
-        this.initModel()
+        // this.initModel()
         this.initRobot()
         this.initRenderer()
         this.initAnimateTick()
@@ -36,12 +37,12 @@ export default class myThree {
 
     initWindowSizes() {
         const sizes = {
-            width : this.canvas.parentNode.clientWidth,
+            width: this.canvas.parentNode.clientWidth,
             height: this.canvas.parentNode.clientHeight,
         };
         window.addEventListener("resize", () => {
             // Update sizes
-            sizes.width  = this.canvas.parentNode.clientWidth;
+            sizes.width = this.canvas.parentNode.clientWidth;
             sizes.height = this.canvas.parentNode.clientHeight;
 
             // Update camera
@@ -59,19 +60,20 @@ export default class myThree {
     initScene() {
         // this.scene.background = new THREE.Color(0x72645b);
         // this.scene.fog        = new THREE.Fog(0x72645b, 2, 10000);
-        const plane         = new THREE.Mesh(
+        const plane = new THREE.Mesh(
             // new THREE.PlaneGeometry(40000, 40000),
             // new THREE.MeshPhongMaterial({color: 0xcbcbcb, specular: 0x474747})
         );
-        plane.rotation.x    = -Math.PI / 2;
-        plane.position.y    = -.5;
+        plane.rotation.x = -Math.PI / 2;
+        plane.position.y = -.5;
         plane.receiveShadow = true;
         this.scene.add(plane);
     }
 
     initCamera() {
         const camera = new THREE.PerspectiveCamera(40, this.sizes.width / this.sizes.height, 0.25, 10000);
-        camera.position.set(-300, 100, 200);
+        // camera.position.set(-300, 100, 200);
+        camera.position.set(-1300, 1100, 1200);
         this.scene.add(camera);
         this.camera = camera;
     }
@@ -90,13 +92,13 @@ export default class myThree {
 
             const dirLight = new THREE.DirectionalLight(0xffffff, 3);
             dirLight.position.set(3, 10, 10);
-            dirLight.castShadow           = true;
-            dirLight.shadow.camera.top    = 2;
+            dirLight.castShadow = true;
+            dirLight.shadow.camera.top = 2;
             dirLight.shadow.camera.bottom = -2;
-            dirLight.shadow.camera.left   = -2;
-            dirLight.shadow.camera.right  = 2;
-            dirLight.shadow.camera.near   = 0.1;
-            dirLight.shadow.camera.far    = 40;
+            dirLight.shadow.camera.left = -2;
+            dirLight.shadow.camera.right = 2;
+            dirLight.shadow.camera.near = 0.1;
+            dirLight.shadow.camera.far = 40;
             this.scene.add(dirLight);
         }
         this.scene.add(new THREE.HemisphereLight(0x8d7c7c, 0x494966, 3));
@@ -105,19 +107,19 @@ export default class myThree {
     }
 
     initHelper() {
-        // const axes = new THREE.AxesHelper(2000);
-        // this.scene.add(axes);
-        // const gridHelper = new THREE.GridHelper(50000, 100);
-        // this.scene.add(gridHelper);
+        const axes = new THREE.AxesHelper(2000);
+        this.scene.add(axes);
+        const gridHelper = new THREE.GridHelper(50000, 100);
+        this.scene.add(gridHelper);
     }
 
     initControls() {
         const controls = new OrbitControls(this.camera, this.canvas);
         controls.target.set(lookAt.x, lookAt.y, lookAt.z);
         controls.enableDamping = false;
-        controls.enablePan     = false;
-        controls.enableZoom    = false;
-        this.controls          = controls;
+        controls.enablePan = false;
+        controls.enableZoom = false;
+        this.controls = controls;
     }
 
     setControlsEnabled(enabled) {
@@ -144,7 +146,7 @@ export default class myThree {
         let item = 'Walking.fbx'
         return new Promise(((resolve, reject) => {
             fbx_loader.load(item, mesh => {
-                mesh.castShadow    = true;
+                mesh.castShadow = true;
                 mesh.receiveShadow = true;                    // mixer = new THREE.AnimationMixer(mesh)
                 this.scene.add(mesh)
                 // actions[index][0].play()
@@ -159,39 +161,45 @@ export default class myThree {
         if (this.rootModel) {
             this.scene.remove(this.rootModel);
         }
-        const loader        = new STLLoader();
-        const glassMaterial = new THREE.MeshPhongMaterial({color: '#3d79ff', transparent: true, opacity: 0.4, shininess: 4,})
-        const material      = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
-        let setJoint        = (size, position) => {
-            let _position        = position || {x: 0, y: 0, z: 0}
-            let _size            = size || 5
+        const loader = new STLLoader();
+        const glassMaterial = new THREE.MeshPhongMaterial({
+            color: '#3d79ff',
+            transparent: true,
+            opacity: 0.4,
+            shininess: 4,
+        })
+        const material = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
+        let setJoint = (size, position) => {
+            let _position = position || {x: 0, y: 0, z: 0}
+            let _size = size || 5
             const SphereGeometry = new THREE.SphereGeometry(_size)
-            const joint          = new THREE.Mesh(SphereGeometry, glassMaterial);
+            const joint = new THREE.Mesh(SphereGeometry, glassMaterial);
             joint.position.set(_position['x'], _position['y'], _position['z']);
             return joint
         }
-        let loadingModel    = (name, position) => {
+        let loadingModel = (name, position) => {
             return new Promise(((resolve, reject) => {
-                let _position = position || {x: -.25, y: 0, z: -.25}
-                let _name     = name || ''
+                let _position = position || {x: -.25, y: 0, z: -.25};
+                // let _position = position || {x: 0, y: 0, z: 0};
+                let _name = name || ''
                 loader.load(`/src/assets/human/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
                     Mesh.castShadow = true;
                     resolve(Mesh)
                 });
+
             }))
         }
-        // let modelArr     = []
-        let modelArr        = {}
-        let boneList       = bone.boneList || []
-        let modelNum        = boneList.length
-        let setScenes       = async () => {
+        let modelArr = {}
+        let boneList = bone.boneList || []
+        let modelNum = boneList.length
+        let setScenes = async () => {
             for (let key in modelArr) {
-                let item  = modelArr[key]
+                let item = modelArr[key]
                 let model = item.model
-                let info  = item.info
-                if (info.parent === 0) {
+                let info = item.info
+                if (info.parent*1 === 0) {
                     this.rootModel = model
                     this.scene.add(this.rootModel);
                 } else {
@@ -208,19 +216,19 @@ export default class myThree {
             }
             bone.joinTArr = this.joinTArr
         }
-        let initAllModel    = async (item) => {
+        let initAllModel = async (item) => {
             let model
             if (item.model_type === 1) {
                 model = setJoint(item['size'], item['position']);
             } else {
                 try {
-                    model = await loadingModel(item['model_name'], item['position']);
+                    item['model_name'] ? model = await loadingModel(item['model_name'], item['position']) : ''
                 } catch (e) {
                 }
             }
-            let data          = {
+            let data = {
                 model: model,
-                info : item
+                info: item
             }
             modelArr[item.id] = data
             modelNum--
@@ -239,21 +247,21 @@ export default class myThree {
     }
 
     initRenderer() {
-        this.renderer                = new THREE.WebGLRenderer({
+        this.renderer = new THREE.WebGLRenderer({
             antialias: true, //开启锯齿
-            alpha    : true,
-            canvas   : this.canvas,
+            alpha: true,
+            canvas: this.canvas,
         });
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.setSize(this.sizes.width, this.sizes.height);
-        this.renderer.useLegacyLights   = false;
+        this.renderer.useLegacyLights = false;
         this.renderer.shadowMap.enabled = true;
     }
 
     initAnimateTick() {
         const elapsedTime = this.clock.getElapsedTime();
-        const deltaTime   = elapsedTime - this.previousTime;
+        const deltaTime = elapsedTime - this.previousTime;
         this.previousTime = elapsedTime;
         //Update controls
         // this.controls.update();

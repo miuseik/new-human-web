@@ -25,7 +25,7 @@
 import * as THREE from "three";
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {cloneDeep, debounce} from "@/utils/putlic/index.js"
-import {boneData} from "../data/index.js"
+import dataIndex from "../data/index.js"
 import {ElMessage} from "element-plus";
 
 const fbx_loader = new FBXLoader()
@@ -136,8 +136,8 @@ const initModel = async () => {
 }
 
 const init = async () => {
-  state.actions = boneData['actions']
-  state.actions = boneData['actions']
+  // state.actions = boneData['actions']
+  state.actions = dataIndex['actions']
   let action = await initModel()
   for (let key in state.actions) {
     let item = state.actions[key]

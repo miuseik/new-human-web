@@ -28,7 +28,7 @@
 </template>
 <script lang="ts" setup>
 const emit = defineEmits(["sliderInput", "switchChange", "modelAction"]);
-import myThree from "./index.js";
+import baseThree from "./index.js";
 import Menu from "./Menu/index.vue";
 import action from "./action/index.vue";
 import bus from "@/utils/Bus";
@@ -59,7 +59,10 @@ watch(() => bone.motionData, val => {
   deep: true,
   immediate: true
 })
-
+/**
+ *
+ * @param range
+ */
 const calculate = (range) => {
   const round = (x) => {
     return Math.round(x * 10000) / 100
@@ -100,6 +103,12 @@ const calculate = (range) => {
   res.y = Math.round(res.y * 10000) / 10000
   return res
 }
+/**
+ * 操作轨迹球,监控舵机旋转
+ * @param name
+ * @param euler
+ * @param options
+ */
 const setDot = (name, euler, options) => {
   const getServer = (val, res) => {
     let old_val = val || 0
@@ -184,8 +193,10 @@ const updateBoneList = () => {
 };
 
 onMounted(() => {
+  console.log('------------------')
   let dom = document.getElementById("three_id");
-  base = new myThree(dom);
+  base = new baseThree(dom);
+  console.log(base)
   setTimeout(() => {
     for (let item in state.specialJoints) {
       let key = state.specialJoints[item]
