@@ -1,10 +1,10 @@
 <!--// 路径：src/views/home/components/Robot3d/index.vue-->
 <template>
   <div class="three-box">
-<!--    <div class="menu">-->
-      <Menu @sliderInput="modelAction" @switchChange="switchChange" @updateBoneList="updateBoneList"/>
-<!--    </div>-->
-<!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
+    <!--    <div class="menu">-->
+    <Menu @sliderInput="modelAction" @switchChange="switchChange" @updateBoneList="updateBoneList"/>
+    <!--    </div>-->
+    <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
       <template v-for="(item, index) in state.specialJoints">
         <div class="dot-box flex">
@@ -31,31 +31,32 @@ const emit = defineEmits(["sliderInput", "switchChange", "modelAction"]);
 import myThree from "./index.js";
 import Menu from "./Menu/index.vue";
 import action from "./action/index.vue";
+import bus from "@/utils/Bus";
 
 let base = null;
 import boneStore from '@/store/bone/index.ts';
 
 const bone = boneStore()
 const state = reactive({
-  dot          : null,
-  dotArr       : {},
-  joinTArr     : bone.joinTArr || {},
+  dot: null,
+  dotArr: {},
+  joinTArr: bone.joinTArr || {},
   currentAction: '',
   specialJoints: [
     'D2', 'D3', 'D4', 'D5'
   ],
-  actions      : {}
+  actions: {}
 })
 watch(() => bone.joinTArr, val => {
   state.joinTArr = val
 }, {
-  deep     : true,
+  deep: true,
   immediate: true
 })
 watch(() => bone.motionData, val => {
   state.joinTArr = val
 }, {
-  deep     : true,
+  deep: true,
   immediate: true
 })
 
@@ -124,25 +125,26 @@ const setDot = (name, euler, options) => {
     z: z,
   }
   if (state.specialJoints.includes(name)) {
-    state.dotArr[`${name}_x`].style.top = `${(x-100) / 5}px`
-    state.dotArr[name].style.top = `${(z-100) / 5}px`
-    state.dotArr[name].style.left = `${(y-100) / 5}px`
+    state.dotArr[`${name}_x`].style.top = `${(x - 100) / 5}px`
+    state.dotArr[name].style.top = `${(z - 100) / 5}px`
+    state.dotArr[name].style.left = `${(y - 100) / 5}px`
   }
   return thetaData
 }
 const modelAction = (name, eulerData) => {
+  bus.emit("baseSliderInput", eulerData)
   let action = {
     x: {
       coordinate: eulerData['_x'] || eulerData['x'],
-      euler     : eulerData['_x'] || eulerData['x'],
+      euler: eulerData['_x'] || eulerData['x'],
     },
     y: {
       coordinate: eulerData['_y'] || eulerData['y'],
-      euler     : eulerData['_y'] || eulerData['y'],
+      euler: eulerData['_y'] || eulerData['y'],
     },
     z: {
       coordinate: eulerData['_z'] || eulerData['z'],
-      euler     : eulerData['_z'] || eulerData['z'],
+      euler: eulerData['_z'] || eulerData['z'],
     },
   }
   let options = state.joinTArr[name]['info']['option']
@@ -154,8 +156,8 @@ const modelAction = (name, eulerData) => {
   for (let key in action) {
     let item = action[key]
     let val = state.actions[name] && state.actions[name][key] || 0
-      driveServer(item['coordinate'], name, key, options)
-      state.actions[name] = dot_action
+    driveServer(item['coordinate'], name, key, options)
+    state.actions[name] = dot_action
     // }
     driveModel(item['euler'], name, key, options)
   }
@@ -163,7 +165,7 @@ const modelAction = (name, eulerData) => {
 const driveServer = (e, name, direction, options) => {
   let option = options[direction]
   let server_val = e
-  if (direction === 'x'){
+  if (direction === 'x') {
   }
   server_val = option.server_reverse ? 700 - server_val : server_val
   emit("sliderInput", server_val, name, direction);
@@ -202,9 +204,10 @@ onMounted(() => {
   width: 100vw;
   height: 100%;
   position: relative;
-.human-menu{
 
-}
+  .human-menu {
+
+  }
 
 
   .dot-warp {

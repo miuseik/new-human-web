@@ -242,6 +242,7 @@ const setItem = (item) => {
   state.currentChange.push(item.id)
 };
 const setInputVal = () => {
+  console.log('=============')
   emit("updateBoneList");
   for (let index in state.boneList){
     let item = state.boneList[index]
@@ -251,6 +252,7 @@ const setInputVal = () => {
       y:option.y['value'],
       z:option.z['value'],
     }
+    console.log(state.innerData[item.field])
   }
 }
 const saveChange = (item) => {

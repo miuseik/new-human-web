@@ -32,6 +32,7 @@
     </div>
 
     <div class="serial-msg card-warp">
+      <button style="color: aliceblue" @click="test(state.isTest = !state.isTest)">开始</button>
       <template v-for="(item,index) in state.checkedSerial">
         <div class="serial-msg-item">
           <div class="serial-msg-input">
@@ -50,8 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import myTable from '@/components/public/table.vue'
-import Table from "@/components/public/table.vue";
+import myTable from "@/components/public/table.vue";
+import bus from "@/utils/Bus.ts";
 
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 const state = reactive({
@@ -100,15 +101,13 @@ const state = reactive({
       field: 'option',
       width: '100',
     }
-  ]
+  ],
+  isTest: false
 });
-const portMsg = ref()
-const 已连接的串口 = ref()
 const getSerialList = async () => {
   if (window['electron']) {
     state.serialList = await ipcRenderer.invoke('GET_PORT_LIST');
     // AutoLinkPort()
-    console.log(state.serialList)
   } else {
   }
 };
@@ -116,43 +115,79 @@ const AutoLinkPort = async () => {
   for (let index in state.serialList) {
     let item = state.serialList[index]
     let path = item['path']
-    console.log(item)
     state.serialList = await ipcRenderer.invoke('CHECKOUT_POR', path);
   }
 };
 const openPort = async (item) => {
   let path = item['path']
-  console.log(item)
   let port = await ipcRenderer.invoke('CHECKOUT_POR', path, "control");
-  state.checkedSerial[path]={
-      path: path,
-      type: 'remote',
-      input: '',
-      msg: ''
+  state.checkedSerial[path] = {
+    path: path,
+    type: 'remote',
+    input: '',
+    msg: ''
   }
-  console.log(state.checkedSerial)
 };
 
 const deletePort = async (item) => {
   let path = item['path']
   let port = await ipcRenderer.invoke('CLOSE_PORT', path);
   delete state.checkedSerial[path];
-  console.log(state.checkedSerial)
 }
 const putPortMsg = async (item) => {
   let path = item['path']
   let data = item['input']
   let msg = await ipcRenderer.invoke('SEND_DATA_TO_PORT', path, data);
-  console.log('msg=====', msg)
+}
+
+function getRandomLetter() {
+  var letters = 'abcdefghijklmnopqrstuvwxyz';
+  var randomIndex = Math.floor(Math.random() * letters.length);
+  return letters.charAt(randomIndex);
+}
+
+let num = 0
+const test = async () => {
+  if (!state.isTest) return;
+  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
+      const loopCount = Math.floor(Math.random() * 26);
+      for (let i = 0; i < loopCount; i++) {
+        num++
+        // if (num > 9) {
+        //   num = 0
+        // }
+        const num1 = Math.floor(Math.random() * 16);
+        const num2 = Math.floor(Math.random() * 60);
+        // let json = `{f:"1",n:"${num1}",r:"${num2}"}`
+        // let json = `aa${num2}`
+        // let json = `${letters[i]}${letters[i]}${num++}.${num}${num}`
+        let json = `${letters[i]}${letters[i]}${num} `
+        // let json = `${getRandomLetter()}${getRandomLetter()}${num2}`
+        ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM8", json);
+        console.log(json)
+      }
+    }
+  }
+  setTimeout(test, 1);
 }
 const confirmSerial = () => {
   let data = state.queryBluetooth
   state.serialList = []
 };
 onMounted(() => {
+  bus.on("baseSliderInput", (event) => {
+    const loopCount = Math.floor(Math.random() * 16);
+    for (let i = 0; i < loopCount; i++) {
+      const num1 = Math.floor(Math.random() * 16);
+      const num2 = Math.floor(Math.random() * 60);
+      let json = `aa${num2} `
+      ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM8", json);
+    }
+  })
   ipcRenderer.on('message-from-main', (event, res) => {
     state.checkedSerial[res.path].msg = res.data
-    console.log('===主进程获取的串口信息==',  res)
   });
   getSerialList()
 })
