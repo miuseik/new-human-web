@@ -4,8 +4,8 @@ import API from "@/api";
 
 const bone = defineStore('bone', {
     state  : () => ({
-        boneList: [],
-        joinTArr: {},
+        boneList: [],//骨骼原始数据
+        JointArray: {},
         motionData:{
             Leg_lift:['','','','','','','','','','','','','','',],
             D3:['','','','','','','','','','','','','','',],

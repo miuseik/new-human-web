@@ -12,19 +12,21 @@
       </div>
 
       <div class="skeleton-description">
-        <el-icon class="description-icon"><InfoFilled /></el-icon>
+        <el-icon class="description-icon">
+          <InfoFilled/>
+        </el-icon>
         <div class="description-info card-warp">
           <template v-for="group in state.helpDescription">
             <div>
               <template v-for="(item, key) in group">
-                <p :class="key">{{item}}</p>
+                <p :class="key">{{ item }}</p>
               </template>
             </div>
           </template>
         </div>
       </div>
-<!--      <span class="demonstration">鼠标视角控制器</span>-->
-<!--      <el-switch v-model="mouseValue" @change="switchChange"/>-->
+      <!--      <span class="demonstration">鼠标视角控制器</span>-->
+      <!--      <el-switch v-model="mouseValue" @change="switchChange"/>-->
     </div>
     <div class="list-warp">
       <template v-for="(item, index) in state.boneList ">
@@ -38,7 +40,7 @@
             <div class="operate" v-else>
               <div class="login_short_btn" @click="setItem(item)">修改</div>
             </div>
-            <div class="item-info-option" :class="item.model_type === 0 ?  'b-brand' : 'b-success'">
+            <div class="item-info-option" :class="item.model_type*1 === 0 ?  'b-brand' : 'b-success'">
               <div class="name"> {{ item.name }}</div>
               <div class="option">
                 <div>id: <span>{{ item.id }}</span>-</div>
@@ -50,13 +52,17 @@
               <template v-for="(grid, key) in item ">
                 <div v-if="key.toString() === 'size'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  <input class="input-box" type="text" v-model="state.boneList[index][key]" @input="setInputVal" :disabled="key.toString() === 'id'">
+                  <input class="input-box" type="text" v-model="state.boneList[index][key]" @input="setInputVal"
+                         :disabled="key.toString() === 'id'">
                 </div>
                 <div v-else-if="key.toString() === 'position' || key.toString() === 'rotate'" class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  x:<input type="text" class="input-box" v-model="state.boneList[index][key]['x']" @input="setInputVal" :disabled="key.toString() === 'id'">
-                  y:<input type="text" class="input-box" v-model="state.boneList[index][key]['y']" @input="setInputVal" :disabled="key.toString() === 'id'">
-                  z:<input type="text" class="input-box" v-model="state.boneList[index][key]['z']" @input="setInputVal" :disabled="key.toString() === 'id'">
+                  x:<input type="text" class="input-box" v-model="state.boneList[index][key]['x']" @input="setInputVal"
+                           :disabled="key.toString() === 'id'">
+                  y:<input type="text" class="input-box" v-model="state.boneList[index][key]['y']" @input="setInputVal"
+                           :disabled="key.toString() === 'id'">
+                  z:<input type="text" class="input-box" v-model="state.boneList[index][key]['z']" @input="setInputVal"
+                           :disabled="key.toString() === 'id'">
                 </div>
                 <div v-else-if="key.toString() === 'model_type' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
@@ -66,11 +72,15 @@
                     </div>
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.modelType">
-                        <div class="input-box" @click="state.boneList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                        <div class="input-box" @click="state.boneList[index][key]=select_index">{{
+                            select
+                          }}{{ select_index }}
+                        </div>
                       </template>
                     </div>
                   </div>
                 </div>
+                <!--                选择主从方式-->
                 <div v-else-if="key.toString() === 'master_slave' " class="item-set-bar item-set-select">
                   <span class="title">{{ key }}</span>
                   <div class="select-warp input-box">
@@ -79,11 +89,15 @@
                     </div>
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.masterSlave">
-                        <div class="input-box" @click="state.boneList[index][key]=select_index">{{ select }}{{ select_index }}</div>
+                        <div class="input-box" @click="state.boneList[index][key]=select_index">{{
+                            select
+                          }}{{ select_index }}
+                        </div>
                       </template>
                     </div>
                   </div>
                 </div>
+                <!--                设置option-->
                 <div v-else-if="key.toString() === 'option'" class="item-set-bar item-set-option">
                   <span class="title">{{ key }}</span>
                   <div class="option-warp">
@@ -116,16 +130,18 @@
                     </template>
                   </div>
                 </div>
+                <!--                  设置其他选项-->
                 <div v-else class="item-set-bar">
                   <span class="title">{{ key }}</span>
-                  <input type="text" class="input-box" v-model="state.boneList[index][key]" :disabled="key.toString() === 'id'">
+                  <input type="text" class="input-box" v-model="state.boneList[index][key]"
+                         :disabled="setDisabled(key)">
                 </div>
               </template>
             </div>
             <div class="item-info" v-else>
               <template v-for="(option, index) in item.option">
-                <p v-if="option.open">
-                  {{ index }} {{ state.innerData[item['field']][index] }}
+                <p class="input-range-box" v-if="option.open*1 !== 0">
+                  <span>{{ index }} {{ state.innerData[item['field']][index] }}</span>
                   <inputRange
                       class="input-box"
                       :min="option.min"
@@ -151,77 +167,78 @@ import inputRange from '@/components/public/inputRange.vue'
 import bone from '@/store/bone/index.ts';
 // import {boneData} from "../data/index.js"
 import dataIndex from "../data/index.js"
+import {computed} from "vue";
 
 const boneStore = bone()
+
 function parseNumber(input: string): number {
   return parseFloat(input); // 或者使用 parseInt(input, 10)
 }
+
 const state = reactive({
   helpDescription: [],
-  boneList    : boneStore.boneList || [],
+  boneList: boneStore.boneList || [],
   currentChange: [],
-  showAll      : false,
-  newId        : 0,
-  showGrid     : [
+  showAll: false,
+  newId: 0,
+  showGrid: [
     'name'
   ],
-  innerData:{
+  innerData: {},
 
-  },
-
-  itemTpl      : {
-    id          : 0,
-    field       : "D",
-    name        : '',
-    model_name  : '.stl',
-    model_type  : '0',
+  itemTpl: {
+    id: 0,
+    field: "D",
+    name: '',
+    model_name: '.stl',
+    model_type: '0',
     master_slave: '0',
-    option      : {
+    option: {
       x: {
-        open          : false,
+        open: false,
         server_reverse: false,
-        model_reverse : false,
-        max           : parseNumber((Math.PI / 2).toFixed(4) ),
-        min           : parseNumber((-Math.PI / 2).toFixed(4)) ,
-        value         : 0
+        model_reverse: false,
+        max: parseNumber((Math.PI / 2).toFixed(4)),
+        min: parseNumber((-Math.PI / 2).toFixed(4)),
+        value: 0
       },
       y: {
-        open          : false,
+        open: false,
         server_reverse: false,
-        model_reverse : false,
-        max           : parseNumber((Math.PI / 2).toFixed(4) ),
-        min           : parseNumber((-Math.PI / 2).toFixed(4)) ,
-        value         : 0
+        model_reverse: false,
+        max: parseNumber((Math.PI / 2).toFixed(4)),
+        min: parseNumber((-Math.PI / 2).toFixed(4)),
+        value: 0
       },
       z: {
-        open          : false,
+        open: false,
         server_reverse: false,
-        model_reverse : false,
-        max           : parseNumber((Math.PI / 2).toFixed(4) ),
-        min           : parseNumber((-Math.PI / 2).toFixed(4)) ,
-        value         : 0
+        model_reverse: false,
+        max: parseNumber((Math.PI / 2).toFixed(4)),
+        min: parseNumber((-Math.PI / 2).toFixed(4)),
+        value: 0
       }
     },
-    size        : 10,
-    position    : {
+    size: 10,
+    position: {
       x: 0,
       y: 0,
       z: 0
     },
-    rotate      : {
+    rotate: {
       x: 0,
       y: 0,
       z: 0
     },
-    parent      : 0,
+    parent: 0,
   },
-  modelType    : {
+  modelType: {
     0: '骨骼',
     1: '关节轴',
     2: '外壳',
     3: '零件',
   },
-  masterSlave  : {
+  masterSlave: {
     0: '主动',
     1: '从动',
   }
@@ -229,18 +246,22 @@ const state = reactive({
 
 const mouseValue = ref(true);
 const emit = defineEmits(["sliderInput", "switchChange", "updateBoneList"]);
-
+const setDisabled = computed(() => {
+  return function (key) {
+    return key.toString() === 'id' || key.toString() === 'createdAt' || key.toString() === 'updatedAt'
+  };
+});
 const getList = () => {
-  boneStore.getBoneList().then((data:any[]) => {
+  boneStore.getBoneList().then((data: any[]) => {
     emit("updateBoneList");
     state.boneList = data
-    for (let index in state.boneList){
+    for (let index in state.boneList) {
       let item = state.boneList[index]
       let option = item.option
       state.innerData[item.field] = {
-        x:option.x['value'],
-        y:option.y['value'],
-        z:option.z['value'],
+        x: option.x['value'],
+        y: option.y['value'],
+        z: option.z['value'],
       }
     }
   })
@@ -251,8 +272,8 @@ state.helpDescription = dataIndex['helpDescription']
 // const sliderInput = debounce((e, name, direction) => {
 //   emit("sliderInput", e, name, direction);
 // }, 1);
-const sliderInput = (e, name, direction,option) => {
-  emit("sliderInput",  name, option);
+const sliderInput = (e, name, direction, option) => {
+  emit("sliderInput", name, option);
 }
 const switchChange = (e) => {
   emit("switchChange", e);
@@ -263,13 +284,13 @@ const setItem = (item) => {
 const setInputVal = () => {
   console.log('=============')
   emit("updateBoneList");
-  for (let index in state.boneList){
+  for (let index in state.boneList) {
     let item = state.boneList[index]
     let option = item.option
     state.innerData[item.field] = {
-      x:option.x['value'],
-      y:option.y['value'],
-      z:option.z['value'],
+      x: option.x['value'],
+      y: option.y['value'],
+      z: option.z['value'],
     }
     console.log(state.innerData[item.field])
   }
@@ -312,30 +333,37 @@ const newBone = () => {
 
 <style lang="scss" scoped>
 @import "./style/index.scss";
+
 .human-menu {
   //padding: 20px 10px;
-  .input-box{
+  .input-box {
     height: 30px;
   }
+
   display: flex;
   flex-direction: column;
   width: 500px;
   flex-shrink: 0;
+
   .slider-item {
     //margin: 20px 0;
   }
-  .human-menu-action{
+
+  .human-menu-action {
     display: flex;
-    .skeleton-description{
+
+    .skeleton-description {
       position: relative;
-      .description-icon{
+
+      .description-icon {
         cursor: pointer;
         height: 40px;
         width: 40px;
         font-size: 20px;
       }
-      .description-info{
-        //display: none;
+
+      .description-info {
+        display: none;
         padding: 20px 30px;
         position: absolute;
         text-align: left;
@@ -343,13 +371,15 @@ const newBone = () => {
         min-width: 400px;
         max-width: 600px;
       }
-      &:hover{
-        .description-info{
+
+      &:hover {
+        .description-info {
           display: block;
         }
       }
     }
   }
+
   .demonstration {
     font-size: 15px;
     margin: 0 10px 10px 0;
@@ -365,6 +395,7 @@ const newBone = () => {
         font-family: MeiHei;
         font-size: 15px;
         position: relative;
+
         .item-info-option {
           line-height: 25px;
           display: flex;
@@ -375,15 +406,18 @@ const newBone = () => {
           position: absolute;
           right: 10px;
           top: 10px;
+
           .option {
             display: flex;
             flex-direction: row;
-            span{
+
+            span {
               display: inline-block;
               width: 15px;
             }
           }
         }
+
         .item-set {
           .item-set-bar {
             display: flex;
@@ -454,7 +488,11 @@ const newBone = () => {
         }
 
         .item-info {
-
+          .input-range-box{
+            display: flex;
+            flex-direction: column;
+            align-items: self-start;
+          }
         }
       }
     }

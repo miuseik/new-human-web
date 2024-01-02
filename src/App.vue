@@ -5,9 +5,8 @@ import storage from "store2";
 import bus from "@/utils/Bus";
 
 let {initThree} = mixins();
-const getLogoinBrowser =()=>{
-  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
-  console.log("loginuserAgent:", userAgent)
+const getBrowser =()=>{
+  const userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
   //判断是否Opera浏览器
   if (userAgent.indexOf("Opera") > -1) {
     return "Opera"
@@ -40,12 +39,10 @@ const getKeyboard = (event) => {
 }
 onMounted(() => {
   initThree();
-  getLogoinBrowser()
   if (window && window['electron']) {
     storage.set('currentBrowser', 'electron');
   } else {
-    getLogoinBrowser()
-    storage.set('currentBrowser', getLogoinBrowser());
+    storage.set('currentBrowser', getBrowser());
   }
   window.addEventListener('keydown', getKeyboard);
 })

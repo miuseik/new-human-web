@@ -6,7 +6,7 @@
     <!--    </div>-->
     <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
-      <template v-for="(item, index) in state.specialJoints">
+      <template v-for="item in state.specialJoints">
         <div class="dot-box flex">
           <div class="inner inner-x">
             <div class="dot" :id="`dot_${item}_x`">
@@ -30,7 +30,7 @@
 const emit = defineEmits(["sliderInput", "switchChange", "modelAction"]);
 import baseThree from "./index.js";
 import Menu from "./Menu/index.vue";
-import action from "./action/index.vue";
+// import action from "./action/index.vue";
 import bus from "@/utils/Bus";
 
 let base = null;
@@ -40,21 +40,21 @@ const bone = boneStore()
 const state = reactive({
   dot: null,
   dotArr: {},
-  joinTArr: bone.joinTArr || {},
+  JointArray: bone.JointArray || {},
   currentAction: '',
   specialJoints: [
     'D2', 'D3', 'D4', 'D5'
   ],
   actions: {}
 })
-watch(() => bone.joinTArr, val => {
-  state.joinTArr = val
+watch(() => bone.JointArray, val => {
+  state.JointArray = val
 }, {
   deep: true,
   immediate: true
 })
 watch(() => bone.motionData, val => {
-  state.joinTArr = val
+  state.JointArray = val
 }, {
   deep: true,
   immediate: true
@@ -112,8 +112,8 @@ const calculate = (range) => {
 const setDot = (name, euler, options) => {
   const getServer = (val, res) => {
     let old_val = val || 0
-    let new_val = parseInt(old_val * res['x'] + res['y'])
-    return new_val
+    // let new_val =
+    return parseInt(old_val * res['x'] + res['y'])
   }
   let x = euler.x.coordinate
   let x_res = calculate(options['x'])
@@ -140,6 +140,11 @@ const setDot = (name, euler, options) => {
   }
   return thetaData
 }
+/**
+ * 移动option进度条触发
+ * @param name
+ * @param eulerData
+ */
 const modelAction = (name, eulerData) => {
   bus.emit("baseSliderInput", eulerData)
   let action = {
@@ -156,7 +161,7 @@ const modelAction = (name, eulerData) => {
       euler: eulerData['_z'] || eulerData['z'],
     },
   }
-  let options = state.joinTArr[name]['info']['option']
+  let options = state.JointArray[name]['info']['option']
   let dot_action = setDot(name, action, options)
   // return
   action.x.coordinate = dot_action.x
@@ -164,7 +169,7 @@ const modelAction = (name, eulerData) => {
   action.z.coordinate = dot_action.z
   for (let key in action) {
     let item = action[key]
-    let val = state.actions[name] && state.actions[name][key] || 0
+    // let val = state.actions[name] && state.actions[name][key] || 0
     driveServer(item['coordinate'], name, key, options)
     state.actions[name] = dot_action
     // }
@@ -193,10 +198,8 @@ const updateBoneList = () => {
 };
 
 onMounted(() => {
-  console.log('------------------')
   let dom = document.getElementById("three_id");
   base = new baseThree(dom);
-  console.log(base)
   setTimeout(() => {
     for (let item in state.specialJoints) {
       let key = state.specialJoints[item]

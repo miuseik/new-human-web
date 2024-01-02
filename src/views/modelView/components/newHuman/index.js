@@ -18,7 +18,7 @@ export default class baseThree {
         this.sizes = {}
         this.camera = null
         this.renderer = null
-        this.joinTArr = {}
+        this.JointArray = {}
         this.rootModel = null
         this.scene = new THREE.Scene();
         this.clock = new THREE.Clock();
@@ -156,8 +156,7 @@ export default class baseThree {
 
     initRobot = async () => {
         // let actions = await loadFbx()
-
-        this.joinTArr = {}
+        this.JointArray = {}
         if (this.rootModel) {
             this.scene.remove(this.rootModel);
         }
@@ -169,6 +168,12 @@ export default class baseThree {
             shininess: 4,
         })
         const material = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
+        /**
+         * 设置关节
+         * @param size 关节大小-默认为5
+         * @param position 关节位置-默认0,0,0.位置为相对关节位置
+         * @returns {Mesh<SphereGeometry, MeshPhongMaterial>}
+         */
         let setJoint = (size, position) => {
             let _position = position || {x: 0, y: 0, z: 0}
             let _size = size || 5
@@ -194,12 +199,13 @@ export default class baseThree {
         let modelArr = {}
         let boneList = bone.boneList || []
         let modelNum = boneList.length
+        // 设置场景
         let setScenes = async () => {
             for (let key in modelArr) {
                 let item = modelArr[key]
                 let model = item.model
                 let info = item.info
-                if (info.parent*1 === 0) {
+                if (info.parent * 1 === 0) {
                     this.rootModel = model
                     this.scene.add(this.rootModel);
                 } else {
@@ -209,28 +215,27 @@ export default class baseThree {
                         model.add(axes);
                     }
                 }
-                if (info.master_slave === 0) {
-                    // this.joinTArr[info.field] = model
-                    this.joinTArr[info.field] = item
+                if (info.master_slave*1 === 0) {
+                    // this.JointArray[info.field] = model
+                    this.JointArray[info.field] = item
                 }
             }
-            bone.joinTArr = this.joinTArr
+            bone.JointArray = this.JointArray
         }
+        // 初始化所有模型
         let initAllModel = async (item) => {
             let model
-            if (item.model_type === 1) {
+            if (item.model_type*1 === 1) {
                 model = setJoint(item['size'], item['position']);
             } else {
-                try {
-                    item['model_name'] ? model = await loadingModel(item['model_name'], item['position']) : ''
-                } catch (e) {
+                if (item['model_name'] ){
+                    model = await loadingModel(item['model_name'], item['position'])
                 }
             }
-            let data = {
+            modelArr[item.id] = {
                 model: model,
                 info: item
             }
-            modelArr[item.id] = data
             modelNum--
             if (modelNum === 0) {
                 setScenes()
@@ -242,8 +247,8 @@ export default class baseThree {
     }
 
     setRobotRotation(rotation, name, direction) {
-        this.joinTArr[name]['model'].rotation[direction] = rotation
-        // this.joinTArr[name]['model'][`rotate${direction.toUpperCase()}`](rotation)
+        this.JointArray[name]['model'].rotation[direction] = rotation
+        // this.JointArray[name]['model'][`rotate${direction.toUpperCase()}`](rotation)
     }
 
     initRenderer() {
