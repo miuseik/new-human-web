@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     InputRange: typeof import('./components/public/inputRange.vue')['default']
+    MultiPanel: typeof import('./components/echart/multiPanel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Table: typeof import('./components/public/table.vue')['default']

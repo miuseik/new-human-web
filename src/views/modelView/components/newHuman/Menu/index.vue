@@ -177,62 +177,62 @@ function parseNumber(input: string): number {
 
 const state = reactive({
   helpDescription: [],
-  boneList: boneStore.boneList || [],
-  currentChange: [],
-  showAll: false,
-  newId: 0,
-  showGrid: [
+  boneList       : boneStore.boneList || [],
+  currentChange  : [],
+  showAll        : false,
+  newId          : 0,
+  showGrid       : [
     'name'
   ],
-  innerData: {},
+  innerData      : {},
 
-  itemTpl: {
-    id: 0,
-    field: "D",
-    name: '',
-    model_name: '.stl',
-    model_type: '0',
+  itemTpl    : {
+    id          : 0,
+    field       : "D",
+    name        : '',
+    model_name  : '.stl',
+    model_type  : '0',
     master_slave: '0',
-    option: {
+    option      : {
       x: {
-        open: false,
+        open          : false,
         server_reverse: false,
-        model_reverse: false,
-        max: parseNumber((Math.PI / 2).toFixed(4)),
-        min: parseNumber((-Math.PI / 2).toFixed(4)),
-        value: 0
+        model_reverse : false,
+        max           : parseNumber((Math.PI / 2).toFixed(4)),
+        min           : parseNumber((-Math.PI / 2).toFixed(4)),
+        value         : 0
       },
       y: {
-        open: false,
+        open          : false,
         server_reverse: false,
-        model_reverse: false,
-        max: parseNumber((Math.PI / 2).toFixed(4)),
-        min: parseNumber((-Math.PI / 2).toFixed(4)),
-        value: 0
+        model_reverse : false,
+        max           : parseNumber((Math.PI / 2).toFixed(4)),
+        min           : parseNumber((-Math.PI / 2).toFixed(4)),
+        value         : 0
       },
       z: {
-        open: false,
+        open          : false,
         server_reverse: false,
-        model_reverse: false,
-        max: parseNumber((Math.PI / 2).toFixed(4)),
-        min: parseNumber((-Math.PI / 2).toFixed(4)),
-        value: 0
+        model_reverse : false,
+        max           : parseNumber((Math.PI / 2).toFixed(4)),
+        min           : parseNumber((-Math.PI / 2).toFixed(4)),
+        value         : 0
       }
     },
-    size: 10,
-    position: {
+    size        : 10,
+    position    : {
       x: 0,
       y: 0,
       z: 0
     },
-    rotate: {
+    rotate      : {
       x: 0,
       y: 0,
       z: 0
     },
-    parent: 0,
+    parent      : 0,
   },
-  modelType: {
+  modelType  : {
     0: '骨骼',
     1: '关节轴',
     2: '外壳',
@@ -488,7 +488,7 @@ const newBone = () => {
         }
 
         .item-info {
-          .input-range-box{
+          .input-range-box {
             display: flex;
             flex-direction: column;
             align-items: self-start;
@@ -496,8 +496,6 @@ const newBone = () => {
         }
       }
     }
-
-
   }
 }
 

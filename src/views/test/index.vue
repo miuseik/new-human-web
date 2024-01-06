@@ -1,18 +1,13 @@
+src/App.vue：
+
 <template>
+	<bar-graph :width="'200px'" :height="'200px'"></bar-graph>
 </template>
 
-<script setup lang="ts">
-
-onMounted(() => {
-  let data = {
-    f: "1",
-    n: '2',
-    r: '30'
-  }
-})
-
+<script setup>
+import BarGraph from "../../components/echart/multiPanel.vue";
 </script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>

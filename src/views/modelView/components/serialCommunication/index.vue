@@ -2,12 +2,9 @@
   <div class="worktop">
     <div class="buttons">
       <input type="text" value="">
-      <!--      <div class="form-button" @click="putPortMsg">发送消息</div>-->
-      <div class="form-button" @click="getSerialList">查找蓝牙</div>
-      <!--      <div class="form-button" v-if="state.serialList.length>0" @click="confirmSerial">确认蓝牙</div>-->
+      <div class="form-button" @click="getSerialList">查找设备</div>
     </div>
     <div class="serial-list">
-      <!--      <my-table></my-table>-->
       <div class="my-table serial-table card-warp">
         <table>
           <tr>
@@ -32,7 +29,7 @@
     </div>
 
     <div class="serial-msg card-warp">
-      <button style="color: aliceblue" @click="test(state.isTest = !state.isTest)">开始</button>
+      <button style="color: aliceblue" @click="test()">开始</button>
       <template v-for="(item,index) in state.checkedSerial">
         <div class="serial-msg-item">
           <div class="serial-msg-input">
@@ -57,9 +54,9 @@ import bus from "@/utils/Bus.ts";
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 const state = reactive({
   queryBluetooth: {},
-  serialList: [],
-  checkedSerial: {},
-  showList: [
+  serialList    : [],
+  checkedSerial : {},
+  showList      : [
     {
       field: 'path',
       width: '10',
@@ -102,7 +99,7 @@ const state = reactive({
       width: '100',
     }
   ],
-  isTest: false
+  isTest        : false
 });
 const getSerialList = async () => {
   if (window['electron']) {
@@ -122,10 +119,10 @@ const openPort = async (item) => {
   let path = item['path']
   let port = await ipcRenderer.invoke('CHECKOUT_POR', path, "control");
   state.checkedSerial[path] = {
-    path: path,
-    type: 'remote',
+    path : path,
+    type : 'remote',
     input: '',
-    msg: ''
+    msg  : ''
   }
 };
 
@@ -148,6 +145,7 @@ function getRandomLetter() {
 
 let num = 0
 const test = async () => {
+  state.isTest = !state.isTest
   if (!state.isTest) return;
   var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
   for (let i = 0; i < 10; i++) {
@@ -300,11 +298,9 @@ onMounted(() => {
         line-height: 30px;
 
         .serial-msg-title {
-
         }
 
         .input-box {
-
         }
 
         .submit {
