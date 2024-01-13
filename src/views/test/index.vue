@@ -5,7 +5,7 @@ src/App.vue：
 </template>
 
 <script setup>
-import BarGraph from "../../components/echart/multiPanel.vue";
+import BarGraph from "@/views/easterEgg/game/game.vue";
 </script>
 
 <style>

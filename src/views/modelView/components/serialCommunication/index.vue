@@ -27,7 +27,11 @@
         </table>
       </div>
     </div>
-
+    <div class="multi-panel-box card-warp">
+      <div v-for="(item,index) in 16">
+        <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
+      </div>
+    </div>
     <div class="serial-msg card-warp">
       <button style="color: aliceblue" @click="test()">开始</button>
       <template v-for="(item,index) in state.checkedSerial">
@@ -44,61 +48,22 @@
         <hr>
       </template>
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import myTable from "@/components/public/table.vue";
 import bus from "@/utils/Bus.ts";
+import BarGraph from "@/components/echart/multiPanel.vue";
+import getData from "./data/index.js"
+import setAngleWorker from "@/workers/setAngle.js"
 
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 const state = reactive({
   queryBluetooth: {},
   serialList    : [],
   checkedSerial : {},
-  showList      : [
-    {
-      field: 'path',
-      width: '10',
-    },
-    {
-      field: 'friendlyName',
-      width: '10',
-    },
-    {
-      field: 'locationId',
-      width: '10',
-    },
-    {
-      field: 'manufacturer',
-      width: '10',
-    },
-
-    // {
-    //   field: 'pnpId',
-    //   width: '10',
-    // },
-    {
-      field: 'productId',
-      width: '10',
-    },
-    {
-      field: 'serialNumber',
-      width: '10',
-    },
-    {
-      field: 'vendorId',
-      width: '10',
-    },
-    {
-      field: 'Operations',
-      width: '10',
-    },
-    {
-      field: 'option',
-      width: '100',
-    }
-  ],
+  showList      : getData.showList,
   isTest        : false
 });
 const getSerialList = async () => {
@@ -153,16 +118,7 @@ const test = async () => {
       const loopCount = Math.floor(Math.random() * 26);
       for (let i = 0; i < loopCount; i++) {
         num++
-        // if (num > 9) {
-        //   num = 0
-        // }
-        const num1 = Math.floor(Math.random() * 16);
-        const num2 = Math.floor(Math.random() * 60);
-        // let json = `{f:"1",n:"${num1}",r:"${num2}"}`
-        // let json = `aa${num2}`
-        // let json = `${letters[i]}${letters[i]}${num++}.${num}${num}`
         let json = `${letters[i]}${letters[i]}${num} `
-        // let json = `${getRandomLetter()}${getRandomLetter()}${num2}`
         ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM8", json);
         console.log(json)
       }
@@ -188,7 +144,11 @@ onMounted(() => {
   })
   if (window['electron']) {
     ipcRenderer.on('message-from-main', (event, res) => {
-      state.checkedSerial[res.path].msg = res.data
+      // console.log('----', res.data)
+      let str = res.data
+      let json = JSON.parse(str)
+      bus.emit("multiPanelData", json)
+      state.checkedSerial[res.path].msg = state.checkedSerial[res.path] ? str : ''
     });
   }
 
@@ -279,6 +239,15 @@ onMounted(() => {
     .serial-list {
       display: block;
     }
+  }
+
+  .multi-panel-box {
+    width: calc(100vw - 500px);
+    position: fixed;
+    right: 0;
+    bottom: 50px;
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .serial-msg {
