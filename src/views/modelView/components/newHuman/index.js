@@ -30,7 +30,7 @@ export default class baseThree {
         this.initHelper()
         this.initControls()
         // this.initModel()
-        this.initRobot()
+        // this.initRobot()
         this.initRenderer()
         this.initAnimateTick()
     }
@@ -59,7 +59,7 @@ export default class baseThree {
 
     initScene() {
         // this.scene.background = new THREE.Color(0x72645b);
-        // this.scene.fog        = new THREE.Fog(0x72645b, 2, 10000);
+        this.scene.fog        = new THREE.Fog(0x72645b, 2, 8000);
         const plane = new THREE.Mesh(
             // new THREE.PlaneGeometry(40000, 40000),
             // new THREE.MeshPhongMaterial({color: 0xcbcbcb, specular: 0x474747})
@@ -72,16 +72,12 @@ export default class baseThree {
 
     initCamera() {
         const camera = new THREE.PerspectiveCamera(40, this.sizes.width / this.sizes.height, 0.25, 10000);
-        // camera.position.set(-300, 100, 200);
         camera.position.set(-1300, 1100, 1200);
         this.scene.add(camera);
         this.camera = camera;
     }
-
     addShadowedLight(x, y, z, color, intensity) {
-
         const directionalLight = new THREE.DirectionalLight(color, intensity);
-
     }
 
     inLights() {
@@ -116,9 +112,9 @@ export default class baseThree {
     initControls() {
         const controls = new OrbitControls(this.camera, this.canvas);
         controls.target.set(lookAt.x, lookAt.y, lookAt.z);
-        controls.enableDamping = false;
+        // controls.enableDamping = false;
         controls.enablePan = false;
-        controls.enableZoom = false;
+        // controls.enableZoom = false;
         this.controls = controls;
     }
 
@@ -126,21 +122,6 @@ export default class baseThree {
         this.controls.enabled = enabled
     }
 
-    // initModel() {
-    //     let item = 'Soldier.glb'
-    //     return new Promise(((resolve, reject) => {
-    //         gLtf_loader.load(item, (gltf) => {
-    //             let model = gltf.scene;
-    //             this.scene.add(model);
-    //             model.traverse( function ( object ) {
-    //                 if ( object.isMesh ) object.castShadow = true;
-    //             } );
-    //             let skeleton = new THREE.SkeletonHelper( model );
-    //             skeleton.visible = false;
-    //             this.scene.add( skeleton );
-    //         });
-    //     }))
-    // }
 
     initModel = () => {
         let item = 'Walking.fbx'
