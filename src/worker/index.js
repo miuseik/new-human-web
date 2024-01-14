@@ -1,4 +1,4 @@
-import planeInit from './airshipGame/plane'
+import planeInit from './components/setWorker.js'
 let sendParams = null
 addEventListener('message', async e => {
     const { data } = e;
