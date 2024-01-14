@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div @click="toPost" class="form-button">
+      <div @click="toPost" class="my-button-common">
         {{ props.pageType && props.pageType.toUpperCase() }}
       </div>
     </div>
@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
       }
     }
 
-    .form-button {
+    .my-button-common {
       margin-top: 15px;
       width: 155px;
       font-family: MeiHei;

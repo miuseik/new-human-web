@@ -1,11 +1,11 @@
 <template>
-  <div class="worktop">
+  <div class="serial-communication">
     <div class="buttons">
       <input type="text" value="">
-      <div class="form-button" @click="getSerialList">查找设备</div>
+      <div class="my-button-common" @click="getSerialList">查找设备</div>
     </div>
     <div class="serial-list">
-      <div class="my-table serial-table card-warp">
+      <div class="my-table serial-table my-card-warp">
         <table>
           <tr>
             <td :style="{width:`${item.width}px`,'max-width':`${item.width}px`}" v-for="(item,index) in state.showList">
@@ -27,12 +27,12 @@
         </table>
       </div>
     </div>
-    <div class="multi-panel-box card-warp">
+    <div class="multi-panel-box my-card-warp">
       <div v-for="(item,index) in 16">
         <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
       </div>
     </div>
-    <div class="serial-msg card-warp">
+    <div class="serial-msg my-card-warp">
       <button style="color: aliceblue" @click="test()">开始</button>
       <template v-for="(item,index) in state.checkedSerial">
         <div class="serial-msg-item">
@@ -157,12 +157,11 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.worktop {
-  position: fixed;
-  max-width: 15rem;
+.serial-communication {
+
+  max-width: 150px;
   height: 32px;
-  z-index: 1;
-  right: 0;
+
   display: flex;
   flex-direction: column;
   background-color: rgba(0, 0, 0, .3);

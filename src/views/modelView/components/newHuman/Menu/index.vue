@@ -2,8 +2,8 @@
 <template>
   <div class="human-menu">
     <div class="human-menu-action">
-      <div class="form-button" @click="newBone()">新增一条</div>
-      <div class="form-button" @click="state.showAll = !state.showAll">
+      <div class="my-button-common" @click="newBone()">新增一条</div>
+      <div class="my-button-common" @click="state.showAll = !state.showAll">
         {{
           state.showAll ?
               '控制模式' :
@@ -15,7 +15,7 @@
         <el-icon class="description-icon">
           <InfoFilled/>
         </el-icon>
-        <div class="description-info card-warp">
+        <div class="description-info my-card-warp">
           <template v-for="group in state.helpDescription">
             <div>
               <template v-for="(item, key) in group">
@@ -31,7 +31,7 @@
     <div class="list-warp">
       <template v-for="(item, index) in state.boneList ">
         <div class="bone-item">
-          <div class="item-data card-warp">
+          <div class="item-data my-card-warp">
             <div class="operate flex" v-if="state.currentChange.includes(item.id)">
               <div class="login_short_btn" @click="filterId(item.id)">取消</div>
               <div class="login_short_btn" @click="saveChange(item)">保存</div>
