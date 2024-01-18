@@ -20,16 +20,8 @@ const initWindowSizes = () => {
 }
 const initScene = () => {
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xa0a0a9);
-  scene.fog = new THREE.Fog(0xa0a0a0, 0, 1000);
-  const plane = new THREE.Mesh(
-      // new THREE.PlaneGeometry(40000, 40000),
-      // new THREE.MeshPhongMaterial({color: 0xcbcbcb, specular: 0x474747})
-  );
-  plane.rotation.x = -Math.PI / 2;
-  plane.position.y = -.5;
-  plane.receiveShadow = true;
-  scene.add(plane);
+  scene.background = new THREE.Color(0x073149);
+  scene.fog = new THREE.Fog(0x073149, 0, 1500);
 }
 const initLight = () => {
   const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 5);
@@ -49,42 +41,41 @@ const initModel = () => {
   const loader = new FBXLoader();
   loader.load('Walking.fbx', function (object) {
     mixer = new THREE.AnimationMixer(object);
+    console.log('mixer--',mixer)
     const action = mixer.clipAction(object.animations[0]);
     action.play();
-    object.traverse(function (child) {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    console.log(mixer)
+    // object.traverse(function (child) {
+    //   if (child.isMesh) {
+    //     child.castShadow = true;
+    //     child.receiveShadow = true;
+    //   }
+    // });
     scene.add(object);
   });
 }
-let i = 0
-
 function animate() {
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
+  // console.log('delta==',delta)
   if (mixer) mixer.update(delta);
   renderer.render(scene, camera);
 }
 
 const initCamera = () => {
   camera = new THREE.PerspectiveCamera(40, state.threeWidth / state.threeHeight, 0.25, 5000);
-  camera.position.set(-260, 220, 240);
+  camera.position.set(160, 120, 540);
   scene.add(camera)
   // camera.lookAt(lookAt.x, lookAt.y, lookAt.z)
 };
 const initHelp = () => {
   const axesHelper = new THREE.AxesHelper(200);//参数200标示坐标系大小，可以根据场景大小去设置
-  scene.add(axesHelper);
+  // scene.add(axesHelper);
   // ground
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), new THREE.MeshPhongMaterial({color: 0x000000, depthWrite: false}));
   mesh.rotation.x = -Math.PI / 2;
   mesh.receiveShadow = true;
   scene.add(mesh);
-  const grid = new THREE.GridHelper(2000, 20);
+  const grid = new THREE.GridHelper(2000, 40);
   grid.material['opacity'] = 0.2;
   grid.material['transparent'] = true;
   scene.add(grid);

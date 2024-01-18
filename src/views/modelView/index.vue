@@ -30,7 +30,7 @@ import actionLibrary from "./components/actionLibrary/index.vue"
 .action-library{
     position: fixed;
     z-index: 1;
-    left: 500px;
+    left: 510px;
 }
 .new-human {
     display: flex;

@@ -13,5 +13,9 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Table: typeof import('./components/public/table.vue')['default']
     ThreeTpl: typeof import('./components/threeTpl/index.vue')['default']
+    UploadFile: typeof import('./components/UploadFile/UploadFile.vue')['default']
+    UploadImg: typeof import('./components/UploadFile/UploadImg.vue')['default']
+    UploadImgs: typeof import('./components/UploadFile/UploadImgs.vue')['default']
+    UploadVideo: typeof import('./components/UploadFile/UploadVideo.vue')['default']
   }
 }

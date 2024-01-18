@@ -8,7 +8,8 @@
       <div class="my-table serial-table my-card-warp">
         <table>
           <tr>
-            <td :style="{width:`${item.width}px`,'max-width':`${item.width}px`}" v-for="(item,index) in state.showList">
+            <td :style="{width:`${item.width}px`,'max-width':`${item.width}px`}"
+                v-for="(item,index) in state.showList">
               {{ item.field }}
             </td>
           </tr>
@@ -19,7 +20,8 @@
               </template>
               <template v-if="item.field === 'option'">
                 {{ group[item.field] }}
-                <el-button link type="primary" size="small" @click="deletePort(group)">delete</el-button>
+                <el-button link type="primary" size="small" @click="deletePort(group)">delete
+                </el-button>
                 <el-button link type="primary" size="small" @click="openPort(group)">Edit</el-button>
               </template>
             </td>
@@ -29,12 +31,14 @@
     </div>
     <div class="multi-panel-box my-card-warp">
       <div v-for="(item,index) in 16">
-        <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
+        {{state.remoteData[index]}}
+<!--        <input  type="range" id="r2" class="input-box" :value="state.remoteData[index]">-->
+        <bar-graph :props-data="state.remoteData[index]" :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
       </div>
     </div>
     <div class="serial-msg my-card-warp">
       <button style="color: aliceblue" @click="test()">开始</button>
-      <template v-for="(item,index) in state.checkedSerial">
+      <template v-for="item in state.checkedSerial">
         <div class="serial-msg-item">
           <div class="serial-msg-input">
             <div class="serial-msg-title">{{ item['path'] }}</div>
@@ -56,13 +60,15 @@
 import bus from "@/utils/Bus.ts";
 import BarGraph from "@/components/echart/multiPanel.vue";
 import getData from "./data/index.js"
-import setAngleWorker from "@/workers/setAngle.js"
+// import setAngleWorker from "@/workers/setAngle.js"
 
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 const state = reactive({
   queryBluetooth: {},
   serialList    : [],
   checkedSerial : {},
+  remoteData: {},
+  remoteDataTmp: {},
   showList      : getData.showList,
   isTest        : false
 });
@@ -120,7 +126,7 @@ const test = async () => {
         num++
         let json = `${letters[i]}${letters[i]}${num} `
         ipcRenderer.invoke('SEND_DATA_TO_PORT', "COM8", json);
-        console.log(json)
+        // console.log(json)
       }
     }
   }
@@ -130,8 +136,23 @@ const confirmSerial = () => {
   let data = state.queryBluetooth
   state.serialList = []
 };
+let s = 0
+let n = 0
+function animate() {
+  let now = new Date();
+  let seconds = now.getSeconds();
+  if (s !== seconds) {
+    s = seconds
+    console.log('s---------------------',s)
+    console.log('n',n)
+  }
+  state.remoteData = state.remoteDataTmp
+  // console.log(state.remoteData)
+  requestAnimationFrame(animate);
+}
+animate()
 onMounted(() => {
-  bus.on("baseSliderInput", (event) => {
+  bus.on("baseSliderInput", () => {
     const loopCount = Math.floor(Math.random() * 16);
     for (let i = 0; i < loopCount; i++) {
       const num1 = Math.floor(Math.random() * 16);
@@ -143,15 +164,18 @@ onMounted(() => {
     }
   })
   if (window['electron']) {
-    ipcRenderer.on('message-from-main', (event, res) => {
-      // console.log('----', res.data)
-      let str = res.data
-      let json = JSON.parse(str)
-      bus.emit("multiPanelData", json)
-      state.checkedSerial[res.path].msg = state.checkedSerial[res.path] ? str : ''
+    ipcRenderer.on('message-from-main', (_, res) => {
+      n++
+      let data = res.data
+      let path = res.path
+      let json = JSON.parse(data)
+      // bus.emit("multiPanelData", json)
+      // let num = json['i']
+      state.remoteData[json['i']] = ((json['v'] / 4096) * 100).toFixed(2)
+      // state.remoteDataTmp[json['i']] = json['v']
+      // state.checkedSerial[path].msg =  data || ''
     });
   }
-
   getSerialList()
 })
 </script>
@@ -244,9 +268,10 @@ onMounted(() => {
     width: calc(100vw - 500px);
     position: fixed;
     right: 0;
-    bottom: 50px;
+    bottom: 150px;
     display: flex;
     flex-wrap: wrap;
+
   }
 
   .serial-msg {

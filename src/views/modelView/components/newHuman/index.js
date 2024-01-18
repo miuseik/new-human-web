@@ -59,15 +59,7 @@ export default class baseThree {
 
     initScene() {
         // this.scene.background = new THREE.Color(0x72645b);
-        this.scene.fog        = new THREE.Fog(0x72645b, 2, 8000);
-        const plane = new THREE.Mesh(
-            // new THREE.PlaneGeometry(40000, 40000),
-            // new THREE.MeshPhongMaterial({color: 0xcbcbcb, specular: 0x474747})
-        );
-        plane.rotation.x = -Math.PI / 2;
-        plane.position.y = -.5;
-        plane.receiveShadow = true;
-        this.scene.add(plane);
+        this.scene.fog        = new THREE.Fog(0x073149, 2, 8000);
     }
 
     initCamera() {
