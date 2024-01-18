@@ -9,13 +9,13 @@ declare module 'vue' {
   export interface GlobalComponents {
     InputRange: typeof import('./components/public/inputRange.vue')['default']
     MultiPanel: typeof import('./components/echart/multiPanel.vue')['default']
+    New: typeof import('./components/echart/new.vue')['default']
+    Old: typeof import('./components/echart/old.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Table: typeof import('./components/public/table.vue')['default']
     ThreeTpl: typeof import('./components/threeTpl/index.vue')['default']
-    UploadFile: typeof import('./components/UploadFile/UploadFile.vue')['default']
     UploadImg: typeof import('./components/UploadFile/UploadImg.vue')['default']
     UploadImgs: typeof import('./components/UploadFile/UploadImgs.vue')['default']
-    UploadVideo: typeof import('./components/UploadFile/UploadVideo.vue')['default']
   }
 }

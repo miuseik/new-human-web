@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="multi-panel-box my-card-warp">
-      <div v-for="(item,index) in 16">
+      <div v-for="(item,index) in 400">
         {{state.remoteData[index]}}
 <!--        <input  type="range" id="r2" class="input-box" :value="state.remoteData[index]">-->
         <bar-graph :props-data="state.remoteData[index]" :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
