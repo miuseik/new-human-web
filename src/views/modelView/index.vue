@@ -54,6 +54,4 @@ import actionLibrary from "./components/actionLibrary/index.vue"
         background-size: 100vw 100vh;
     }
 }
-
-
 </style>

@@ -11,7 +11,7 @@
     </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
     onMounted,
     onUnmounted
@@ -34,8 +34,7 @@ const props = defineProps({
         type   : [String, Number],
         default: 100,
     },
-    propsData : [String, Number],
-    default   : 0,
+    propsData : [String, Number]
 });
 const state = reactive({
     remoteDom : null,
@@ -43,8 +42,7 @@ const state = reactive({
 });
 
 watch(() => props.propsData, val => {
-    let value        = val * 1 || 0;
-    state.remoteData = value
+    setRemote(val)
 }, {
     deep     : true,
     immediate: false
@@ -53,7 +51,7 @@ let i = 0
 onMounted(() => {
     let domID       = `secondhand${props.chartId}`
     state.remoteDom = document.getElementById(domID);
-    animate()
+    // animate()
 });
 onUnmounted(() => {
 });

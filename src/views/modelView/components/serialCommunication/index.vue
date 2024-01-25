@@ -29,13 +29,11 @@
         </table>
       </div>
     </div>
-    <div class="multi-panel-box my-card-warp">
-      <div v-for="(item,index) in 400">
-        {{state.remoteData[index]}}
-<!--        <input  type="range" id="r2" class="input-box" :value="state.remoteData[index]">-->
-        <bar-graph :props-data="state.remoteData[index]" :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
-      </div>
-    </div>
+<!--    <div class="multi-panel-box my-card-warp">-->
+<!--      <div v-for="(item,index) in 400">-->
+<!--        <bar-graph :props-data="state.remoteData[index]" :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>-->
+<!--      </div>-->
+<!--    </div>-->
     <div class="serial-msg my-card-warp">
       <button style="color: aliceblue" @click="test()">开始</button>
       <template v-for="item in state.checkedSerial">
@@ -52,10 +50,8 @@
         <hr>
       </template>
     </div>
-
   </div>
 </template>
-
 <script setup lang="ts">
 import bus from "@/utils/Bus.ts";
 import BarGraph from "@/components/echart/multiPanel.vue";
@@ -147,7 +143,6 @@ function animate() {
     console.log('n',n)
   }
   state.remoteData = state.remoteDataTmp
-  // console.log(state.remoteData)
   requestAnimationFrame(animate);
 }
 animate()

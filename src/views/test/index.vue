@@ -1,9 +1,7 @@
 <template>
-    <UploadImg></UploadImg>
-    <UploadImgs></UploadImgs>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 
 </script>
 

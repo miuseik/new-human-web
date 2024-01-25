@@ -30,7 +30,9 @@
 // export default new Bus()
 
 import mitt from 'mitt'
-export default new  mitt()
+// const mitt = new _mitt()
+// export default mitt
+export default mitt()
 // export const Bus = mitt()
 
 

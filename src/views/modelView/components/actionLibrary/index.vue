@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as THREE from 'three'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
-import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 
 import {onMounted} from 'vue'
 import {reactive} from "vue";
