@@ -39,7 +39,7 @@ const initLight = () => {
 }
 const initModel = () => {
   const loader = new FBXLoader();
-  loader.load('Walking.fbx', function (object) {
+  loader.load('/model/Walking.fbx', function (object) {
     mixer = new THREE.AnimationMixer(object);
     console.log('mixer--',mixer)
     const action = mixer.clipAction(object.animations[0]);

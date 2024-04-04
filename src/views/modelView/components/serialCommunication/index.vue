@@ -139,8 +139,8 @@ function animate() {
   let seconds = now.getSeconds();
   if (s !== seconds) {
     s = seconds
-    console.log('s---------------------',s)
-    console.log('n',n)
+    // console.log('s---------------------',s)
+    // console.log('n',n)
   }
   state.remoteData = state.remoteDataTmp
   requestAnimationFrame(animate);

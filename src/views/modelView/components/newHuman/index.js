@@ -12,7 +12,7 @@ const gLtf_loader = new GLTFLoader();
 // const lookAt = {x: 0, y: 100, z: 0}
 const lookAt = {x: 10, y: 500, z: 10}
 const bone = boneStore()
-export default class baseThree {
+export default class boneThreeView {
     constructor(canvas) {
         this.canvas = canvas
         this.sizes = {}
@@ -160,7 +160,7 @@ export default class baseThree {
                 let _position = position || {x: -.25, y: 0, z: -.25};
                 // let _position = position || {x: 0, y: 0, z: 0};
                 let _name = name || ''
-                loader.load(`/src/assets/human/${_name}`, (geometry) => {
+                loader.load(`/boneThreeView/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
                     Mesh.castShadow = true;

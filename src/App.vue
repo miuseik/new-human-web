@@ -5,36 +5,36 @@ import storage from "store2";
 import bus from "@/utils/Bus";
 
 let {initThree} = mixins();
-const getBrowser =()=>{
+const getBrowser = () => {
   const userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
   //判断是否Opera浏览器
   if (userAgent.indexOf("Opera") > -1) {
     return "Opera"
   }
-  if (userAgent.indexOf("Edg") > -1){
+  if (userAgent.indexOf("Edg") > -1) {
     return 'Edge'
   }
   if (userAgent.indexOf("Firefox") > -1) {
     return "firefox";
   }
-  if (userAgent.indexOf("Chrome") > -1){
+  if (userAgent.indexOf("Chrome") > -1) {
     return "Chrome";
   }
   if (userAgent.indexOf("Safari") > -1) {
     return "Safari";
   }
-  if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 ) {
+  if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1) {
     return "IE";
   }
-  if ( userAgent.indexOf("Trident") > -1){
+  if (userAgent.indexOf("Trident") > -1) {
     return "IE";
   }
 }
 const getKeyboard = (event) => {
   bus.emit("keyboardEvent", event.key)
-  console.log('event.key====',event.key)
-    if (event.key === 'Enter') {
-      console.log()
+  console.log('event.key====', event.key)
+  if (event.key === 'Enter') {
+    console.log()
   }
 }
 onMounted(() => {
@@ -43,6 +43,9 @@ onMounted(() => {
     storage.set('currentBrowser', 'electron');
   } else {
     storage.set('currentBrowser', getBrowser());
+
+
+
   }
   window.addEventListener('keydown', getKeyboard);
 })

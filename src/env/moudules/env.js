@@ -5,8 +5,8 @@ let API_PREFIX;
 if (env === "development") {
     API_PREFIX = '/api';
     // API_PREFIX = '/';
-    // API_URL = "http://localhost:9000";
-    API_URL = "http://server.houqicg.com";
+    API_URL = "http://localhost:9000";
+    // API_URL = "http://server.houqicg.com";
     WS_URL = "ws://localhost:3002";
 }
 

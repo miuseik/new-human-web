@@ -2,7 +2,7 @@
 <template>
     <div class="human-menu">
         <div class="human-menu-action">
-            <div class="my-button-common" @click="newBone()">新增一条</div>
+          <div class="my-button-common" @click="addBone()">新增一条</div>
           <div  class="my-button-common">123</div>
             <div class="my-button-common" @click="state.showAll = !state.showAll">
                 {{
@@ -49,7 +49,7 @@
                                 <div>Pid: <span>{{ item.parent }}</span></div>
                             </div>
                         </div>
-                        <div class="item-set" v-if="state.currentChange.includes(item.id)" t>
+                      <div class="item-set" v-if="state.currentChange.includes(item.id)">
                             <template v-for="(grid, key) in item ">
                                 <div v-if="key.toString() === 'size'" class="item-set-bar">
                                     <span class="title">{{ key }}</span>
@@ -114,6 +114,7 @@
                                             <div class="option-item">
                                                 <div class="option-switch">
                                                     <span>{{ index }}:</span>
+                                                  {{opt.open}}
                                                     <el-switch v-model="opt.open"/>
                                                 </div>
                                                 <div class="option-switch">
@@ -152,7 +153,7 @@
                         </div>
                         <div class="item-info" v-else>
                             <template v-for="(option, index) in item.option">
-                                <p class="input-range-box" v-if="option.open*1 !== 0">
+                              <p class="input-range-box" v-if="option.open*1 !== 0"><!--open 开启-->
                                     <span>{{ index }} {{ state.innerData[item['field']][index] }}</span>
                                     <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
                                     <inputRange
@@ -175,13 +176,13 @@
 
 <script lang="ts" setup>
 import API from "@/api";
-import debounce from "@/utils/putlic/index.js";
 import inputRange from '@/components/public/inputRange.vue'
 import bone from '@/store/bone/index.ts';
 // import {boneData} from "../data/index.js"
 import dataIndex from "../data/index.js"
 import {computed} from "vue";
 import BarGraph from "@/components/echart/multiPanel.vue";
+import {deepClone} from "@/utils/common.ts";
 
 const boneStore = bone()
 
@@ -191,15 +192,10 @@ function parseNumber(input: string): number {
 
 const state = reactive({
     helpDescription: [],
-    boneList       : boneStore.boneList || [],
+  boneList: [],
     currentChange  : [],
     showAll        : false,
-    newId          : 0,
-    showGrid       : [
-        'name'
-    ],
     innerData      : {},
-
     itemTpl    : {
         id          : 0,
         field       : "D",
@@ -265,20 +261,19 @@ const setDisabled = computed(() => {
         return key.toString() === 'id' || key.toString() === 'createdAt' || key.toString() === 'updatedAt'
     };
 });
-const getList = () => {
-    boneStore.getBoneList().then((data: any[]) => {
-        emit("updateBoneList");
-        state.boneList = data
-        for (let index in state.boneList) {
-            let item = state.boneList[index]
-            let option = item.option
-            state.innerData[item.field] = {
-                x: option.x['value'],
-                y: option.y['value'],
-                z: option.z['value'],
-            }
-        }
-    })
+const getList = async () => {
+  state["boneList"] = await boneStore.getBoneList()
+  emit("updateBoneList");
+  for (let index in state.boneList) {
+    let item = state.boneList[index]
+    let option = item.option
+    state.innerData[item.field] = {
+      x: option.x['value'],
+      y: option.y['value'],
+      z: option.z['value'],
+    }
+  }
+  console.log(state.boneList)
 }
 getList()
 state.helpDescription = dataIndex['helpDescription']
@@ -292,11 +287,12 @@ const sliderInput = (e, name, direction, option) => {
 const switchChange = (e) => {
     emit("switchChange", e);
 };
+// 点击修改按钮进入编辑状态
 const setItem = (item) => {
     state.currentChange.push(item.id)
 };
+// 输入框输入内容或者拖动滑块时触发
 const setInputVal = () => {
-    console.log('=============')
     emit("updateBoneList");
     for (let index in state.boneList) {
         let item = state.boneList[index]
@@ -306,42 +302,45 @@ const setInputVal = () => {
             y: option.y['value'],
             z: option.z['value'],
         }
-        console.log(state.innerData[item.field])
     }
 }
-const saveChange = (item) => {
+// 保存编辑.新增或者修改
+const saveChange = async (item) => {
     let id = item.id
     if (id > 0) {
-        API.bone.revise(item).then(res => {
-            getList()
-            filterId(id)
-        })
+      await API.bone.revise(item)
     } else {
-        API.bone.push(item).then(res => {
-            state.itemTpl.parent = res.data.id
-            getList()
-            filterId(id)
-        })
+      let res = await API.bone.push(item)
+      state.itemTpl.parent = res.data.id //提前给下一次添加做准备,只有在连续添加时才有效
     }
+  console.log('保存编辑.新增或者修改')
+  getList() //重新获取数据
+  filterId(id)
 };
+// 取消编辑状态
 const filterId = (id) => {
     if (id > 0) {
+      // 修改的时候取消,清空修改区
+      console.log('修改的时候取消,清空修改区')
         state.currentChange = state.currentChange.filter(item => item !== id);
     } else {
+      //新增时取消,直接从列表删除
+      console.log('新增时取消,直接从列表删除')
         state.boneList = state.boneList.filter(item => item.id !== id);
     }
+  console.log(state.boneList)
 };
-const deleteItem = (id) => {
-
-    API.bone.delete({'id': id}).then(() => {
-        getList()
-    })
+// 删除一条
+const deleteItem = async (id) => {
+  await API.bone.delete({'id': id}) //直接删除数据库
+  getList()// 获取新的骨骼列表!有点暴力了
 };
-const newBone = () => {
-    state.itemTpl.id--
-    let tpl = JSON.parse(JSON.stringify(state.itemTpl));
-    state.boneList.push(tpl)
-    state.currentChange.push(state.itemTpl.id)
+// 点击新增一条
+const addBone = () => {
+  state.itemTpl.id-- //新增的id为负值代表新增, >0的id是修改才有的
+  let tpl = deepClone(state.itemTpl)
+  state.boneList.push(tpl) //放到渲染列表里去
+  state.currentChange.push(state.itemTpl.id) //放进可编辑的列表里去
 };
 </script>
 

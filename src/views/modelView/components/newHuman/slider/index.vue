@@ -125,7 +125,7 @@ const initModel = async () => {
     //   fbx_loader.load('/Flair.fbx', mesh => {
     //   fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
     //   fbx_loader.load('/Strut Walking.fbx', mesh => {
-      fbx_loader.load('/Walking.fbx', mesh => {
+      fbx_loader.load('/model/Walking.fbx', mesh => {
       state.mixStep = 0
       let action = mesh.animations[0]['tracks']
       let duration = mesh.animations[0]['duration'] * 1000

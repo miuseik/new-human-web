@@ -28,14 +28,13 @@
 </template>
 <script lang="ts" setup>
 const emit = defineEmits(["sliderInput", "switchChange", "modelAction"]);
-import baseThree from "./index.js";
+import boneThreeView from "./index.js";
 import Menu from "./Menu/index.vue";
 // import action from "./action/index.vue";
 import bus from "@/utils/Bus";
 
 let base = null;
 import boneStore from '@/store/bone/index.ts';
-
 const bone = boneStore()
 const state = reactive({
   dot: null,
@@ -48,12 +47,6 @@ const state = reactive({
   actions: {}
 })
 watch(() => bone.JointArray, val => {
-  state.JointArray = val
-}, {
-  deep: true,
-  immediate: true
-})
-watch(() => bone.motionData, val => {
   state.JointArray = val
 }, {
   deep: true,
@@ -199,7 +192,7 @@ const updateBoneList = () => {
 
 onMounted(() => {
   let dom = document.getElementById("three_id");
-  base = new baseThree(dom);
+  base = new boneThreeView(dom);
   setTimeout(() => {
     for (let item in state.specialJoints) {
       let key = state.specialJoints[item]

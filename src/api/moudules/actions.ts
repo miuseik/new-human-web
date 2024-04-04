@@ -26,7 +26,6 @@ const login = {
         let param = data || {}
         return axios.post(url, param);
     },
-
 }
 
 export default login
