@@ -128,6 +128,7 @@ export default class boneThreeView {
     }
 
     initRobot = async () => {
+        console.log('重置骨骼')
         // let actions = await loadFbx()
         this.JointArray = {}
         if (this.rootModel) {
@@ -155,6 +156,12 @@ export default class boneThreeView {
             joint.position.set(_position['x'], _position['y'], _position['z']);
             return joint
         }
+        /**
+         * 加载模型
+         * @param name
+         * @param position
+         * @returns {Promise<unknown>}
+         */
         let loadingModel = (name, position) => {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25};
@@ -170,7 +177,8 @@ export default class boneThreeView {
             }))
         }
         let modelArr = {}
-        let boneList = bone.boneList || []
+        let boneList = bone.getBoneList || [] //获取所有骨骼列表
+        console.log('//获取所有骨骼列表', boneList)
         let modelNum = boneList.length
         // 设置场景
         let setScenes = async () => {
@@ -198,9 +206,9 @@ export default class boneThreeView {
         // 初始化所有模型
         let initAllModel = async (item) => {
             let model
-            if (item.model_type*1 === 1) {
+            if (item.model_type*1 === 1) { //主动的设为关节
                 model = setJoint(item['size'], item['position']);
-            } else {
+            } else { //被动的设为模型
                 if (item['model_name'] ){
                     model = await loadingModel(item['model_name'], item['position'])
                 }

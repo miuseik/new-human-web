@@ -1,11 +1,12 @@
-@import "./common.scss";
-@import "./mixin.scss";
-@import "./flex.scss";
-@import "./page.scss";
-@import "./public.scss";
-@import "./icon.css";
-@import "./style.scss";
-@import "./var.scss";
-@import "./font-family.css";
+@use "./common.scss" as *;
+@use "./mixin.scss" as *;
+@use "./flex.scss" as *;
+@use "./page.scss" as *;
+@use "./public.scss" as *;
+@use "./icon.css" as *;
+@use "./style.scss" as *;
+@use "./var.scss" as *;
+@use "./font-family.css" as *;
+
 
 

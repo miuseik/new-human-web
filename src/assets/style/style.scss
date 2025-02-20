@@ -1,5 +1,10 @@
 *,:after,:before{margin:0;padding:0;box-sizing:border-box}
-body{color:var(--Brand-unset)}
+body{color:var(--Brand-unset);
+    background-color: #060f14;
+    /* 使用径向渐变和线性渐变模拟星空效果 */
+    background-image: radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%),
+    linear-gradient(to bottom, #000000, #060f14);
+}
 button{background:none;border:none}
 input{
     background: none;

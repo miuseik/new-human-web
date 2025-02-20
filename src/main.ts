@@ -7,7 +7,6 @@ import App from './App.vue'
 const app = createApp(App)
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
-import locale from 'element-plus/lib/locale/lang/zh-cn'
 
 // import 'element-plus/lib/theme-chalk/index.css'
 
@@ -30,5 +29,5 @@ app.use(createPinia())
 app.use(router)
 // import ElementPlus from "element-plus";
 // app.use(ElementPlus)
-app.use(ElementPlus, { locale })
+app.use(ElementPlus)
 app.mount('#app')

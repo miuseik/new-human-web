@@ -7,12 +7,16 @@
     <div class="serial-list">
       <div class="my-table serial-table my-card-warp">
         <table>
+          <thead>
+
           <tr>
             <td :style="{width:`${item.width}px`,'max-width':`${item.width}px`}"
                 v-for="(item,index) in state.showList">
               {{ item.field }}
             </td>
           </tr>
+          </thead>
+          <tbody>
           <tr v-for="(group,bar) in state.serialList">
             <td v-for="(item,index) in state.showList">
               <template v-if="item.field !== 'option'">
@@ -26,14 +30,15 @@
               </template>
             </td>
           </tr>
+          </tbody>
         </table>
       </div>
     </div>
-<!--    <div class="multi-panel-box my-card-warp">-->
-<!--      <div v-for="(item,index) in 400">-->
-<!--        <bar-graph :props-data="state.remoteData[index]" :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div class="multi-panel-box my-card-warp">-->
+    <!--      <div v-for="(item,index) in 400">-->
+    <!--        <bar-graph :props-data="state.remoteData[index]" :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>-->
+    <!--      </div>-->
+    <!--    </div>-->
     <div class="serial-msg my-card-warp">
       <button style="color: aliceblue" @click="test()">开始</button>
       <template v-for="item in state.checkedSerial">
@@ -61,12 +66,12 @@ import getData from "./data/index.js"
 const ipcRenderer = window['electron'] && window['electron'].ipcRenderer
 const state = reactive({
   queryBluetooth: {},
-  serialList    : [],
-  checkedSerial : {},
+  serialList: [],
+  checkedSerial: {},
   remoteData: {},
   remoteDataTmp: {},
-  showList      : getData.showList,
-  isTest        : false
+  showList: getData.showList,
+  isTest: false
 });
 const getSerialList = async () => {
   if (window['electron']) {
@@ -86,10 +91,10 @@ const openPort = async (item) => {
   let path = item['path']
   let port = await ipcRenderer.invoke('CHECKOUT_POR', path, "control");
   state.checkedSerial[path] = {
-    path : path,
-    type : 'remote',
+    path: path,
+    type: 'remote',
     input: '',
-    msg  : ''
+    msg: ''
   }
 };
 
@@ -134,6 +139,7 @@ const confirmSerial = () => {
 };
 let s = 0
 let n = 0
+
 function animate() {
   let now = new Date();
   let seconds = now.getSeconds();
@@ -145,6 +151,7 @@ function animate() {
   state.remoteData = state.remoteDataTmp
   requestAnimationFrame(animate);
 }
+
 animate()
 onMounted(() => {
   bus.on("baseSliderInput", () => {

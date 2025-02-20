@@ -3,7 +3,6 @@
   <div class="human-menu">
     <div class="human-menu-action">
       <div class="my-button-common" @click="addBone()">新增一条</div>
-      <div class="my-button-common">123</div>
       <div class="my-button-common" @click="state.showAll = !state.showAll">
         {{
           state.showAll ?
@@ -88,9 +87,7 @@
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.modelType">
                         <div class="input-box" @click="boneList[index][key]=select_index">
-                          {{
-                            select
-                          }}{{ select_index }}
+                          {{ select }}
                         </div>
                       </template>
                     </div>
@@ -107,7 +104,7 @@
                     <div class="select-box">
                       <template v-for="(select, select_index) in state.masterSlave">
                         <div class="input-box" @click="boneList[index][key]=select_index">
-                          {{ select }}{{ select_index }}
+                          {{ select }}
                         </div>
                       </template>
                     </div>
@@ -119,28 +116,30 @@
                   <div class="option-warp">
                     <template v-for="(opt, index) in grid">
                       <div class="option-item">
-                        <div class="option-switch">
+                        <div class="option-switch flex-row-center-between">
                           <span>{{ index }}:</span>
-                          {{ opt.open }}
                           <el-switch v-model="opt.open"/>
                         </div>
-                        <div class="option-switch">
+                        <div class="option-switch flex-row-center-between">
                           <span>舵机反转:</span>
                           <el-switch v-model="opt.server_reverse"/>
                         </div>
-                        <div class="option-switch">
+                        <div class="option-switch flex-row-center-between">
                           <span>模型反转:</span>
                           <el-switch v-model="opt.model_reverse"/>
                         </div>
                         <div class="option-input ">
-                          <p>
-                            <span>min:</span><input class="input-box" type="text" v-model="opt.min">
+                          <p class="flex-row-center-between">
+                            <span style="text-align: left">min:</span>
+                            <input class="input-box" type="text" v-model="opt.min">
                           </p>
-                          <p>
-                            <span>max:</span><input class="input-box" type="text" v-model="opt.max">
+                          <p class="flex-row-center-between">
+                            <span style="text-align: left">max:</span>
+                            <input class="input-box" type="text" v-model="opt.max">
                           </p>
-                          <p>
-                            <span>value:</span><input class="input-box" type="text" v-model="opt.value">
+                          <p class="flex-row-center-between">
+                            <span style="text-align: left">value:</span>
+                            <input class="input-box" type="text" v-model="opt.value">
                           </p>
                         </div>
                       </div>
@@ -156,8 +155,7 @@
               </template>
             </div>
             <div class="item-info" v-else>
-              {{ item['option'] }}
-              <template v-for="(option, index) in JSON.parse(item['option'])">
+              <template v-for="(option, index) in item['option']">
                 <p class="input-range-box" v-if="option.open*1 !== 0"><!--open 开启-->
                   <span>{{ index }} {{ state.innerData[item['field']][index] }}</span>
                   <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
@@ -183,69 +181,20 @@
 import API from "@/api";
 import inputRange from '@/components/public/inputRange.vue'
 import bone from '@/store/bone/index.ts';
-// import {boneData} from "../data/index.js"
 import dataIndex from "../data/index.js"
 import {computed} from "vue";
 import BarGraph from "@/components/echart/multiPanel.vue";
 import {deepClone} from "@/utils/common.ts";
-function parseNumber(input: string): number {
-  return parseFloat(input); // 或者使用 parseInt(input, 10)
-}
 
 const boneList = ref([])
 const currentChange = ref([])
 const state = reactive({
   helpDescription: [],
+  itemTpl: {},
   // boneList: [],
   // currentChange: [],
   showAll: false,
   innerData: {},
-  itemTpl: {
-    id: 0,
-    field: "D",
-    name: '',
-    model_name: '.stl',
-    model_type: '0',
-    master_slave: '0',
-    option: {
-      x: {
-        open: false,
-        server_reverse: false,
-        model_reverse: false,
-        max: parseNumber((Math.PI / 2).toFixed(4)),
-        min: parseNumber((-Math.PI / 2).toFixed(4)),
-        value: 0
-      },
-      y: {
-        open: false,
-        server_reverse: false,
-        model_reverse: false,
-        max: parseNumber((Math.PI / 2).toFixed(4)),
-        min: parseNumber((-Math.PI / 2).toFixed(4)),
-        value: 0
-      },
-      z: {
-        open: false,
-        server_reverse: false,
-        model_reverse: false,
-        max: parseNumber((Math.PI / 2).toFixed(4)),
-        min: parseNumber((-Math.PI / 2).toFixed(4)),
-        value: 0
-      }
-    },
-    size: 10,
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    rotate: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    parent: 0,
-  },
   modelType: {
     0: '骨骼',
     1: '关节轴',
@@ -271,7 +220,7 @@ const getList = async () => {
   emit("updateBoneList");
   for (let index in boneList.value) {
     let item = boneList.value[index]
-    let option = JSON.parse(item.option)
+    let option = item.option
     console.log('item--------', item)
     state.innerData[item.field] = {
       x: option.x['value'],
@@ -283,10 +232,8 @@ const getList = async () => {
 }
 getList()
 state.helpDescription = dataIndex['helpDescription']
+state.itemTpl = dataIndex['itemTpl']
 
-// const sliderInput = debounce((e, name, direction) => {
-//   emit("sliderInput", e, name, direction);
-// }, 1);
 const sliderInput = (e, name, direction, option) => {
   emit("sliderInput", name, option);
 }
@@ -294,20 +241,11 @@ const sliderInput = (e, name, direction, option) => {
 const setItem = (item) => {
   currentChange.value.push(item.id)
 };
-const fileInput = ref<HTMLInputElement | null>(null);
-
-const selectFile = () => {
-  if (fileInput.value) {
-    fileInput.value.click();
-  }
-};
 
 const onFileChange = (event: Event, index, key) => {
   const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
     boneList.value[index][key] = input.files[0].name
-    // console.log(index,'///', key,'--------------------', input.files[0].name);
-    // 你可以在这里处理文件，比如上传到服务器
   }
 };
 // 输入框输入内容或者拖动滑块时触发
@@ -332,7 +270,6 @@ const saveChange = async (item) => {
     let res = await API.bone.push(item)
     state.itemTpl.parent = res.data.id //提前给下一次添加做准备,只有在连续添加时才有效
   }
-  console.log('保存编辑.新增或者修改')
   getList() //重新获取数据
   filterId(id)
 };
@@ -364,12 +301,13 @@ const addBone = () => {
 </script>
 
 <style lang="scss" scoped>
-@import "./style/index.scss";
+//@import "./style/index.scss";
 
 .human-menu {
   //padding: 20px 10px;
   .input-box {
     height: 30px;
+    line-height: 30px;
   }
 
   display: flex;
@@ -472,6 +410,8 @@ const addBone = () => {
               display: block;
               width: 120px;
               flex-shrink: 0;
+              text-align: left;
+              padding-right: 10px;
             }
           }
 
@@ -485,9 +425,8 @@ const addBone = () => {
               .option-item {
                 text-align: center;
                 border: var(--Warning) solid 1px;
-
-                .option-switch {
-                }
+                border-radius: 10px;
+                padding: 5px;
 
                 .option-input {
                   p {
@@ -515,10 +454,13 @@ const addBone = () => {
               .select-box {
                 display: none;
                 z-index: 1;
-                border: #2DC3FE solid 1px;
                 position: absolute;
                 cursor: pointer;
                 width: 100px;
+                border: var(--Warning) solid 1px;
+                border-radius: 5px;
+                padding: 5px;
+                background-color: var(--Success-unset);
               }
 
               &:hover {

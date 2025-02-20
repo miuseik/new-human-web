@@ -9,8 +9,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     InputRange: typeof import('./components/public/inputRange.vue')['default']
     MultiPanel: typeof import('./components/echart/multiPanel.vue')['default']
+    MySwich: typeof import('./components/MySwich/index.vue')['default']
+    MySwitch: typeof import('./components/MySwitch/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Swich: typeof import('./components/swich/index.vue')['default']
     Table: typeof import('./components/public/table.vue')['default']
     ThreeTpl: typeof import('./components/threeTpl/index.vue')['default']
   }

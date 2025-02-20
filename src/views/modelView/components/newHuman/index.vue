@@ -6,6 +6,8 @@
     <!--    </div>-->
     <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
+<!--      特殊接头-->
+      <p style="width: auto; text-align: center;margin-top: 20px">特殊关节</p>
       <template v-for="item in state.specialJoints">
         <div class="dot-box flex">
           <div class="inner inner-x">
@@ -54,7 +56,7 @@ watch(() => bone.JointArray, val => {
 })
 /**
  *
- * @param range
+ * @param range 计算
  */
 const calculate = (range) => {
   const round = (x) => {
@@ -103,6 +105,7 @@ const calculate = (range) => {
  * @param options
  */
 const setDot = (name, euler, options) => {
+  // 操作轨迹球,监控舵机旋转
   const getServer = (val, res) => {
     let old_val = val || 0
     // let new_val =
@@ -139,7 +142,7 @@ const setDot = (name, euler, options) => {
  * @param eulerData
  */
 const modelAction = (name, eulerData) => {
-  bus.emit("baseSliderInput", eulerData)
+  bus.emit("baseSliderInput", eulerData) //主进程通信,控制硬件
   let action = {
     x: {
       coordinate: eulerData['_x'] || eulerData['x'],
@@ -188,6 +191,7 @@ const switchChange = (enabled) => {
   base.setControlsEnabled(enabled);
 };
 const updateBoneList = () => {
+  console.log('updateBoneList')
   base.initRobot();
 };
 
