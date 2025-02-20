@@ -164,9 +164,9 @@ export default class boneThreeView {
          */
         let loadingModel = (name, position) => {
             return new Promise(((resolve, reject) => {
-                let _position = position || {x: -.25, y: 0, z: -.25};
-                // let _position = position || {x: 0, y: 0, z: 0};
+                let _position = JSON.parse(position) || {x: -.25, y: 0, z: -.25};
                 let _name = name || ''
+                console.log(`'加载模型',/boneThreeView/${_name}`)
                 loader.load(`/boneThreeView/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
@@ -210,6 +210,7 @@ export default class boneThreeView {
                 model = setJoint(item['size'], item['position']);
             } else { //被动的设为模型
                 if (item['model_name'] ){
+                    console.log('//加载模型', item['model_name'], item['position'])
                     model = await loadingModel(item['model_name'], item['position'])
                 }
             }
@@ -227,8 +228,15 @@ export default class boneThreeView {
         })
     }
 
+    /**
+     * 设置机器人旋转
+     * @param rotation
+     * @param name
+     * @param direction
+     */
     setRobotRotation(rotation, name, direction) {
         this.JointArray[name]['model'].rotation[direction] = rotation
+
         // this.JointArray[name]['model'][`rotate${direction.toUpperCase()}`](rotation)
     }
 

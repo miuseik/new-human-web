@@ -4,7 +4,7 @@ import API from "@/api";
 const bone = defineStore('bone', {
     state  : () => ({
         boneList: [],//骨骼原始数据
-        JointArray: {},
+        JointArray: {}, //主动以及关节数据
     }),
     actions: {
         setBoneList() {
