@@ -154,6 +154,7 @@ const modelAction = (name, eulerData) => {
       euler: eulerData['_z'] || eulerData['z'],
     },
   }
+  console.log(state.JointArray)
   let options = state.JointArray[name]['info']['option']
   let dot_action = setDot(name, action, options)
   // return

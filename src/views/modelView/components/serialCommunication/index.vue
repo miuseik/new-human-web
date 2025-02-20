@@ -2,7 +2,7 @@
   <div class="serial-communication">
     <div class="buttons">
       <input type="text" value="">
-      <div class="my-button-common" @click="getSerialList">查找设备</div>
+      <div class="my-button-common" style="padding:0 30px" @click="getSerialList">查找设备</div>
     </div>
     <div class="serial-list">
       <div class="my-table serial-table my-card-warp">

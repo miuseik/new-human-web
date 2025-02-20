@@ -32,7 +32,7 @@ export const formTplGroup = {
         },
         {
             title      : "USER NAME",
-            field      : "uname",
+            field      : "username",
             icon       : "",
             placeholder: "Please enter",
             required   : true,
@@ -50,7 +50,7 @@ export const formTplGroup = {
             field      : "verification_email",
             icon       : "",
             placeholder: "Please enter",
-            required   : true,
+            required   : false,
             code       : "SEND CODE",
         },
         {

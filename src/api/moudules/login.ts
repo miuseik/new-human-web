@@ -2,13 +2,13 @@ import axios from "@/api/request.js";
 
 const login = {
     Register(data = {}) { //          * 注册
-        let url = '/Member/register'
+        let url = '/user/register'
         let param = {
-            Email         : data['Email'] || '', //|电子信箱||true|string||
-            Name          : data['Name'] || '', //|昵称，不允许重复||true|string||
-            Code          : data['Code'] || '', //|电子信箱验证码||true|string||
+            username          : data['username'] || '', //|昵称，不允许重复||true|string||
             password      : data['password'] || '', //|密码||true|string||
-            InvitationCode: data['InvitationCode'] || '', //|邀请码||false|string||
+            // Email         : data['Email'] || '', //|电子信箱||true|string||
+            // Code          : data['Code'] || '', //|电子信箱验证码||true|string||
+            // InvitationCode: data['InvitationCode'] || '', //|邀请码||false|string||
         }
         return axios.post(url, param);
     },

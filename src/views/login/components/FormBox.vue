@@ -45,7 +45,7 @@
           </template>
           <div class="more-button">
             <span v-if="pageType !== 'login'" @click="openLogin">LOGIN</span>
-            <span v-if="pageType !== 'reg'" @click="Reg">REGISTER</span>
+            <span v-if="pageType !== 'reg'" @click="Reg">REGISTER!</span>
             <span v-if="pageType !== 'retrieve'" @click="Forget">FORGET PASSWORD</span>
           </div>
           <div class="form-bottom">
@@ -74,7 +74,7 @@ import {
 } from "vue";
 import {formTplGroup} from "../data";
 import {validateForm} from "@/utils/validateForm";
-import {} from "@/api/index.ts";
+import API from "@/api/index.ts";
 import user from "@/store/user/index.ts";
 const userStore = user();
 import {getCurrentInstance} from "vue";
@@ -169,7 +169,19 @@ const reqlogin = async () => {
     router.replace('/')
   }
 };
-const reqreg = () => {
+const reqreg = async() => {
+  console.log('注册')
+  let data = {
+    username: state.formData.username,
+    password: state.formData.pwd,
+  };
+ const resReg = await API.login.Register(data)
+  if (resReg && resReg['code'] === 200) {
+    let res = await userStore.toLogin(data);
+    if (res && res['code'] === 200) {
+      router.replace('/')
+    }
+  }
 };
 const retrieve = () => {
 };

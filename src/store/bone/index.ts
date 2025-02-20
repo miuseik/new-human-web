@@ -7,7 +7,7 @@ const bone = defineStore('bone', {
         JointArray: {},
     }),
     actions: {
-        getBoneList() {
+        setBoneList() {
             return new Promise(((resolve, reject) => {
                 API.bone.list().then(res => {
                     this.boneList = res.data
@@ -17,6 +17,11 @@ const bone = defineStore('bone', {
                 })
             }))
         },
+    },
+    getters: {
+        getBoneList() {
+            return this.boneList
+        }
     }
 })
 
