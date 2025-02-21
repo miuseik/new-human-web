@@ -185,6 +185,7 @@ import dataIndex from "../data/index.js"
 import {computed} from "vue";
 import BarGraph from "@/components/echart/multiPanel.vue";
 import {deepClone} from "@/utils/common.ts";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const boneList = ref([])
 const currentChange = ref([])
@@ -251,6 +252,7 @@ const onFileChange = (event: Event, index, key) => {
 // 输入框输入内容或者拖动滑块时触发
 const setInputVal = () => {
   emit("updateBoneList");
+  console.log('输入框输入内容或者拖动滑块时触发',boneList.value)
   for (let index in boneList.value) {
     let item = boneList.value[index]
     let option = item.option
@@ -288,8 +290,29 @@ const filterId = (id) => {
 };
 // 删除一条
 const deleteItem = async (id) => {
-  await API.bone.delete({'id': id}) //直接删除数据库
-  getList()// 获取新的骨骼列表!有点暴力了
+  ElMessageBox.confirm(
+      '你确定要删除这个模型吗?',
+      '注意!',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  )
+      .then(async() => {
+        await API.bone.delete({'id': id}) //直接删除数据库
+        getList()// 获取新的骨骼列表!有点暴力了
+        ElMessage({
+          type: 'success',
+          message: '删除成功',
+        })
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消删除',
+        })
+      })
 };
 // 点击新增一条
 const addBone = () => {

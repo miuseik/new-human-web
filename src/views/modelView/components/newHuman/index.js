@@ -164,7 +164,7 @@ export default class boneThreeView {
          */
         let loadingModel = (name, position) => {
             return new Promise(((resolve, reject) => {
-                let _position = JSON.parse(position) || {x: -.25, y: 0, z: -.25};
+                let _position = position || {x: -.25, y: 0, z: -.25};
                 let _name = name || ''
                 console.log(`'加载模型',/boneThreeView/${_name}`)
                 loader.load(`/boneThreeView/${_name}`, (geometry) => {
