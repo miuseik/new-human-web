@@ -14,27 +14,30 @@ const lookAt = {x: 10, y: 500, z: 10}
 const bone = boneStore()
 export default class boneThreeView {
     constructor(canvas) {
-        this.canvas = canvas
-        this.sizes = {}
-        this.camera = null
-        this.renderer = null
-        this.JointArray = {}
-        this.rootModel = null
-        this.scene = new THREE.Scene();
-        this.clock = new THREE.Clock();
-        this.previousTime = 0;
-        this.initWindowSizes()
-        this.initCamera()
-        this.initScene()
-        this.inLights()
-        this.initHelper()
-        this.initControls()
-        // this.initModel()
-        // this.initRobot()
-        this.initRenderer()
-        this.initAnimateTick()
+        this.canvas = canvas // canvas
+        this.sizes = {} // 窗口大小
+        this.camera = null // 摄像头
+        this.renderer = null // 渲染器
+        this.JointArray = {} // 关节数组
+        this.rootModel = null // 根模型
+        this.scene = new THREE.Scene(); // 场景
+        this.clock = new THREE.Clock(); // 时间
+        this.previousTime = 0; // 上次时间
+        this.initWindowSizes() // 初始化窗口大小
+        this.initCamera() // 初始化摄像头
+        this.initScene() // 初始化场景
+        this.inLights() // 初始化灯光
+        this.initHelper() // 初始化辅助线
+        this.initControls() // 初始化控制器
+        // this.initModel() // 初始化模型
+        // this.initRobot() // 初始化机器人
+        this.initRenderer() // 初始化渲染器
+        this.initAnimateTick() // 初始化动画
     }
 
+    /*
+    * 初始化窗口大小
+     */
     initWindowSizes() {
         const sizes = {
             width: this.canvas.parentNode.clientWidth,
@@ -57,28 +60,43 @@ export default class boneThreeView {
         this.sizes = sizes;
     }
 
+    /*
+    * 初始化场景
+     */
     initScene() {
         // this.scene.background = new THREE.Color(0x72645b);
-        this.scene.fog        = new THREE.Fog(0x073149, 2, 8000);
+        this.scene.fog = new THREE.Fog(0x073149, 2, 8000);
     }
 
+    /*
+    * 初始化摄像头
+     */
     initCamera() {
         const camera = new THREE.PerspectiveCamera(40, this.sizes.width / this.sizes.height, 0.25, 10000);
         camera.position.set(-1300, 1100, 1200);
         this.scene.add(camera);
         this.camera = camera;
     }
+
+    /*
+    * 初始化灯光
+     */
     addShadowedLight(x, y, z, color, intensity) {
         const directionalLight = new THREE.DirectionalLight(color, intensity);
     }
 
+    /**
+     * 初始化灯光
+     */
     inLights() {
         const addShadowedLight = (x, y, z, color, intensity) => {
-            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 3);
+            // 半球光，降低强度
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 1.5);
             hemiLight.position.set(0, 20, 0);
             this.scene.add(hemiLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 3);
+            // 平行光，降低强度
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
             dirLight.position.set(3, 10, 10);
             dirLight.castShadow = true;
             dirLight.shadow.camera.top = 2;
@@ -89,11 +107,15 @@ export default class boneThreeView {
             dirLight.shadow.camera.far = 40;
             this.scene.add(dirLight);
         }
-        this.scene.add(new THREE.HemisphereLight(0x8d7c7c, 0x494966, 3));
-        addShadowedLight(500, 500, 500, 0xffffff, 3.5);
-        addShadowedLight(1000, 1000, 800, 0xffd500, 3);
-    }
 
+        // 半球光，降低强度
+        this.scene.add(new THREE.HemisphereLight(0x8d7c7c, 0x494966, 1));
+        addShadowedLight(500, 500, 500, 0xffffff, 1);
+        addShadowedLight(1000, 1000, 800, 0xffd500, 1);
+    }
+    /**
+     * 初始化辅助线
+     */
     initHelper() {
         const axes = new THREE.AxesHelper(2000);
         this.scene.add(axes);
@@ -101,6 +123,9 @@ export default class boneThreeView {
         this.scene.add(gridHelper);
     }
 
+    /**
+     * 初始化控制器
+     */
     initControls() {
         const controls = new OrbitControls(this.camera, this.canvas);
         controls.target.set(lookAt.x, lookAt.y, lookAt.z);
@@ -110,11 +135,18 @@ export default class boneThreeView {
         this.controls = controls;
     }
 
+    /**
+     * 设置控制器是否可用
+     * @param enabled
+     */
     setControlsEnabled(enabled) {
         this.controls.enabled = enabled
     }
 
-
+    /**
+     * 初始化模型
+     * @returns {Promise<unknown>}
+     */
     initModel = () => {
         let item = 'Walking.fbx'
         return new Promise(((resolve, reject) => {
@@ -126,21 +158,24 @@ export default class boneThreeView {
             })
         }))
     }
-
+    /**
+     * 初始化机器人
+     * @returns {Promise<void>}
+     */
     initRobot = async () => {
         console.log('重置骨骼')
-        // let actions = await loadFbx()
-        this.JointArray = {}
-        if (this.rootModel) {
+        this.JointArray = {} // 关节数组
+        if (this.rootModel) { // 删除根模型
             this.scene.remove(this.rootModel);
         }
-        const loader = new STLLoader();
-        const glassMaterial = new THREE.MeshPhongMaterial({
+        const loader = new STLLoader(); // 加载模型
+        const glassMaterial = new THREE.MeshPhongMaterial({ // 透明材质
             color: '#3d79ff',
             transparent: true,
             opacity: 0.4,
             shininess: 4,
         })
+        // 网格材质
         const material = new THREE.MeshPhongMaterial({color: 0xff9c7c, specular: 0x494949, shininess: 200});
         /**
          * 设置关节
@@ -162,15 +197,19 @@ export default class boneThreeView {
          * @param position
          * @returns {Promise<unknown>}
          */
-        let loadingModel = (name, position) => {
+        let loadingModel = (name, position, size = 0) => {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25};
                 let _name = name || ''
-                console.log(`'加载模型',/boneThreeView/${_name}`)
-                loader.load(`/boneThreeView/${_name}`, (geometry) => {
+                console.log(`'加载模型',/boneView/${_name}`)
+                console.log(`'https://file.qupuba.com/boneView/woman/pelvis-1.STL`)
+                // import {STLLoader} from 'three/addons/loaders/STLLoader.js';
+                // loader.load(`/boneThreeView/${_name}`, (geometry) => {
+                loader.load(`https://file.qupuba.com/new_human/boneView/woman/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
                     Mesh.castShadow = true;
+                    size>0 ? Mesh.scale.set(size, size, size) : null;
                     resolve(Mesh)
                 });
 
@@ -191,12 +230,12 @@ export default class boneThreeView {
                     this.scene.add(this.rootModel);
                 } else {
                     modelArr[info.parent].model.add(model);
-                    if (info.field === 'D2') {
+                    if (info.field === 'D') { //显示轴线
                         const axes = new THREE.AxesHelper(2000);
-                        model.add(axes);
+                        // model.add(axes);
                     }
                 }
-                if (info.master_slave*1 === 0) {
+                if (info.master_slave * 1 === 0) {
                     // this.JointArray[info.field] = model
                     this.JointArray[info.field] = item
                 }
@@ -205,13 +244,12 @@ export default class boneThreeView {
         }
         // 初始化所有模型
         let initAllModel = async (item) => {
-            let model
-            if (item.model_type*1 === 1) { //主动的设为关节
-                model = setJoint(item['size'], item['position']);
+            let model // 设置模型变量
+            if (+item.model_type === 1) { //主动的设为关节,不管有没有模型
+                model = setJoint(item['size'] || 10, item['position']); // 设置关节
             } else { //被动的设为模型
-                if (item['model_name'] ){
-                    console.log('//加载模型', item['model_name'], item['position'])
-                    model = await loadingModel(item['model_name'], item['position'])
+                if (item['model_name']) { // 有名字就加载模型,没名字代表隐藏的
+                    model = await loadingModel(item['model_name'], item['position'], item['size'])
                 }
             }
             modelArr[item.id] = {

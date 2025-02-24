@@ -2,7 +2,7 @@
 <template>
   <div class="human-menu">
     <div class="human-menu-action">
-      <div class="my-button-common" @click="addBone()">新增一条</div>
+      <div class="my-button-common" @click="addBone()">新增</div>
       <div class="my-button-common" @click="state.showAll = !state.showAll">
         {{
           state.showAll ?
@@ -270,7 +270,7 @@ const saveChange = async (item) => {
     await API.bone.revise(item)
   } else {
     let res = await API.bone.push(item)
-    state.itemTpl.parent = res.data.id //提前给下一次添加做准备,只有在连续添加时才有效
+    state.itemTpl['parent'] = res.data.id //提前给下一次添加做准备,只有在连续添加时才有效
   }
   getList() //重新获取数据
   filterId(id)
@@ -316,10 +316,10 @@ const deleteItem = async (id) => {
 };
 // 点击新增一条
 const addBone = () => {
-  state.itemTpl.id-- //新增的id为负值代表新增, >0的id是修改才有的
+  state.itemTpl['id']-- //新增的id为负值代表新增, >0的id是修改才有的
   let tpl = deepClone(state.itemTpl)
   boneList.value.push(tpl) //放到渲染列表里去
-  currentChange.value.push(state.itemTpl.id) //放进可编辑的列表里去
+  currentChange.value.push(state.itemTpl['id']) //放进可编辑的列表里去
 };
 </script>
 

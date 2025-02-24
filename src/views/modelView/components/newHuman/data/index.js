@@ -12,19 +12,20 @@ export default {
         {text__: "parent为0的节点为根节点"},
     ],
     itemTpl: {
-        id: 0,
-        field: "D",
-        name: '',
-        model_name: '.stl',
-        model_type: '0',
-        master_slave: '0',
+        id: 0, //新增时 id为负数,
+        field: "D", // 用来标记做特殊处理的字段名
+        root: null, // 保留字段
+        name: '', // 显示的名称
+        model_name: '.stl', //模型后缀名
+        model_type: '0', // 0:被动,1:主动
+        master_slave: '0', // 主从
         option: {
             x: {
-                open: false,
-                server_reverse: false,
-                model_reverse: false,
-                max: parseFloat((Math.PI / 2).toFixed(4)),
-                min: parseFloat((-Math.PI / 2).toFixed(4)),
+                open: false, // 是否开启
+                server_reverse: false, // 服务器是否反向
+                model_reverse: false, // 模型是否反向
+                max: parseFloat((Math.PI / 2).toFixed(4)), // 最大角度
+                min: parseFloat((-Math.PI / 2).toFixed(4)), // 最小角度
                 value: 0
             },
             y: {
@@ -44,18 +45,18 @@ export default {
                 value: 0
             }
         },
-        size: 10,
-        position: {
+        size: 0, // 模型大小(仅对关节起效)
+        position: { // 默认位置
             x: 0,
             y: 0,
             z: 0
         },
-        rotate: {
+        rotate: { // 默认旋转
             x: 0,
             y: 0,
             z: 0
         },
-        parent: 0,
+        parent: 0, // 父节点
     },
     actions: {
         D1: {
