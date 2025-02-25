@@ -3,8 +3,9 @@ import * as THREE from 'three'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 
-import {onMounted} from 'vue'
-import {reactive} from "vue";
+import {onMounted, reactive} from 'vue'
+
+const showAction = ref(true)
 
 const lookAt = {x: 2, y: 100, z: 2}
 const state = reactive({
@@ -37,19 +38,15 @@ const initLight = () => {
   dirLight.shadow.camera.right = 120;
   scene.add(dirLight);
 }
+/*
+ * 动作初始化模型
+ */
 const initModel = () => {
   const loader = new FBXLoader();
   loader.load('/model/Walking.fbx', function (object) {
-    mixer = new THREE.AnimationMixer(object);
-    console.log('mixer--',mixer)
+    mixer = new THREE.AnimationMixer(object); //混合器
     const action = mixer.clipAction(object.animations[0]);
     action.play();
-    // object.traverse(function (child) {
-    //   if (child.isMesh) {
-    //     child.castShadow = true;
-    //     child.receiveShadow = true;
-    //   }
-    // });
     scene.add(object);
   });
 }
@@ -119,9 +116,9 @@ onMounted(() => {
 <template>
   <div class="action-library">
     <div class="action-option">
-      <div class="my-button-common">显示动作</div>
+      <div class="my-button-common" @click="showAction = !showAction">{{showAction? '隐藏' : '显示' }}动作</div>
     </div>
-    <div class="action-border my-card-warp">
+    <div class="action-border my-card-warp" v-show="showAction">
       <div id="my-three" class="action-body">
       </div>
     </div>
@@ -129,9 +126,7 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.action-option {
 
-}
 
 .action-border {
   width: 300px;

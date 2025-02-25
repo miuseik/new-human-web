@@ -2,7 +2,12 @@
 <template>
   <div class="three-box">
     <!--    <div class="menu">-->
-    <Menu @sliderInput="modelAction" @switchChange="switchChange" @updateBoneList="updateBoneList"/>
+<!--    左侧主控模块-->
+
+    <Menu
+        @sliderInput="modelAction"
+        @switchChange="switchChange"
+        @updateBoneList="updateBoneList"/>
     <!--    </div>-->
     <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
@@ -56,11 +61,13 @@ watch(() => bone.JointArray, val => {
 })
 /**
  *
+ * 计算
  * @param range 计算
  */
 const calculate = (range) => {
   const round = (x) => {
     return Math.round(x * 10000) / 100
+    // return Number(x.toFixed(2));
   }
   let dataFloat = {
     min: {
@@ -138,28 +145,27 @@ const setDot = (name, euler, options) => {
 }
 /**
  * 移动option进度条触发
- * @param name
- * @param eulerData
+ * @param id
+ * @param option {x: 0, y: 0, z: 0}
  */
-const modelAction = (name, eulerData) => {
-  bus.emit("baseSliderInput", eulerData) //主进程通信,控制硬件
+const modelAction = (id, option) => {
+  bus.emit("baseSliderInput", option) //主进程通信,控制硬件
   let action = {
     x: {
-      coordinate: eulerData['_x'] || eulerData['x'],
-      euler: eulerData['_x'] || eulerData['x'],
+      coordinate: option['_x'] || option['x'],
+      euler: option['_x'] || option['x'],
     },
     y: {
-      coordinate: eulerData['_y'] || eulerData['y'],
-      euler: eulerData['_y'] || eulerData['y'],
+      coordinate: option['_y'] || option['y'],
+      euler: option['_y'] || option['y'],
     },
     z: {
-      coordinate: eulerData['_z'] || eulerData['z'],
-      euler: eulerData['_z'] || eulerData['z'],
+      coordinate: option['_z'] || option['z'],
+      euler: option['_z'] || option['z'],
     },
   }
-  console.log('sliderInput',state.JointArray)
-  let options = state.JointArray[name]['info']['option']
-  let dot_action = setDot(name, action, options)
+  let options = state.JointArray[id]['info']['option']
+  let dot_action = setDot(id, action, options)
   // return
   action.x.coordinate = dot_action.x
   action.y.coordinate = dot_action.y
@@ -167,10 +173,10 @@ const modelAction = (name, eulerData) => {
   for (let key in action) {
     let item = action[key]
     // let val = state.actions[name] && state.actions[name][key] || 0
-    driveServer(item['coordinate'], name, key, options)
-    state.actions[name] = dot_action
+    driveServer(item['coordinate'], id, key, options)
+    state.actions[id] = dot_action
     // }
-    driveModel(item['euler'], name, key, options)
+    driveModel(item['euler'], id, key, options)
   }
 };
 const driveServer = (e, name, direction, options) => {
@@ -190,8 +196,8 @@ const driveModel = (e, name, direction, options) => {
 const switchChange = (enabled) => {
   base.setControlsEnabled(enabled);
 };
+// 更新模型列表
 const updateBoneList = () => {
-  console.log('updateBoneList')
   base.initRobot();
 };
 
@@ -262,11 +268,6 @@ onMounted(() => {
         border-radius: 5px;
 
       }
-    }
-
-
-    .dot {
-
     }
   }
 

@@ -156,16 +156,25 @@
             </div>
             <div class="item-info" v-else>
               <template v-for="(option, index) in item['option']">
-                <p class="input-range-box" v-if="option.open*1 !== 0"><!--open 开启-->
-                  <span>{{ index }} {{ state.innerData[item['field']][index] }}</span>
+                <p class="input-range-box" v-if="option.open"><!--open 开启-->
+                  <span>{{ index }} {{ option.value }}</span>
+<!--                  <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>-->
+<!--                  <inputRange-->
+<!--                      class="input-box"-->
+<!--                      :min="option.min"-->
+<!--                      :max="option.max"-->
+<!--                      v-model="innerData[item.field][index]"-->
+<!--                      @sliderInput="sliderInput( $event,`${item.field}`, index, innerData[item.field])"-->
+<!--                      @input="sliderInput(innerData[item.field][index], `${item.field}`, index, innerData[item.field])"-->
+<!--                  ></inputRange>-->
                   <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
                   <inputRange
                       class="input-box"
                       :min="option.min"
                       :max="option.max"
-                      v-model="state.innerData[item.field][index]"
-                      @sliderInput="sliderInput( $event,`${item.field}`, index, state.innerData[item.field])"
-                      @input="sliderInput(state.innerData[item.field][index], `${item.field}`, index, state.innerData[item.field])"
+                      v-model="option.value"
+                      @sliderInput="sliderInput( $event,item['id'],  item['option'])"
+                      @input="sliderInput(option.value,item['id'],  item['option'])"
                   ></inputRange>
                 </p>
               </template>
@@ -187,15 +196,13 @@ import BarGraph from "@/components/echart/multiPanel.vue";
 import {deepClone} from "@/utils/common.ts";
 import {ElMessage, ElMessageBox} from "element-plus";
 
-const boneList = ref([])
-const currentChange = ref([])
+const boneList = ref([]) // 骨骼列表
+const currentChange = ref([]) // 当前正在编辑包括新增的数据
+const innerData = ref([]) //
 const state = reactive({
   helpDescription: [],
   itemTpl: {},
-  // boneList: [],
-  // currentChange: [],
   showAll: false,
-  innerData: {},
   modelType: {
     0: '骨骼',
     1: '关节轴',
@@ -214,29 +221,37 @@ const setDisabled = computed(() => {
     return key.toString() === 'id' || key.toString() === 'createdAt' || key.toString() === 'updatedAt'
   };
 });
+/**
+ * 获取列表,并更新boneList
+ */
 const getList = async () => {
-  console.log('getList')
   await bone().setBoneList()
   boneList.value = bone().getBoneList
   emit("updateBoneList");
   for (let index in boneList.value) {
     let item = boneList.value[index]
     let option = item.option
-    console.log('item--------', item)
-    state.innerData[item.field] = {
+    innerData.value[item.id] = {
       x: option.x['value'],
       y: option.y['value'],
       z: option.z['value'],
     }
   }
-  console.log(boneList.value)
+  console.log('列表,并更新boneList',innerData.value)
+  // console.log(boneList.value)
 }
 getList()
 state.helpDescription = dataIndex['helpDescription']
 state.itemTpl = dataIndex['itemTpl']
 
-const sliderInput = (e, name, direction, option) => {
-  emit("sliderInput", name, option);
+const sliderInput = (_, id, option) => {
+  let _option = {
+    // x: option.x.value,
+    // y: option.y.value,
+    // z: option.z.value,
+  }
+  // console.log('123', id, JSON.stringify(_option))
+  // emit("sliderInput", id, _option);
 }
 // 点击修改按钮进入编辑状态
 const setItem = (item) => {
@@ -252,11 +267,11 @@ const onFileChange = (event: Event, index, key) => {
 // 输入框输入内容或者拖动滑块时触发
 const setInputVal = () => {
   emit("updateBoneList");
-  console.log('输入框输入内容或者拖动滑块时触发',boneList.value)
+  console.log('输入框输入内容或者拖动滑块时触发')
   for (let index in boneList.value) {
     let item = boneList.value[index]
     let option = item.option
-    state.innerData[item.field] = {
+    innerData.value[item.id] = {
       x: option.x['value'],
       y: option.y['value'],
       z: option.z['value'],

@@ -201,9 +201,6 @@ export default class boneThreeView {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25};
                 let _name = name || ''
-                console.log(`'加载模型',/boneView/${_name}`)
-                console.log(`'https://file.qupuba.com/boneView/woman/pelvis-1.STL`)
-                // import {STLLoader} from 'three/addons/loaders/STLLoader.js';
                 // loader.load(`/boneThreeView/${_name}`, (geometry) => {
                 loader.load(`https://file.qupuba.com/new_human/boneView/woman/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
@@ -237,7 +234,7 @@ export default class boneThreeView {
                 }
                 if (info.master_slave * 1 === 0) {
                     // this.JointArray[info.field] = model
-                    this.JointArray[info.field] = item
+                    this.JointArray[info.id] = item
                 }
             }
             bone.JointArray = this.JointArray

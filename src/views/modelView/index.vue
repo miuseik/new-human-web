@@ -1,8 +1,11 @@
 <template>
     <div class="new-human">
         <div class="index-border"></div>
+<!--      串行通信-->
         <serial-communication class="serial-communication"></serial-communication>
+<!--      模型窗口-->
         <new-human></new-human>
+<!--      动作库-->
         <action-library class="action-library"></action-library>
     </div>
 </template>
