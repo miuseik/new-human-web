@@ -48,11 +48,9 @@ const modelAction = (key, eulerData) => {
 .action {
   background-color: rgba(0, 0, 0, .2);
   position: absolute;
-  width: 15rem;
+  width: calc(100vw - 500px);
   height: 80vh;
   right: 0;
-  padding: 40px 2px 2px 2px;
-  //top: 50px;
   flex-shrink: 0;
   overflow: hidden;
   color: #fff;
@@ -71,13 +69,8 @@ const modelAction = (key, eulerData) => {
   overflow: hidden;
   color: #fff;
   font-size: .7rem;
-
-  .option {
-
-  }
-
   .set-action-box {
-    width: 100%;
+    width: calc(100vw - 500px);
   }
 }
 </style>

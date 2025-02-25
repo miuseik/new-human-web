@@ -2,19 +2,19 @@ export default {
     showList      : [
         {
             field: 'path',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'friendlyName',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'locationId',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'manufacturer',
-            width: '10',
+            // width: '40',
         },
 
         // {
@@ -23,23 +23,23 @@ export default {
         // },
         {
             field: 'productId',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'serialNumber',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'vendorId',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'Operations',
-            width: '10',
+            // width: '40',
         },
         {
             field: 'option',
-            width: '100',
+            // width: '100',
         }
     ],
 }

@@ -1,20 +1,18 @@
 <!--// 路径：src/views/home/components/Robot3d/index.vue-->
 <template>
   <div class="three-box">
-    <!--    <div class="menu">-->
-<!--    左侧主控模块-->
-
+    <!--    左侧主控模块-->
     <Menu
         @sliderInput="modelAction"
         @switchChange="switchChange"
         @updateBoneList="updateBoneList"/>
-    <!--    </div>-->
-    <!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
+    <!--    开始-->
+<!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
     <div class="dot-warp">
-<!--      特殊接头-->
+      <!--      特殊接头-->
       <p style="width: auto; text-align: center;margin-top: 20px">特殊关节</p>
       <template v-for="item in state.specialJoints">
-        <div class="dot-box flex">
+        <div class="dot-box flex-row-center-center">
           <div class="inner inner-x">
             <div class="dot" :id="`dot_${item}_x`">
             </div>
@@ -37,11 +35,12 @@
 const emit = defineEmits(["sliderInput", "switchChange", "modelAction"]);
 import boneThreeView from "./index.js";
 import Menu from "./Menu/index.vue";
-// import action from "./action/index.vue";
+import action from "./action/index.vue";
 import bus from "@/utils/Bus";
 
 let base = null;
 import boneStore from '@/store/bone/index.ts';
+
 const bone = boneStore()
 const state = reactive({
   dot: null,
@@ -164,8 +163,9 @@ const modelAction = (id, option) => {
       euler: option['_z'] || option['z'],
     },
   }
-  let options = state.JointArray[id]['info']['option']
-  let dot_action = setDot(id, action, options)
+  let _options = state.JointArray[id]['info']['option']
+  let field = state.JointArray[id]['info']['field']
+  let dot_action = setDot(field, action, _options)
   // return
   action.x.coordinate = dot_action.x
   action.y.coordinate = dot_action.y
@@ -173,10 +173,10 @@ const modelAction = (id, option) => {
   for (let key in action) {
     let item = action[key]
     // let val = state.actions[name] && state.actions[name][key] || 0
-    driveServer(item['coordinate'], id, key, options)
+    driveServer(item['coordinate'], id, key, _options)
     state.actions[id] = dot_action
     // }
-    driveModel(item['euler'], id, key, options)
+    driveModel(item['euler'], id, key, _options)
   }
 };
 const driveServer = (e, name, direction, options) => {
@@ -222,11 +222,6 @@ onMounted(() => {
   width: 100vw;
   height: 100%;
   position: relative;
-
-  .human-menu {
-
-  }
-
 
   .dot-warp {
     position: fixed;

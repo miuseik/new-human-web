@@ -157,24 +157,16 @@
             <div class="item-info" v-else>
               <template v-for="(option, index) in item['option']">
                 <p class="input-range-box" v-if="option.open"><!--open 开启-->
-                  <span>{{ index }} {{ option.value }}</span>
-<!--                  <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>-->
-<!--                  <inputRange-->
-<!--                      class="input-box"-->
-<!--                      :min="option.min"-->
-<!--                      :max="option.max"-->
-<!--                      v-model="innerData[item.field][index]"-->
-<!--                      @sliderInput="sliderInput( $event,`${item.field}`, index, innerData[item.field])"-->
-<!--                      @input="sliderInput(innerData[item.field][index], `${item.field}`, index, innerData[item.field])"-->
-<!--                  ></inputRange>-->
+                  <span>{{ index }} {{ innerData[item[itemKey]][index] }} </span>
                   <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
+<!--                  这里直接用item['option']就可以取值,但是这样会严重卡顿-->
                   <inputRange
                       class="input-box"
                       :min="option.min"
                       :max="option.max"
-                      v-model="option.value"
-                      @sliderInput="sliderInput( $event,item['id'],  item['option'])"
-                      @input="sliderInput(option.value,item['id'],  item['option'])"
+                      v-model="innerData[item[itemKey]][index]"
+                      @sliderInput="sliderInput( $event,`${item[itemKey]}`, innerData[item[itemKey]])"
+                      @input="sliderInput(innerData[item[itemKey]][index], `${item[itemKey]}`, innerData[item[itemKey]])"
                   ></inputRange>
                 </p>
               </template>
@@ -199,6 +191,8 @@ import {ElMessage, ElMessageBox} from "element-plus";
 const boneList = ref([]) // 骨骼列表
 const currentChange = ref([]) // 当前正在编辑包括新增的数据
 const innerData = ref([]) //
+// const itemKey = ref('field') //
+const itemKey = ref('id') //
 const state = reactive({
   helpDescription: [],
   itemTpl: {},
@@ -231,7 +225,7 @@ const getList = async () => {
   for (let index in boneList.value) {
     let item = boneList.value[index]
     let option = item.option
-    innerData.value[item.id] = {
+    innerData.value[item[itemKey.value]] = {
       x: option.x['value'],
       y: option.y['value'],
       z: option.z['value'],
@@ -245,13 +239,7 @@ state.helpDescription = dataIndex['helpDescription']
 state.itemTpl = dataIndex['itemTpl']
 
 const sliderInput = (_, id, option) => {
-  let _option = {
-    // x: option.x.value,
-    // y: option.y.value,
-    // z: option.z.value,
-  }
-  // console.log('123', id, JSON.stringify(_option))
-  // emit("sliderInput", id, _option);
+  emit("sliderInput", id, option);
 }
 // 点击修改按钮进入编辑状态
 const setItem = (item) => {
@@ -271,7 +259,7 @@ const setInputVal = () => {
   for (let index in boneList.value) {
     let item = boneList.value[index]
     let option = item.option
-    innerData.value[item.id] = {
+    innerData.value[itemKey.value] = {
       x: option.x['value'],
       y: option.y['value'],
       z: option.z['value'],
@@ -339,23 +327,15 @@ const addBone = () => {
 </script>
 
 <style lang="scss" scoped>
-//@import "./style/index.scss";
-
 .human-menu {
-  //padding: 20px 10px;
   .input-box {
     height: 30px;
     line-height: 30px;
   }
-
   display: flex;
   flex-direction: column;
   width: 500px;
   flex-shrink: 0;
-
-  .slider-item {
-    //margin: 20px 0;
-  }
 
   .human-menu-action {
     display: flex;
@@ -390,9 +370,6 @@ const addBone = () => {
 
   .list-warp {
     overflow: auto;
-    //height: 100%;
-    //height: calc(80vh - 100px);
-
     .bone-item {
       .item-data {
         font-family: MeiHei;

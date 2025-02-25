@@ -201,8 +201,8 @@ const demoStop = () => {
     data: state.currentStep
   });
 }
-let timer
 const start = () => {
+  console.log('开始')
   state.isStart = true
   worker.postMessage({
     key : "start",
