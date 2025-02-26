@@ -7,7 +7,7 @@
         @switchChange="switchChange"
         @updateBoneList="updateBoneList"/>
     <!--    开始-->
-    <action @modelAction="modelAction" :current-action="state.currentAction"></action>
+    <action @modelAction="modelAction" ></action>
     <div class="dot-warp">
       <!--      特殊接头-->
       <p style="width: auto; text-align: center;margin-top: 20px">特殊关节</p>
@@ -46,9 +46,8 @@ const state = reactive({
   dot: null,
   dotArr: {},
   JointArray: bone.JointArray || {},
-  currentAction: '',
   specialJoints: [
-    'D2', 'D3', 'D4', 'D5'
+    'mixamorigHips', 'D3', 'D4', 'D5'
   ],
   actions: {}
 })
@@ -149,7 +148,7 @@ const setDot = (name, euler, options) => {
  */
 const modelAction = (id, option) => {
   bus.emit("baseSliderInput", option) //主进程通信,控制硬件
-  let action = {
+  let action = { //现在看是一样的,但是后续还要做处理,这样写没错的
     x: {
       coordinate: option['_x'] || option['x'],
       euler: option['_x'] || option['x'],
@@ -170,12 +169,13 @@ const modelAction = (id, option) => {
   action.x.coordinate = dot_action.x
   action.y.coordinate = dot_action.y
   action.z.coordinate = dot_action.z
+  //设置特殊关节的位置视图
+  state.actions[id] = dot_action
   for (let key in action) {
     let item = action[key]
-    // let val = state.actions[name] && state.actions[name][key] || 0
+    //传给舵机的值
     driveServer(item['coordinate'], id, key, _options)
-    state.actions[id] = dot_action
-    // }
+    //传给threejs的值
     driveModel(item['euler'], id, key, _options)
   }
 };

@@ -26,7 +26,6 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 import {onMounted, reactive, ref} from 'vue'
 import boneStore from '@/store/bone/index.ts';
-import dataIndex from "@/views/modelView/components/newHuman/data";
 
 const bone = boneStore()
 const showAction = ref(true)
@@ -85,6 +84,24 @@ const setRange = (val, key) => {
   }
   return val
 }
+const chunkPosition = (track) => {
+  const { times, values } = track;
+  const result = {};
+  const timeKeys = Object.keys(times);
+  const valueKeys = Object.keys(values);
+
+  for (let i = 0; i < timeKeys.length; i++) {
+    const time = times[timeKeys[i]];
+    const startIndex = i * 3;
+    const positionData = [
+      values[valueKeys[startIndex]],
+      values[valueKeys[startIndex + 1]],
+      values[valueKeys[startIndex + 2]]
+    ];
+    result[time] = positionData;
+  }
+  return result;
+};
 /**
  * 四元数转三维向量,计算欧拉角
  * @param track {values, times}
@@ -131,41 +148,20 @@ const getModel = async () => {
   const currentPath = actionPaths[currentActionIndex.value]
   return new Promise(((resolve, reject) => {
     loader.load(currentPath, function (mesh) {
+
+      if (mixer) {
+        mixer.stopAllAction()
+        scene.remove(mixer.getRoot())
+      }
+      mixer = new THREE.AnimationMixer(mesh); //混合器
+      const action = mixer.clipAction(mesh.animations[0]);
+      action.play();
+      scene.add(mesh);
       resolve(mesh)
-      //
-      // state.mixStep = 0
-      // let tracks = mesh.animations[0]['tracks']
-      // let duration = mesh.animations[0]['duration'] * 1000 //持续时间
-      // state.duration = duration
-      // resolve(mesh)
     })
   }))
 }
 const initModel = async () => {
-  // D1: {
-  //   times: [],
-  //       values: {},
-  //   action: {},
-  //   key: 1,
-  //       direction: {
-  //     "x": true,
-  //         "y": true,
-  //         "z": true,
-  //   },
-  //   index: 0
-  // },
-  // D2: {
-  //   times: [],
-  //       values: {},
-  //   action: {},
-  //   key: 45,
-  //       direction: {
-  //     "x": true,
-  //         "y": true,
-  //         "z": true,
-  //   },
-  //   index: 0
-  // },
   if (bone.getBoneList.length > 0) {
     let object = await getModel()
     const _animateAction = {};
@@ -176,28 +172,33 @@ const initModel = async () => {
       const motionType = track.name.includes('.position') ? '移动' : '旋转';
       const jointNameChinese = modelViewData.boneName[field];
 
+      // 查找对应的 id
+      let targetId = null;
+      for (let j = 0; j < bone.getBoneList.length; j++) {
+        if (bone.getBoneList[j].field === field) {
+          targetId = bone.getBoneList[j].id;
+          break;
+        }
+      }
       // 检查 _animateAction[field] 是否存在，如果不存在则初始化
       if (!_animateAction[field]) {
         _animateAction[field] = {
+          id: targetId,
           jointNameEnglish: field,
           jointNameChinese: jointNameChinese,
           name: track.name,
           times: track.times,
-          motionType: motionType,
-          values: track.values,
           position: null,
           rotate: null
         };
       }
-
       let item = _animateAction[field];
       // 根据运动类型更新 position 或 rotate
       if (motionType === '移动') {
-        item.position = chunkArray(track, 3, field);
+        item.position = chunkPosition(track, 3, field);
       } else {
         item.rotate = chunkArray(track, 4, field);
       }
-
       _animateAction[field] = item;
     }
     animateAction.value=[]
