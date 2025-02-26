@@ -21,22 +21,22 @@
         </el-table-column>
       </el-table>
     </el-popover>
-    <div class="serial-msg my-card-warp pointer" @click="test()">
-      <span>开始</span>
-      <template v-for="item in state.checkedSerial">
-        <div class="serial-msg-item">
-          <div class="serial-msg-input">
-            <div class="serial-msg-title">{{ item['path'] }}</div>
-            <input type="text" class="input-box" v-model="item['input']">
-            <div class="submit pointer" @click="putPortMsg(item)">发送</div>
-          </div>
-          <div class="serial-msg-msg">
-            {{ item['msg'] || '----------' }}
-          </div>
-        </div>
-        <hr>
-      </template>
-    </div>
+<!--    <div class="serial-msg my-card-warp pointer" @click="test()">-->
+<!--      <span>开始</span>-->
+<!--      <template v-for="item in state.checkedSerial">-->
+<!--        <div class="serial-msg-item">-->
+<!--          <div class="serial-msg-input">-->
+<!--            <div class="serial-msg-title">{{ item['path'] }}</div>-->
+<!--            <input type="text" class="input-box" v-model="item['input']">-->
+<!--            <div class="submit pointer" @click="putPortMsg(item)">发送</div>-->
+<!--          </div>-->
+<!--          <div class="serial-msg-msg">-->
+<!--            {{ item['msg'] || '&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;' }}-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <hr>-->
+<!--      </template>-->
+<!--    </div>-->
   </div>
 </template>
 <script setup lang="ts">

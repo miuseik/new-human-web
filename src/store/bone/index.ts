@@ -5,6 +5,7 @@ const bone = defineStore('bone', {
     state  : () => ({
         boneList: [],//骨骼原始数据
         JointArray: {}, //主动以及关节数据
+        animateActions: null, //动画动作库
     }),
     actions: {
         setBoneList() {
@@ -17,10 +18,16 @@ const bone = defineStore('bone', {
                 })
             }))
         },
+        addAnimateAction(actionData) {
+            this.animateActions = actionData;
+        }
     },
     getters: {
         getBoneList() {
             return this.boneList
+        },
+        getAnimateActions() {
+            return this.animateActions
         }
     }
 })

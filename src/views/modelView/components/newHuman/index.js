@@ -163,7 +163,6 @@ export default class boneThreeView {
      * @returns {Promise<void>}
      */
     initRobot = async () => {
-        console.log('重置骨骼')
         this.JointArray = {} // 关节数组
         if (this.rootModel) { // 删除根模型
             this.scene.remove(this.rootModel);
@@ -214,7 +213,6 @@ export default class boneThreeView {
         }
         let modelArr = {}
         let boneList = bone.getBoneList || [] //获取所有骨骼列表
-        console.log('//获取所有骨骼列表', boneList)
         let modelNum = boneList.length
         // 设置场景
         let setScenes = async () => {

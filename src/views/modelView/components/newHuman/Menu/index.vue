@@ -231,7 +231,6 @@ const getList = async () => {
       z: option.z['value'],
     }
   }
-  console.log('列表,并更新boneList',innerData.value)
   // console.log(boneList.value)
 }
 getList()

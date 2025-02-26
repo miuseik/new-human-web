@@ -7,7 +7,7 @@
         @switchChange="switchChange"
         @updateBoneList="updateBoneList"/>
     <!--    开始-->
-<!--    <action @modelAction="modelAction" :current-action="state.currentAction"></action>-->
+    <action @modelAction="modelAction" :current-action="state.currentAction"></action>
     <div class="dot-warp">
       <!--      特殊接头-->
       <p style="width: auto; text-align: center;margin-top: 20px">特殊关节</p>

@@ -1,23 +1,23 @@
 <template>
   <div class="range">
-    <div class="range-box">
-      <template v-for="(item, index) in state.duration*1">
-        <div class="range-item" @mouseover="checkStep(item)" @mousedown="mousedown(item)" @mouseup="mouseup(item)">
-          <div class="dot current-step none-select" v-if="state.currentStep === item">
-            <i class="none-select">{{ item }}</i>
-          </div>
-          <div class="grid none-select" :class="index%10 === 0 ? 'grid-10' : index%5 === 0 ? 'grid-5' : ''"></div>
-        </div>
-      </template>
-    </div>
+<!--    <div class="range-box">-->
+<!--      <template v-for="(item, index) in state.duration*1">-->
+<!--        <div class="range-item" @mouseover="checkStep(item)" @mousedown="mousedown(item)" @mouseup="mouseup(item)">-->
+<!--          <div class="dot current-step none-select" v-if="state.currentStep === item">-->
+<!--            <i class="none-select">{{ item }}</i>-->
+<!--          </div>-->
+<!--          <div class="grid none-select" :class="index%10 === 0 ? 'grid-10' : index%5 === 0 ? 'grid-5' : ''"></div>-->
+<!--        </div>-->
+<!--      </template>-->
+<!--    </div>-->
 
-    <div class="option none-select">
-      <div id="showTime">{{ state.demoNum }}</div>
-      <div class="btn btn-brand" @click="start" v-if="!state.isStart">开始</div>
-      <div class="btn btn-brand" @click="stop" v-else>停止</div>
-      <div class="btn btn-brand" @click="reset">复位</div>
-      <div class="btn btn-brand" @click="actionTick">actionTick()</div>
-      <div class="btn btn-brand" @click="state.stopTick=true">tick()</div>
+    <div class="serial-msg my-card-warp pointer flex-row-center-center">
+<!--      <div id="showTime">{{ state.demoNum }}</div>-->
+      <div class="login_short_btn" @click="start" v-if="!state.isStart">开始</div>
+      <div class="login_short_btn" @click="stop" v-else>停止</div>
+      <div class="login_short_btn" @click="reset">复位</div>
+      <div class="login_short_btn" @click="actionTick">actionTick()</div>
+      <div class="login_short_btn" @click="state.stopTick=true">tick()</div>
     </div>
   </div>
 </template>
@@ -26,7 +26,10 @@ import * as THREE from "three";
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
 import {cloneDeep, debounce} from "@/utils/putlic/index.js"
 import dataIndex from "../data/index.js"
-import {ElMessage} from "element-plus";
+
+import boneStore from '@/store/bone/index.ts';
+const bone = boneStore()
+
 
 const fbx_loader = new FBXLoader()
 const emit = defineEmits(["sliderInput", "modelAction"]);
@@ -98,16 +101,21 @@ let chunkArray = (arr, len, key) => {
     let y = data[1]
     let z = data[2]
     let w = data[3]
+    // 计算俯仰角
+    let pitch = Math.asin(2 * (w * x - y * z));
+    // 计算偏航角
+    let yaw = Math.atan2(2 * (w * y + x * z), 1 - 2 * (x * x + y * y));
+    // 计算滚动角
+    let roll = Math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z));
+
     let quaternion = new THREE.Quaternion(x, y, z, w);
     let Euler = new THREE.Euler();
     let eulerData = Euler.setFromQuaternion(quaternion)
     if (key === 'D2' || key === 'D4') {
       eulerData['_z'] = eulerData['_z'] + Math.PI
-    }
-    if (key === 'D6' || key === 'D7') {
+    }else if (key === 'D6' || key === 'D7') {
       eulerData['_x'] = eulerData['_x'] - Math.PI/2
-    }
-    if (key === 'D10' || key === 'D11'|| key === 'D12'|| key === 'D13'|| key === 'D14'|| key === 'D15'|| key === 'D16'|| key === 'D17'|| key === 'D18'|| key === 'D19') {
+    }else{
       eulerData['_x'] = eulerData['_x'] - Math.PI/4
     }
     eulerData['_x'] = setRange(eulerData['_x'], '_x')
@@ -120,24 +128,33 @@ let chunkArray = (arr, len, key) => {
 
 const initModel = async () => {
   return new Promise(((resolve, reject) => {
-    // fbx_loader.load('/Martelo 2.fbx', mesh => {
-    //   fbx_loader.load('/Standing Jump.fbx', mesh => {
-    //   fbx_loader.load('/Flair.fbx', mesh => {
-    //   fbx_loader.load('/Catwalk Walk Forward Turn 90R.fbx', mesh => {
-    //   fbx_loader.load('/Strut Walking.fbx', mesh => {
       fbx_loader.load('/model/Walking.fbx', mesh => {
       state.mixStep = 0
       let action = mesh.animations[0]['tracks']
-      let duration = mesh.animations[0]['duration'] * 1000
+      let duration = mesh.animations[0]['duration'] * 1000 //持续时间
       state.duration = duration
       resolve(action)
     })
   }))
 }
-
+/*
+ // dataIndex['actions'] = [D2: {
+  //   times: [],
+  //       values: {},
+  //   action: {},
+  //   key: 45,
+  //       direction: {
+  //     "x": true,
+  //         "y": true,
+  //         "z": true,
+  //   },
+  //   index: 0
+  // }]
+  实在想不起来当时怎么想的了,这是啥意思
+ */
 const init = async () => {
   // state.actions = boneData['actions']
-  state.actions = dataIndex['actions']
+  state.actions = dataIndex['actions'] //这里取关节的数据(也有可能是骨骼),总之都是主动的
   let action = await initModel()
   for (let key in state.actions) {
     let item = state.actions[key]
@@ -152,27 +169,16 @@ const init = async () => {
   }
 }
 init()
+watch(() => bone.animateActions, val => {
+}, {
+  deep     : true,
+  immediate: false
+})
 watch(() => props.currentAction, val => {
 }, {
   deep     : true,
   immediate: true
 })
-const mousedown = (item) => {
-  state.isMouseDown = true
-  checkStep(item)
-}
-const mouseup = (item) => {
-  state.isMouseDown = false
-  checkStep(item)
-}
-const jd = (hd) => {
-  // 角度= 弧度 * 180 / Math.PI
-  return hd * (180 / Math.PI)
-}
-const hd = (jd) => {
-  // 弧度= 角度 * Math.PI / 180
-  return jd * (Math.PI / 180)
-}
 
 const setAction = () => {
   for (let key in state.actions) {
@@ -184,15 +190,11 @@ const setAction = () => {
       !direction.x ? eulerData['_x'] = 0 : ''
       !direction.y ? eulerData['_y'] = 0 : ''
       !direction.z ? eulerData['_z'] = 0 : ''
+      // 和左边主控一样的
       emit("modelAction", key, eulerData)
     }
   }
   state.mixStep = state.mixStep < state.currentStep ? state.currentStep : state.mixStep
-}
-const checkStep = (item) => {
-  if (!state.isMouseDown) return
-  state.currentStep = item
-  setAction()
 }
 const worker = new Worker("worker.js");
 const demoStop = () => {
@@ -315,77 +317,4 @@ function clickHandler(startBn) {
 
 <style lang="scss" scoped>
 
-.range {
-  width: 100%;
-
-
-  .range-box {
-    display: flex;
-    justify-content: space-between;
-    overflow: auto;
-
-    .range-item {
-      cursor: pointer;
-      position: relative;
-
-      .current-step {
-        position: absolute;
-        text-align: center;
-
-        &:after {
-          content: '';
-          background-color: red;
-          display: block;
-          width: 5px;
-          height: 5px;
-        }
-      }
-
-      .grid {
-        margin-top: 50px;
-        width: 1px;
-        height: 30px;
-        display: flex;
-        align-items: end;
-
-        &:before {
-          display: block;
-          content: '';
-          width: 1px;
-          height: 2px;
-          background-color: #000;
-        }
-      }
-
-      .grid-5 {
-        //height: 10px;
-        &:before {
-          height: 15px;
-        }
-      }
-
-      .grid-10 {
-        &:before {
-          height: 30px;
-        }
-      }
-    }
-  }
-
-  .option {
-    display: flex;
-    justify-content: center;
-
-    .input-time {
-      width: 100px;
-    }
-  }
-}
-
-#showTime {
-  width: 300px;
-  height: 60px;
-  font-size: 60px;
-  line-height: 60px;
-}
 </style>
