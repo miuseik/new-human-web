@@ -34,7 +34,6 @@ const animateAction = ref([])
 const currentActionIndex = ref(0)
 const actionPaths = [
   '/model/Walking.fbx',
-  '/model/AnimatedCharacter_lod00.fbx',
   '/model/Brutal Assassination.fbx',
   '/model/Catwalk Walk Forward Turn 90R.fbx',
   '/model/Flair.fbx',
@@ -130,22 +129,29 @@ let chunkArray = (track, len, key) => {
     let quaternion = new THREE.Quaternion(x, y, z, w);
     let euler = new THREE.Euler();
     let eulerData = euler.setFromQuaternion(quaternion);
-
-    if (key === 'mixamorigRightUpLeg' || key === 'mixamorigLeftUpLeg') {
+    if (key === 'mixamorigRightUpLeg' || key === 'mixamorigLeftUpLeg') { // 左右大腿根 z轴 + 180度
       eulerData.z = eulerData.z + Math.PI;
-    } else if (key === 'mixamorigRightFoot' || key === 'mixamorigLeftFoot'){
-      // eulerData.z = eulerData.z + Math.PI;
-      eulerData.x = eulerData.x - Math.PI / 4;
-    } else if (key === 'mixamorigRightShoulder' || key === 'mixamorigLeftShoulder') {
-      // eulerData.x = eulerData.x - Math.PI / 2;
-      // eulerData.z = eulerData.z - Math.PI;
-      eulerData.z = eulerData.z + Math.PI / 2;
-
-    } else if (key === 'mixamorigRightArm' || key === 'mixamorigLeftArm'){
-      // eulerData.x = eulerData.x - Math.PI /2;
-      // eulerData.z = eulerData.z + Math.PI;
-      eulerData.z = eulerData.y + Math.PI  ;
-
+    } else if (key === 'mixamorigRightFoot' || key === 'mixamorigLeftFoot'){ // 左右脚根 x轴 - 90度
+      eulerData.x = eulerData.x - Math.PI / 4
+    } else if ( key === 'mixamorigRightShoulder' ) { // 右锁骨 z轴 + 90度
+      eulerData.z = eulerData.z - Math.PI / 3;
+    } else if ( key === 'mixamorigRightArm'){ // 右上臂根 y轴 + 180度
+      // eulerData.x = eulerData.x - Math.PI   ;
+      eulerData.y = eulerData.y - Math.PI  ;
+      eulerData.z = eulerData.z - Math.PI/1.5  ;
+    } else if (   key === 'mixamorigLeftShoulder') { // 左锁骨 z轴 + 90度
+      eulerData.z = eulerData.z + Math.PI / 3;
+    } else if (  key === 'mixamorigLeftArm'){ // 左上臂根 y轴 + 180度
+      // eulerData.x = eulerData.x - Math.PI   ;
+      eulerData.y = eulerData.y + Math.PI  ;
+      eulerData.z = eulerData.z + Math.PI/1.5  ;
+    } else if (  key === 'mixamorigRightForeArm'){ // 左上臂根 y轴 + 180度
+      // eulerData.x = eulerData.x - Math.PI   ;
+      eulerData.z = eulerData.z + Math.PI /3  ;
+    } else if (  key === 'mixamorigLeftForeArm'){ // 左上臂根 y轴 + 180度
+      // eulerData.x = eulerData.x - Math.PI   ;
+      eulerData.z = eulerData.z - Math.PI /3  ;
+      eulerData.y = eulerData.y - Math.PI /3  ;
     }
 
     // 调用 setRange 函数进行范围限制
@@ -175,7 +181,6 @@ const getModel = async () => {
   const currentPath = actionPaths[currentActionIndex.value]
   return new Promise(((resolve, reject) => {
     loader.load(currentPath, function (object) {
-      console.log('object', object)
       if (mixer) {
         mixer.stopAllAction()
         scene.remove(mixer.getRoot())
@@ -193,6 +198,7 @@ const initModel = async () => {
     let object = await getModel()
     const _animateAction = {};
     const tracks = object['animations'][0].tracks;
+    console.log('分析动作',tracks)
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i];
       const field = track.name.split('.')[0];

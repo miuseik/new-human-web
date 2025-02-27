@@ -29,7 +29,6 @@ export default class boneThreeView {
         this.inLights() // 初始化灯光
         this.initHelper() // 初始化辅助线
         this.initControls() // 初始化控制器
-        // this.initModel() // 初始化模型
         // this.initRobot() // 初始化机器人
         this.initRenderer() // 初始化渲染器
         this.initAnimateTick() // 初始化动画
@@ -141,22 +140,6 @@ export default class boneThreeView {
      */
     setControlsEnabled(enabled) {
         this.controls.enabled = enabled
-    }
-
-    /**
-     * 初始化模型
-     * @returns {Promise<unknown>}
-     */
-    initModel = () => {
-        let item = 'Walking.fbx'
-        return new Promise(((resolve, reject) => {
-            fbx_loader.load(item, mesh => {
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;                    // mixer = new THREE.AnimationMixer(mesh)
-                this.scene.add(mesh)
-                // actions[index][0].play()
-            })
-        }))
     }
     /**
      * 初始化机器人

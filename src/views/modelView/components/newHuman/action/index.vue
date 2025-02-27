@@ -18,7 +18,6 @@ const emit = defineEmits(['sliderInput', 'modelAction', 'updateBoneList']);
 watch(
     () => bone.animateActions,
     (val) => {
-      console.log('动作的数据结构', val);
       animateActions.value = val;
     },
     {

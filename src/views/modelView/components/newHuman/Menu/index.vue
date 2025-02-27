@@ -160,7 +160,7 @@
               <template v-for="(option, index) in item['option']">
                 <p class="input-range-box" v-if="option.open"><!--open 开启-->
                   <span>{{ index }} {{ innerData[item[itemKey]][index] }} </span>
-                  <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>
+<!--                  <bar-graph :chart-id=index :width="'200px'" :height="'200px'"></bar-graph>-->
 <!--                  这里直接用item['option']就可以取值,但是这样会严重卡顿-->
                   <inputRange
                       class="input-box"
