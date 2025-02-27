@@ -133,15 +133,19 @@ let chunkArray = (track, len, key) => {
 
     if (key === 'mixamorigRightUpLeg' || key === 'mixamorigLeftUpLeg') {
       eulerData.z = eulerData.z + Math.PI;
-    } else if (key === 'mixamorigRightShoulder' || key === 'mixamorigLeftShoulder') {
-      // eulerData.x = eulerData.x - Math.PI / 2;
-      eulerData.z = eulerData.z - Math.PI;
     } else if (key === 'mixamorigRightFoot' || key === 'mixamorigLeftFoot'){
       // eulerData.z = eulerData.z + Math.PI;
-      eulerData.x = eulerData.x - Math.PI / 2;
-;
-    } else if (key === 'mixamorigRightArm' || key === 'mixamorigLeftArm'){
       eulerData.x = eulerData.x - Math.PI / 4;
+    } else if (key === 'mixamorigRightShoulder' || key === 'mixamorigLeftShoulder') {
+      // eulerData.x = eulerData.x - Math.PI / 2;
+      // eulerData.z = eulerData.z - Math.PI;
+      eulerData.z = eulerData.z + Math.PI / 2;
+
+    } else if (key === 'mixamorigRightArm' || key === 'mixamorigLeftArm'){
+      // eulerData.x = eulerData.x - Math.PI /2;
+      // eulerData.z = eulerData.z + Math.PI;
+      eulerData.z = eulerData.y + Math.PI  ;
+
     }
 
     // 调用 setRange 函数进行范围限制

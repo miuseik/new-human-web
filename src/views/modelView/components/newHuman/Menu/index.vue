@@ -30,21 +30,23 @@
       <template v-for="(item, index) in boneList ">
         <div class="bone-item">
           <div class="item-data my-card-warp">
-            <div class="operate flex" v-if="currentChange.includes(item.id)">
-              <div class="login_short_btn" @click="filterId(item.id)">取消</div>
-              <div class="login_short_btn" @click="saveChange(item)">保存</div>
-              <div class="login_short_btn" @click="deleteItem(item.id)">删除</div>
-            </div>
-            <div class="operate" v-else>
-              <div class="login_short_btn" @click="setItem(item)">修改</div>
-            </div>
+            <div class="flex-row-center-between">
+              <div class="operate flex" v-if="currentChange.includes(item.id)">
+                <div class="login_short_btn" @click="filterId(item.id)">取消</div>
+                <div class="login_short_btn" @click="saveChange(item)">保存</div>
+                <div class="login_short_btn" @click="deleteItem(item.id)">删除</div>
+              </div>
+              <div class="operate" v-else>
+                <div class="login_short_btn" @click="setItem(item)">修改</div>
+              </div>
 
-            <div class="item-info-option" :class="item.model_type*1 === 0 ?  'b-brand' : 'b-success'">
-              <div class="name"> {{ item.name }}</div>
-              <div class="option">
-                <div>id: <span>{{ item.id }}</span>---</div>
-<!--                <div>field: <span>{{ item['field'] }}</span>-</div>-->
-                <div>Pid: <span>{{ item.parent }}</span></div>
+              <div class="item-info-option" :class="item.model_type*1 === 0 ?  'b-brand' : 'b-success'">
+                <div class="name"> {{ item.name }}</div>
+                <div class="option">
+                  <div>id: <span>{{ item.id }}</span>---</div>
+                  <!--                <div>field: <span>{{ item['field'] }}</span>-</div>-->
+                  <div>Pid: <span>{{ item.parent }}</span></div>
+                </div>
               </div>
             </div>
             <div class="item-set" v-if="currentChange.includes(item.id)">
@@ -382,9 +384,9 @@ const addBone = () => {
           justify-content: space-between;
           font-size: 16px;
           padding: 1px 0;
-          position: absolute;
-          right: 10px;
-          top: 10px;
+          //position: absolute;
+          //right: 10px;
+          //top: 10px;
 
           .option {
             display: flex;
@@ -392,7 +394,7 @@ const addBone = () => {
 
             span {
               display: inline-block;
-              width: 15px;
+              width: 25px;
             }
           }
         }

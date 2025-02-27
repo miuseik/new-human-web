@@ -64,7 +64,6 @@ function animate(timestamp) {
     let minDifference = Infinity; //最小差异
     for (const time in rotateData) {
       const difference = Math.abs(parseFloat(time) - elapsedTime);
-      console.log('difference',difference)
       if (difference < minDifference) {
         minDifference = difference;
         closestTime = time;

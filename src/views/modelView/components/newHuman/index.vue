@@ -47,7 +47,7 @@ const state = reactive({
   dotArr: {},
   JointArray: bone.JointArray || {},
   specialJoints: [
-    'mixamorigHips', 'D3', 'D4', 'D5'
+    'mixamorigRightArm', 'mixamorigLeftArm', 'mixamorigRightUpLeg', 'mixamorigLeftUpLeg'
   ],
   actions: {}
 })
@@ -176,6 +176,7 @@ const modelAction = (id, option) => {
     //传给舵机的值
     driveServer(item['coordinate'], id, key, _options)
     //传给threejs的值
+    console.log('传给threejs的值')
     driveModel(item['euler'], id, key, _options)
   }
 };
@@ -198,6 +199,7 @@ const switchChange = (enabled) => {
 };
 // 更新模型列表
 const updateBoneList = () => {
+  console.log('更新模型列表')
   base.initRobot();
 };
 
@@ -225,10 +227,9 @@ onMounted(() => {
 
   .dot-warp {
     position: fixed;
-    border-radius: 50%;
     top: 40px;
     right: 0;
-
+    overflow: hidden;
     .dot-box {
       .inner {
         background-color: #060f14;

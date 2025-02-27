@@ -137,21 +137,6 @@ const initModel = async () => {
     })
   }))
 }
-/*
- // dataIndex['actions'] = [D2: {
-  //   times: [],
-  //       values: {},
-  //   action: {},
-  //   key: 45,
-  //       direction: {
-  //     "x": true,
-  //         "y": true,
-  //         "z": true,
-  //   },
-  //   index: 0
-  // }]
-  实在想不起来当时怎么想的了,这是啥意思
- */
 const init = async () => {
   // state.actions = boneData['actions']
   state.actions = dataIndex['actions'] //这里取关节的数据(也有可能是骨骼),总之都是主动的

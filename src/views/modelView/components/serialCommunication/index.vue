@@ -9,7 +9,7 @@
       <template #reference>
               <div class="my-button-common" style="padding:0 30px" @click="getSerialList">查找设备</div>
       </template>
-      <el-table :data="state.serialList" style="width: 100%">
+      <el-table :data="state.serialList" style="width: 100% ; overflow: hidden">
         <el-table-column v-for="(item,index) in state.showList" :fixed ='index === 0' :prop="item.field" :label="item.field" />
         <el-table-column fixed="right" label="Operations" width="120">
           <template #default>
@@ -136,7 +136,6 @@ function animate() {
 animate()
 onMounted(() => {
   bus.on("baseSliderInput", () => {
-    console.log('基本滑块输入')
     const loopCount = Math.floor(Math.random() * 16);
     for (let i = 0; i < loopCount; i++) {
       const num1 = Math.floor(Math.random() * 16);
