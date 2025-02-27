@@ -39,7 +39,7 @@ function animate(timestamp) {
   // 找到所有动作数据中的最大时间
   let maxTime = 0;
   for (const action of animateActions.value) {
-    const positionData = action.position;
+    const positionData = action.rotate;
     for (const time in positionData) {
       const currentTime = parseFloat(time);
       if (currentTime > maxTime) {
@@ -61,9 +61,10 @@ function animate(timestamp) {
 
     // 找到最接近当前时间的时间点
     let closestTime = null;
-    let minDifference = Infinity;
-    for (const time in positionData) {
+    let minDifference = Infinity; //最小差异
+    for (const time in rotateData) {
       const difference = Math.abs(parseFloat(time) - elapsedTime);
+      console.log('difference',difference)
       if (difference < minDifference) {
         minDifference = difference;
         closestTime = time;
@@ -74,7 +75,6 @@ function animate(timestamp) {
       emit('modelAction', action.id, rotateData[closestTime]);
     }
   }
-
   requestAnimationFrame(animate);
 }
 

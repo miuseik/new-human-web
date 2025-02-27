@@ -79,10 +79,18 @@ const initLight = () => {
 }
 
 const setRange = (val, key) => {
-  if (Math.abs(val) > Math.PI) {
-    return val - (2 * Math.PI)
+  // if (Math.abs(val) > Math.PI) {
+  //   return val - (2 * Math.PI)
+  // }
+  // return val
+
+  while (val > Math.PI) {
+    val -= 2 * Math.PI;
   }
-  return val
+  while (val < -Math.PI) {
+    val += 2 * Math.PI;
+  }
+  return val;
 }
 const chunkPosition = (track) => {
   const { times, values } = track;
@@ -120,22 +128,37 @@ let chunkArray = (track, len, key) => {
     let w = data[3];
 
     let quaternion = new THREE.Quaternion(x, y, z, w);
-    let Euler = new THREE.Euler();
-    let eulerData = Euler.setFromQuaternion(quaternion);
+    let euler = new THREE.Euler();
+    let eulerData = euler.setFromQuaternion(quaternion);
 
     if (key === 'mixamorigRightUpLeg' || key === 'mixamorigLeftUpLeg') {
-      eulerData['_z'] = eulerData['_z'] + Math.PI;
-    } else if (key === 'mixamorigRightLeg' || key === 'mixamorigLeftLeg') {
-      eulerData['_x'] = eulerData['_x'] - Math.PI / 2;
-    } else {
-      eulerData['_x'] = eulerData['_x'] - Math.PI / 4;
+      eulerData.z = eulerData.z + Math.PI;
+    } else if (key === 'mixamorigRightShoulder' || key === 'mixamorigLeftShoulder') {
+      // eulerData.x = eulerData.x - Math.PI / 2;
+      eulerData.z = eulerData.z - Math.PI;
+    } else if (key === 'mixamorigRightFoot' || key === 'mixamorigLeftFoot'){
+      // eulerData.z = eulerData.z + Math.PI;
+      eulerData.x = eulerData.x - Math.PI / 2;
+;
+    } else if (key === 'mixamorigRightArm' || key === 'mixamorigLeftArm'){
+      eulerData.x = eulerData.x - Math.PI / 4;
     }
 
-    eulerData['_x'] = setRange(eulerData['_x'], '_x');
-    eulerData['_y'] = setRange(eulerData['_y'], '_y');
-    eulerData['_z'] = setRange(eulerData['_z'], '_z');
+    // 调用 setRange 函数进行范围限制
+    eulerData.x = setRange(eulerData.x, 'x');
+    eulerData.y = setRange(eulerData.y, 'y');
+    eulerData.z = setRange(eulerData.z, 'z');
 
-    result[times[i]] = eulerData;
+    // 提取三维向量
+    const vector3 = {
+      x: eulerData.x,
+      y: eulerData.y,
+      z: eulerData.z
+    };
+
+    // 确保 times 是一个数组或者对象，并且能正确获取时间点
+    const currentTime = Array.isArray(times)? times[i] : times[Object.keys(times)[i]];
+    result[currentTime] = vector3;
   }
   return result;
 };
@@ -147,17 +170,17 @@ const getModel = async () => {
   const loader = new FBXLoader();
   const currentPath = actionPaths[currentActionIndex.value]
   return new Promise(((resolve, reject) => {
-    loader.load(currentPath, function (mesh) {
-
+    loader.load(currentPath, function (object) {
+      console.log('object', object)
       if (mixer) {
         mixer.stopAllAction()
         scene.remove(mixer.getRoot())
       }
-      mixer = new THREE.AnimationMixer(mesh); //混合器
-      const action = mixer.clipAction(mesh.animations[0]);
+      mixer = new THREE.AnimationMixer(object); //混合器
+      const action = mixer.clipAction(object.animations[0]);
       action.play();
-      scene.add(mesh);
-      resolve(mesh)
+      scene.add(object);
+      resolve(object)
     })
   }))
 }
@@ -165,11 +188,11 @@ const initModel = async () => {
   if (bone.getBoneList.length > 0) {
     let object = await getModel()
     const _animateAction = {};
-    const tracks = object.animations[0].tracks;
+    const tracks = object['animations'][0].tracks;
     for (let i = 0; i < tracks.length; i++) {
       const track = tracks[i];
       const field = track.name.split('.')[0];
-      const motionType = track.name.includes('.position') ? '移动' : '旋转';
+      const motionType = track.name.includes('.position') ? '移动' : '旋转';//quaternion
       const jointNameChinese = modelViewData.boneName[field];
 
       // 查找对应的 id
@@ -195,7 +218,7 @@ const initModel = async () => {
       let item = _animateAction[field];
       // 根据运动类型更新 position 或 rotate
       if (motionType === '移动') {
-        item.position = chunkPosition(track, 3, field);
+        item.position = chunkPosition(track);
       } else {
         item.rotate = chunkArray(track, 4, field);
       }

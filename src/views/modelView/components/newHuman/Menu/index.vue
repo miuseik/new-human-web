@@ -42,8 +42,8 @@
             <div class="item-info-option" :class="item.model_type*1 === 0 ?  'b-brand' : 'b-success'">
               <div class="name"> {{ item.name }}</div>
               <div class="option">
-                <div>id: <span>{{ item.id }}</span>-</div>
-                <div>field: <span>{{ item['field'] }}</span>-</div>
+                <div>id: <span>{{ item.id }}</span>---</div>
+<!--                <div>field: <span>{{ item['field'] }}</span>-</div>-->
                 <div>Pid: <span>{{ item.parent }}</span></div>
               </div>
             </div>
@@ -371,7 +371,7 @@ const addBone = () => {
     overflow: auto;
     .bone-item {
       .item-data {
-        font-family: MeiHei;
+        //font-family: MeiHei;
         font-size: 15px;
         position: relative;
 
