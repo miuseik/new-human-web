@@ -1,5 +1,5 @@
 <template>
-    <div class="new-human">
+    <div class="new-human main-page">
         <div class="index-border"></div>
 <!--      串行通信-->
         <serial-communication class="serial-communication"></serial-communication>
@@ -38,12 +38,7 @@ import actionLibrary from "./components/actionLibrary/index.vue"
 .new-human {
     display: flex;
     flex-direction: column;
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
+
 
     .index-border {
         position: absolute;
