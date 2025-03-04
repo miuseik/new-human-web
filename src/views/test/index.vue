@@ -1,12 +1,7 @@
 <template>
   <div>
     <ul>
-      <li v-for="(track, index) in animateAction" :key="index">
-        <p>关节名称: {{ getJointName(track.name) }}</p>
-        <p>运动类型: {{ getMotionType(track.name) }}</p>
-        <p>时间帧: {{ track.times }}</p>
-        <p>值: {{ track.values }}</p>
-      </li>
+
     </ul>
   </div>
 </template>

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, defineEmits } from 'vue';
+import { ref, watch } from 'vue';
 import boneStore from '@/store/bone/index.ts';
 
 const isStart = ref(false);

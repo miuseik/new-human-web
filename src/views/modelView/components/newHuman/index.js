@@ -183,8 +183,8 @@ export default class boneThreeView {
             return new Promise(((resolve, reject) => {
                 let _position = position || {x: -.25, y: 0, z: -.25};
                 let _name = name || ''
-                loader.load(`/boneView/woman/${_name}`, (geometry) => {
-                // loader.load(`https://file.qupuba.com/new_human/boneView/woman/${_name}`, (geometry) => {
+                // loader.load(`/boneView/woman/${_name}`, (geometry) => {
+                loader.load(`https://file.qupuba.com/new_human/boneView/woman/${_name}`, (geometry) => {
                     let Mesh = new THREE.Mesh(geometry, material);
                     Mesh.position.set(_position.x, _position.y, _position.z);
                     Mesh.castShadow = true;
