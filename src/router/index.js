@@ -13,6 +13,16 @@ let routes = [
         component: () => import('../views/test/index.vue')
     },
     {
+        path: '/about',
+        name: 'about',
+        component: () => import('../views/about/index.vue')
+    },
+    {
+        path: '/rapier',
+        name: 'rapier',
+        component: () => import('../views/docs/rapier/index.vue')
+    },
+    {
         path: '/home',
         name: 'home',
         component: () => import( '../views/home/index.vue')

@@ -1,68 +1,80 @@
-<template>
-  <div class="main-page">
-    <div style="display: flex;">
-      <div>
-        <h3>List 1 {{ list1 }}</h3>
-        <draggable v-model="list1" group="shared">
-          <template #item="{ element }">
-            <div class="draggable-item">
-              {{ element.name }}
-            </div>
-          </template>
-        </draggable>
-      </div>
-      <div>
-        <h3>List 2 {{ list2 }}</h3>
-        <draggable v-model="list2" group="shared">
-          <template #item="{ element }">
-            <div class="draggable-item">
-              {{ element.name }}
-            </div>
-          </template>
-        </draggable>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
-import draggable from 'vuedraggable';
+import { onMounted, ref } from 'vue';
+import * as RAPIER from '@dimforge/rapier3d';
+import {
+  createScene,
+  createCamera,
+  createRenderer,
+  createGradientTexture,
+  createGround,
+  createCube,
+  createSphere,
+  createControls,
+} from './rapier3d/threeSetup.ts';
+import { initPhysics } from './rapier3d/physicsSetup.ts';
+import { animate } from './rapier3d/animate.ts';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-const list1 = ref([
-  { id: 1, name: 'Item 1' },
-  { id: 2, name: 'Item 2' },
-  { id: 3, name: 'Item 3' }
-]);
+const container = ref<HTMLElement | null>(null);
 
-const list2 = ref([
-  { id: 4, name: 'Item 4' },
-  { id: 5, name: 'Item 5' }
-]);
+let scene: THREE.Scene | null = null;
+let camera: THREE.PerspectiveCamera | null = null;
+let renderer: THREE.WebGLRenderer | null = null;
+let world: RAPIER.World | null = null;
+let rigidBody: RAPIER.RigidBody | null = null;
+let cube: THREE.Mesh | null = null;
+let controls: OrbitControls | null = null;
+
+onMounted(() => {
+  if (!container.value) {
+    console.error('Container element not found');
+    return;
+  }
+
+  // 初始化 Three.js 场景
+  scene = createScene();
+  camera = createCamera();
+  renderer = createRenderer(container.value);
+
+  // 创建天空背景
+  const skyGradient = createGradientTexture();
+  scene.background = skyGradient;
+
+  // 创建地面
+  const ground = createGround();
+  scene.add(ground);
+
+  // 创建立方体
+  // cube = createCube();
+  cube = createSphere(0.6);
+  scene.add(cube);
+
+  // 设置相机位置
+  camera.position.z = 5;
+
+  // 初始化物理引擎
+  const physics = initPhysics();
+  world = physics.world;
+  rigidBody = physics.rigidBody;
+
+  // 创建 OrbitControls
+  controls = createControls(camera!, renderer!);
+
+  // 渲染循环
+  animate(renderer!, scene!, camera!, world!, cube!, rigidBody!, controls!);
+
+
+});
 </script>
 
+<template>
+  <div ref="container" class="sim-container"></div>
+</template>
+
 <style scoped>
-.draggable-item {
-  width: 200px;
-  height: 50px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  margin: 10px;
-  padding: 10px;
-  text-align: center;
-  cursor: move;
-  /* 添加过渡效果 */
-  transition: transform 0.2s ease;
-}
-
-/* 拖动时的样式 */
-.draggable-item.sortable-chosen {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-/* 拖动过程中占位元素的样式 */
-.draggable-item.sortable-ghost {
-  opacity: 0.5;
+.sim-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
 }
 </style>

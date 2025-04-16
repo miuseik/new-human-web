@@ -49,6 +49,7 @@ html, body {
 body {
   margin: 0;
   position: fixed;
+  z-index: -1;
   width: 100%;
   height: 100%;
 }

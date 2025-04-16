@@ -38,21 +38,18 @@ const getKeyboard = (event) => {
   }
 }
 onMounted(() => {
-  initThree();
+  // initThree();
   if (window && window['electron']) {
     storage.set('currentBrowser', 'electron');
   } else {
     storage.set('currentBrowser', getBrowser());
-
-
-
   }
-  window.addEventListener('keydown', getKeyboard);
+  // window.addEventListener('keydown', getKeyboard);
 })
 </script>
 <template>
   <div class="three-class" id="my_three"/>
-  <ink-wash class="ink-wash"/>
+<!--  <ink-wash class="ink-wash"/>-->
   <router-view class="prohibit-selection"/>
 </template>
 <style scoped>

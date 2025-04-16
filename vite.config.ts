@@ -1,5 +1,6 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import wasm from 'vite-plugin-wasm';
 
 import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 import {resolve} from "path";
@@ -10,13 +11,12 @@ import Components from 'unplugin-vue-components/vite';
 
 import env from ".//src/env/moudules/env.js";
 
-
 import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-
+    wasm(),
     VueSetupExtend(),
 
     AutoImport({
@@ -53,7 +53,11 @@ export default defineConfig({
     },
   },
   base: './',
+  optimizeDeps: {
+    exclude: ['@dimforge/rapier3d']
+  },
   build:{
+    target: 'es2022',
     chunkSizeWarningLimit:2000
   },
   css   : {
