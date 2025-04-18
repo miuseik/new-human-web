@@ -14,6 +14,8 @@ import {
 import { initPhysics } from './rapier3d/physicsSetup.ts';
 import { animate } from './rapier3d/animate.ts';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as THREE from "three";
+import {modelData} from "@/views/test/rapier3d/modelData.ts";
 
 const container = ref<HTMLElement | null>(null);
 
@@ -45,8 +47,14 @@ onMounted(() => {
   // cube = createCube();
   sphere = createSphere();
   cube = createCube();
-  scene.add(sphere);
-  scene.add(cube);
+  let parentObject = new THREE.Object3D()
+  parentObject.add(sphere);
+  parentObject.add(cube);
+  cube.position.set(0, modelData.cube.height / 2, 0); // 立方体中心位置
+  sphere.position.set(0, -modelData.sphere.radius, 0); // 球体中心位置
+  scene.add(parentObject);
+  // scene.add(sphere);
+  // scene.add(cube);
   // 设置相机位置
   camera.position.z = 5;
   // 初始化物理引擎
@@ -56,7 +64,7 @@ onMounted(() => {
   // 创建 OrbitControls
   controls = createControls(camera!, renderer!);
   // 渲染循环
-  animate(renderer!, scene!, camera!, world!, cube!,sphere!, rigidBody!, controls!);
+  animate(renderer!, scene!, camera!, world!, cube!,sphere!,parentObject!, rigidBody!, controls!);
 });
 </script>
 

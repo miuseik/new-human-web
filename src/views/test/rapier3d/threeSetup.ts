@@ -96,6 +96,24 @@ export function createSphere() {
   return new THREE.Mesh(sphereGeometry, sphereMaterial);
 }
 
+export function createObjectModel(scene: THREE.Scene) {
+  let parentObject = new THREE.Object3D()
+  const cube = createCube();
+  const sphere = createSphere();
+
+  // 将立方体和球体添加到父对象下
+  parentObject.add(cube);
+  parentObject.add(sphere);
+
+  // 设置立方体和球体的相对位置（相对于父对象）
+  cube.position.set(0, modelData.cube.height / 2, 0); // 立方体中心位置
+  sphere.position.set(0, -modelData.sphere.radius, 0); // 球体中心位置
+
+  // 将父对象添加到场景中
+  scene.add(parentObject);
+
+  return { cube, sphere, parentObject };
+}
 
 // 创建 OrbitControls 控制器，用于控制摄像机的旋转和缩放
 export function createControls(camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer) {
