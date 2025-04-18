@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 // 导入 OrbitControls 控制器，用于控制摄像机的旋转和缩放
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import {modelData} from "@/views/test/rapier3d/modelData.ts";
 
 // 创建一个新的场景
 export function createScene() {
@@ -53,7 +54,10 @@ export function createGradientTexture() {
 // 创建一个地面
 export function createGround() {
   // 创建一个平面几何体，宽高为 20x20
-  const groundGeometry = new THREE.PlaneGeometry(20, 20);
+  const groundGeometry = new THREE.PlaneGeometry(
+      modelData.ground.width,
+      modelData.ground.depth
+  );
   // 创建一个基础材质，颜色为浅灰色
   const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x444444 });
   // 创建一个网格对象，将几何体和材质结合
@@ -61,14 +65,18 @@ export function createGround() {
   // 旋转地面使其水平
   ground.rotation.x = -Math.PI / 2;
   // 设置地面的 Y 轴位置
-  ground.position.y = -0.1;
+  ground.position.y = -modelData.ground.height;
   return ground;
 }
 
 // 创建一个立方体
 export function createCube() {
   // 创建一个立方体几何体，边长为 1
-  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const cubeGeometry = new THREE.BoxGeometry(
+      modelData.cube.width,
+      modelData.cube.height,
+      modelData.cube.depth
+  );
   // 创建一个基础材质，颜色为绿色
   // const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const cubeMaterial = new THREE.MeshNormalMaterial();
@@ -77,9 +85,11 @@ export function createCube() {
 }
 
 // 创建一个球体
-export function createSphere(radius: number) {
+export function createSphere() {
   // 创建一个球体几何体
-  const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32); // 分段数为 32
+  const sphereGeometry = new THREE.SphereGeometry(
+      modelData.sphere.radius, 20, 20
+  ); // 分段数为 32
   // 创建一个基础材质，颜色为绿色
   const sphereMaterial = new THREE.MeshNormalMaterial();
   // 创建一个网格对象，将几何体和材质结合

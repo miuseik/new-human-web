@@ -7,7 +7,7 @@
  * @param angleB
  * @param twistAngle 扭曲角度
  */
-export function createRagdoll(scale, angleA = 0, angleB = 0, twistAngle = 0) {
+export function createRagdoll(scale=1, angleA = 0, angleB = 0, twistAngle = 0) {
   const shouldersDistance = 0.45 * scale,
     upperArmLength = 0.4 * scale,
     lowerArmLength = 0.4 * scale,

@@ -7,8 +7,8 @@ import {
   createRenderer,
   createGradientTexture,
   createGround,
-  createCube,
   createSphere,
+  createCube,
   createControls,
 } from './rapier3d/threeSetup.ts';
 import { initPhysics } from './rapier3d/physicsSetup.ts';
@@ -22,6 +22,7 @@ let camera: THREE.PerspectiveCamera | null = null;
 let renderer: THREE.WebGLRenderer | null = null;
 let world: RAPIER.World | null = null;
 let rigidBody: RAPIER.RigidBody | null = null;
+let sphere: THREE.Mesh | null = null;
 let cube: THREE.Mesh | null = null;
 let controls: OrbitControls | null = null;
 
@@ -30,40 +31,32 @@ onMounted(() => {
     console.error('Container element not found');
     return;
   }
-
   // 初始化 Three.js 场景
   scene = createScene();
   camera = createCamera();
   renderer = createRenderer(container.value);
-
   // 创建天空背景
   const skyGradient = createGradientTexture();
   scene.background = skyGradient;
-
   // 创建地面
   const ground = createGround();
   scene.add(ground);
-
   // 创建立方体
   // cube = createCube();
-  cube = createSphere(0.6);
+  sphere = createSphere();
+  cube = createCube();
+  scene.add(sphere);
   scene.add(cube);
-
   // 设置相机位置
   camera.position.z = 5;
-
   // 初始化物理引擎
   const physics = initPhysics();
   world = physics.world;
   rigidBody = physics.rigidBody;
-
   // 创建 OrbitControls
   controls = createControls(camera!, renderer!);
-
   // 渲染循环
-  animate(renderer!, scene!, camera!, world!, cube!, rigidBody!, controls!);
-
-
+  animate(renderer!, scene!, camera!, world!, cube!,sphere!, rigidBody!, controls!);
 });
 </script>
 
