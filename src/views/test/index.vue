@@ -32,12 +32,17 @@ let controls: OrbitControls | null = null;
 
 const randerModel = () => {
   if (!container.value) {
-    console.error('Container element not found');
     return;
   }
   // 初始化 Three.js 场景
   scene = createScene();
   camera = createCamera();
+
+  const helper = new THREE.GridHelper( 10000, 2, 0xffffff, 0xffffff );
+  scene.add( helper );
+  // 设置相机位置
+  camera.position.set( 0, 500, 2000 );
+
   renderer = createRenderer(container.value);
   // 创建天空背景
   createGradientTexture(scene, renderer, camera)
@@ -60,14 +65,15 @@ const randerModel = () => {
   // scene.add(parentObject);
   scene.add(sphere);
   scene.add(cube);
-  // 设置相机位置
-  camera.position.z = 5;
+
   // 初始化物理引擎
   const physics = initPhysics();
   world = physics.world;
   rigidBody = physics.rigidBody;
   // 创建 OrbitControls
   controls = createControls(camera!, renderer!);
+
+
   // 渲染循环
   animate(renderer!, scene!, camera!, world!, controls!, parentObject!, rigidBody!);
 }

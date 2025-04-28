@@ -31,5 +31,20 @@ export function animate(
 
   // 更新渲染和控制
   controls.update();
-  renderer.render(scene, camera);
+
+  render();
+
+  // controls.addEventListener( 'change', render );
+  // controls.enableZoom = false;
+  // controls.enablePan = false;
+  window.addEventListener( 'resize', onWindowResize );
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    render();
+  }
+  function render() {
+    renderer.render(scene, camera);
+  }
 }
