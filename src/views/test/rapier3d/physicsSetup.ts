@@ -20,7 +20,7 @@ export function initPhysics() {
     // 创建动态刚体
     const rigidBodyDesc = RAPIER.RigidBodyDesc
         .dynamic()
-        .setTranslation(0.0, 5.0, 0.0); // 动态刚体的初始位置
+        .setTranslation(0.0, 50.0, 0.0); // 动态刚体的初始位置
     const rigidBody = world.createRigidBody(rigidBodyDesc);
 
     // 创建立圆球碰撞器（选择一种形状！）
@@ -32,10 +32,25 @@ export function initPhysics() {
         modelData.cube.height / 2,
         modelData.cube.depth / 2
     ).setTranslation(0, 0, 0);
-    // 关联到刚体
 
-    const sphereCollider = world.createCollider(colliderSphereDesc, rigidBody);
-    const cuboidCollider = world.createCollider(colliderCuboidDesc, rigidBody);
+    // 创建三角网格碰撞体
+    const vertices = modelData.headerModel.vertices;
+    const indices = modelData.headerModel.indices;
+
+    // 将顶点和索引数据转换为 Float32Array 和 Uint32Array
+    const verticesArray = new Float32Array(vertices);
+    const indicesArray = new Uint32Array(indices);
+
+    // 创建三角网格描述符
+    const triangleMeshDesc = RAPIER.ColliderDesc
+        .trimesh(verticesArray, indicesArray)
+        .setTranslation(0, -modelData.cube.height / 2 - modelData.sphere.radius, 0)
+
+    // 创建三角网格碰撞体并绑定到刚体
+    world.createCollider(triangleMeshDesc, rigidBody);
+    // 关联到刚体
+    world.createCollider(colliderSphereDesc, rigidBody);
+    world.createCollider(colliderCuboidDesc, rigidBody);
 
     return {world, rigidBody};
 }

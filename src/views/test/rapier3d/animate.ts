@@ -9,14 +9,12 @@ export function animate(
   scene: THREE.Scene,
   camera: THREE.PerspectiveCamera,
   world: RAPIER.World,
-  cube: THREE.Mesh,
-  sphere: THREE.Mesh,
-  parentObject: THREE.Mesh,
+  controls: OrbitControls,
+  parentObject: THREE.Object3D,
   rigidBody: RAPIER.RigidBody,
-  controls: OrbitControls
 ) {
   // 一分钟60次
-  requestAnimationFrame(() => animate(renderer, scene, camera, world, cube,sphere,parentObject, rigidBody, controls));
+  requestAnimationFrame(() => animate(renderer, scene, camera, world, controls, parentObject, rigidBody));
   // 更新物理世界
   world.step();
 // 获取刚体的最新位置和旋转

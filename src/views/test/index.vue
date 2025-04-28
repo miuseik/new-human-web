@@ -10,6 +10,7 @@ import {
   createSphere,
   createCube,
   createControls,
+  createTriangleMesh, createShaderMaterial,
 } from './rapier3d/threeSetup.ts';
 import { initPhysics } from './rapier3d/physicsSetup.ts';
 import { animate } from './rapier3d/animate.ts';
@@ -26,9 +27,10 @@ let world: RAPIER.World | null = null;
 let rigidBody: RAPIER.RigidBody | null = null;
 let sphere: THREE.Mesh | null = null;
 let cube: THREE.Mesh | null = null;
+let triangle: THREE.Mesh | null = null;
 let controls: OrbitControls | null = null;
 
-onMounted(() => {
+const randerModel = () => {
   if (!container.value) {
     console.error('Container element not found');
     return;
@@ -38,8 +40,8 @@ onMounted(() => {
   camera = createCamera();
   renderer = createRenderer(container.value);
   // 创建天空背景
-  const skyGradient = createGradientTexture();
-  scene.background = skyGradient;
+  createGradientTexture(scene, renderer, camera)
+
   // 创建地面
   const ground = createGround();
   scene.add(ground);
@@ -47,14 +49,17 @@ onMounted(() => {
   // cube = createCube();
   sphere = createSphere();
   cube = createCube();
+  triangle = createTriangleMesh();
   let parentObject = new THREE.Object3D()
   parentObject.add(sphere);
   parentObject.add(cube);
+  parentObject.add(triangle);
   cube.position.set(0, modelData.cube.height / 2, 0); // 立方体中心位置
   sphere.position.set(0, -modelData.sphere.radius, 0); // 球体中心位置
-  scene.add(parentObject);
-  // scene.add(sphere);
-  // scene.add(cube);
+  parentObject.position.set(0, -modelData.cube.height / 2 - modelData.sphere.radius, 0); // 球体中心位置
+  // scene.add(parentObject);
+  scene.add(sphere);
+  scene.add(cube);
   // 设置相机位置
   camera.position.z = 5;
   // 初始化物理引擎
@@ -64,7 +69,10 @@ onMounted(() => {
   // 创建 OrbitControls
   controls = createControls(camera!, renderer!);
   // 渲染循环
-  animate(renderer!, scene!, camera!, world!, cube!,sphere!,parentObject!, rigidBody!, controls!);
+  animate(renderer!, scene!, camera!, world!, controls!, parentObject!, rigidBody!);
+}
+onMounted(() => {
+  randerModel()
 });
 </script>
 

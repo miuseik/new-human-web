@@ -3,15 +3,115 @@ import * as THREE from 'three';
 // 导入 OrbitControls 控制器，用于控制摄像机的旋转和缩放
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {modelData} from "@/views/test/rapier3d/modelData.ts";
-
+import { Sky } from './shader/sky';
 // 创建一个新的场景
 export function createScene() {
   return new THREE.Scene();
 }
+// 在threeSetup.ts中新增函数
+export function createShaderMaterial(): THREE.ShaderMaterial {
+  const shader = {
+    uniforms: {
+      u_time: { value: 0 }, // 动态时间参数
+      u_color: { value: new THREE.Color(0xff0000) } // 基础颜色
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 u_color;
+      uniform float u_time;
+      varying vec2 vUv;
+      void main() {
+        // 示例：基于UV坐标和时间的渐变颜色
+        vec3 color = u_color + 0.5*sin(u_time + vUv.x*10.0);
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  };
+  return new THREE.ShaderMaterial({
+    uniforms: shader.uniforms,
+    vertexShader: shader.vertexShader,
+    fragmentShader: shader.fragmentShader,
+    side: THREE.DoubleSide // 双面渲染
+  });
+}
+export function createSkinMaterial(): THREE.ShaderMaterial {
+
+  const shader = {
+    uniforms: {
+      u_ambientColor: { value: new THREE.Color(0x202020) }, // 环境光（基础肤色）
+      u_diffuseColor: { value: new THREE.Color(0xffdddd) }, // 漫反射（皮肤基色）
+      u_specularColor: { value: new THREE.Color(0xffffaa) }, // 高光颜色
+      u_shininess: { value: 32 }, // 镜面指数（数值越大高光越集中）
+    },
+    vertexShader: `
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+      varying vec3 vViewPosition;
+      
+      void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vNormal = normalize( normalMatrix * normal );
+        vPosition = worldPosition;
+        vViewPosition = -mvPosition.xyz; // 视图空间位置（用于计算视角方向）
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 u_lightPosition;
+      uniform vec3 u_ambientColor;
+      uniform vec3 u_diffuseColor;
+      uniform vec3 u_specularColor;
+      uniform float u_shininess;
+      
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+      varying vec3 vViewPosition;
+      
+      void main() {
+        // 光源方向
+        vec3 lightDir = normalize(u_lightPosition - vPosition);
+        // 视角方向
+        vec3 viewDir = normalize(vViewPosition);
+        // 半矢量方向
+        vec3 halfDir = normalize(lightDir + viewDir);
+        
+        // 漫反射计算
+        float diff = max(dot(vNormal, lightDir), 0.0);
+        vec3 diffuse = u_diffuseColor * diff;
+        
+        // 镜面反射计算（Phong模型）
+        float spec = pow(max(dot(vNormal, halfDir), 0.0), u_shininess);
+        vec3 specular = u_specularColor * spec;
+        
+        // 合成最终颜色
+        vec3 finalColor = u_ambientColor + diffuse + specular;
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `,
+  };
+
+  return new THREE.ShaderMaterial({
+    uniforms: shader.uniforms,
+    vertexShader: shader.vertexShader,
+    fragmentShader: shader.fragmentShader,
+    side: THREE.DoubleSide,
+    lights: true // 启用光照计算
+  });
+}
 
 // 创建一个透视摄像机，参数分别为视角、宽高比、近裁剪面、远裁剪面
 export function createCamera() {
-  return new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  return new THREE.PerspectiveCamera(
+      75,// 视角
+      window.innerWidth / window.innerHeight, // 视角宽高比
+      0.1, // 近裁剪面
+      10000 // 远裁剪面
+  );
 }
 
 // 创建一个 WebGL 渲染器，并将其添加到指定的 HTML 容器中
@@ -25,30 +125,47 @@ export function createRenderer(container: HTMLElement) {
 }
 
 // 创建一个渐变纹理
-export function createGradientTexture() {
-  // 创建一个 canvas 元素
-  const canvas = document.createElement('canvas');
-  // 设置 canvas 的宽高
-  canvas.width = 2;
-  canvas.height = 2;
-  // 获取 canvas 的 2D 上下文
-  const context = canvas.getContext('2d');
-  // 如果获取不到上下文，返回 null
-  if (!context) return null;
+export function createGradientTexture(scene, renderer, camera) {
 
-  // 创建一个线性渐变
-  const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
-  // 添加颜色停止点，从顶部到底部渐变
-  gradient.addColorStop(0, '#87CEEB'); // 天蓝色
-  gradient.addColorStop(1, '#444444'); // 浅灰色
+    // Add Sky
+    let sky = new  Sky();
+    sky.scale.setScalar( 450000 );
+    scene.add( sky );
 
-  // 设置填充样式为渐变
-  context.fillStyle = gradient;
-  // 填充整个 canvas
-  context.fillRect(0, 0, canvas.width, canvas.height);
+    let sun = new THREE.Vector3();
 
-  // 返回一个基于 canvas 的纹理
-  return new THREE.CanvasTexture(canvas);
+    /// GUI
+
+    const effectController = {
+      turbidity: 10,
+      rayleigh: 3,
+      mieCoefficient: 0.005,
+      mieDirectionalG: 0.7,
+      elevation: 2,
+      azimuth: 180,
+      exposure: renderer.toneMappingExposure
+    };
+
+    function guiChanged() {
+
+      const uniforms = sky.material.uniforms;
+      uniforms[ 'turbidity' ].value = effectController.turbidity;
+      uniforms[ 'rayleigh' ].value = effectController.rayleigh;
+      uniforms[ 'mieCoefficient' ].value = effectController.mieCoefficient;
+      uniforms[ 'mieDirectionalG' ].value = effectController.mieDirectionalG;
+
+      const phi = THREE.MathUtils.degToRad( 90 - effectController.elevation );
+      const theta = THREE.MathUtils.degToRad( effectController.azimuth );
+
+      sun.setFromSphericalCoords( 1, phi, theta );
+
+      uniforms[ 'sunPosition' ].value.copy( sun );
+
+      renderer.toneMappingExposure = effectController.exposure;
+      renderer.render( scene, camera );
+
+    }
+    guiChanged();
 }
 
 // 创建一个地面
@@ -72,49 +189,60 @@ export function createGround() {
 // 创建一个立方体
 export function createCube() {
   // 创建一个立方体几何体，边长为 1
-  const cubeGeometry = new THREE.BoxGeometry(
+  const geometry = new THREE.BoxGeometry(
       modelData.cube.width,
       modelData.cube.height,
       modelData.cube.depth
   );
   // 创建一个基础材质，颜色为绿色
   // const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const cubeMaterial = new THREE.MeshNormalMaterial();
-  // 创建一个网格对象，将几何体和材质结合
-  return new THREE.Mesh(cubeGeometry, cubeMaterial);
+  const cubeMaterial = createShaderMaterial();
+  const mesh = new THREE.Mesh(geometry, cubeMaterial);
+
+  // 添加时间更新逻辑（需在渲染循环中调用）
+  mesh.material.uniforms.u_time.value += 0.05;
+  return mesh;
 }
 
 // 创建一个球体
 export function createSphere() {
   // 创建一个球体几何体
-  const sphereGeometry = new THREE.SphereGeometry(
+  const geometry = new THREE.SphereGeometry(
       modelData.sphere.radius, 20, 20
   ); // 分段数为 32
   // 创建一个基础材质，颜色为绿色
-  const sphereMaterial = new THREE.MeshNormalMaterial();
-  // 创建一个网格对象，将几何体和材质结合
-  return new THREE.Mesh(sphereGeometry, sphereMaterial);
+  // const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cubeMaterial = createShaderMaterial();
+  const mesh = new THREE.Mesh(geometry, cubeMaterial);
+
+  // 添加时间更新逻辑（需在渲染循环中调用）
+  mesh.material.uniforms.u_time.value += 0.05;
+  return mesh;
 }
+// 创建一个三角网格
+export function createTriangleMesh() {
+  const vertices = modelData.headerModel.vertices;
+  const indices = modelData.headerModel.indices;
 
-export function createObjectModel(scene: THREE.Scene) {
-  let parentObject = new THREE.Object3D()
-  const cube = createCube();
-  const sphere = createSphere();
+  // 创建顶点缓冲区
+  const verticesArray = new Float32Array(vertices);
+  const positionAttribute = new THREE.BufferAttribute(verticesArray, 3);
 
-  // 将立方体和球体添加到父对象下
-  parentObject.add(cube);
-  parentObject.add(sphere);
+  // 创建索引缓冲区
+  const indicesArray = new Uint32Array(indices);
+  const indexAttribute = new THREE.BufferAttribute(indicesArray, 1);
 
-  // 设置立方体和球体的相对位置（相对于父对象）
-  cube.position.set(0, modelData.cube.height / 2, 0); // 立方体中心位置
-  sphere.position.set(0, -modelData.sphere.radius, 0); // 球体中心位置
+  // 创建几何体
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', positionAttribute);
+  geometry.setIndex(indexAttribute);
 
-  // 将父对象添加到场景中
-  scene.add(parentObject);
+  // 创建材质
+  const material = new THREE.MeshNormalMaterial();
 
-  return { cube, sphere, parentObject };
+  // 创建网格对象
+  return new THREE.Mesh(geometry, material);
 }
-
 // 创建 OrbitControls 控制器，用于控制摄像机的旋转和缩放
 export function createControls(camera: THREE.PerspectiveCamera, renderer: THREE.WebGLRenderer) {
   // 创建控制器实例
